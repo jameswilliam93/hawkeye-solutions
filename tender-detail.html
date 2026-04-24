@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tender Details — Hawkeye Solutions</title>
+<script src="https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee}
+  body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
+  a{text-decoration:none;color:inherit}
+  nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
+  .nav-logo{display:flex;align-items:center;gap:12px}
+  .nav-brand{color:var(--white);font-size:18px;font-weight:700}
+  .nav-links{display:flex;gap:28px}
+  .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500}
+  .nav-links a:hover{color:var(--white)}
+  .nav-cta{background:var(--teal-mid)!important;color:var(--white)!important;padding:8px 18px;border-radius:6px;font-weight:600!important}
+  .breadcrumb{padding:16px 5%;font-size:13px;color:var(--text-muted);background:var(--off-white);border-bottom:1px solid var(--border)}
+  .breadcrumb a{color:var(--teal-mid)}
+  .detail-header{background:linear-gradient(135deg,var(--steel),var(--teal-dark));padding:48px 5% 40px}
+  .status-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px}
+  .status-live{background:rgba(125,212,100,0.2);color:#7dd464}
+  .status-closed{background:rgba(255,100,100,0.2);color:#ff8080}
+  .sector-tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;margin-left:8px;text-transform:uppercase}
+  .tag-recruitment{background:rgba(232,244,247,0.2);color:#a0d8e8}
+  .tag-it{background:rgba(238,240,251,0.2);color:#9098cc}
+  .tag-other{background:rgba(243,240,251,0.2);color:#a098cc}
+  .detail-header h1{font-size:34px;font-weight:800;color:var(--white);line-height:1.2;margin-bottom:8px}
+  .detail-header .authority{font-size:17px;color:rgba(255,255,255,0.75);margin-top:8px}
+  .content-grid{display:grid;grid-template-columns:1fr 340px;gap:32px;padding:40px 5%;align-items:start}
+  .main-col{}
+  .sidebar{}
+  .section-block{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:22px}
+  .section-block h2{font-size:18px;font-weight:700;color:var(--steel);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .section-block p{font-size:15px;color:var(--text-muted);line-height:1.8}
+  .detail-rows{}
+  .detail-row{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .detail-row:last-child{border-bottom:none}
+  .detail-label{font-size:13px;font-weight:600;color:var(--steel);width:160px;flex-shrink:0}
+  .detail-value{font-size:13px;color:var(--text-muted);flex:1}
+  .deadline-box{padding:16px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+  .deadline-ok{background:#eaf7f1;border:1px solid #a3dcc0}
+  .deadline-soon{background:#fef6e8;border:1px solid #f0c070}
+  .deadline-urgent{background:#fdf0ee;border:1px solid #f0a090}
+  .deadline-box .days{font-size:22px;font-weight:800}
+  .deadline-ok .days{color:#1a7a50}
+  .deadline-soon .days{color:#b7670a}
+  .deadline-urgent .days{color:#c0392b}
+  .deadline-box .date-label{font-size:12px;color:var(--text-muted)}
+  .deadline-box .date-val{font-size:14px;font-weight:600;color:var(--text)}
+  .btn-enquire{display:block;width:100%;background:var(--teal-dark);color:white;border:none;padding:14px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;margin-bottom:12px;transition:background 0.2s}
+  .btn-enquire:hover{background:var(--teal)}
+  .btn-secondary{display:block;width:100%;background:var(--white);color:var(--teal-dark);border:2px solid var(--border);padding:12px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;margin-bottom:12px;transition:all 0.2s}
+  .btn-secondary:hover{border-color:var(--teal-mid)}
+  .doc-link{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;color:var(--teal-dark);background:var(--teal-light);margin-top:12px}
+  .doc-link svg{width:18px;height:18px;stroke:var(--teal-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+  /* Enquiry modal */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--white);border-radius:16px;width:90%;max-width:540px;padding:36px;position:relative;max-height:90vh;overflow-y:auto}
+  .modal h2{font-size:22px;font-weight:800;color:var(--steel);margin-bottom:6px}
+  .modal .sub{font-size:14px;color:var(--text-muted);margin-bottom:24px}
+  .form-group{margin-bottom:14px}
+  .form-group label{display:block;font-size:13px;font-weight:600;color:var(--steel);margin-bottom:5px}
+  .form-group input,.form-group textarea{width:100%;border:1px solid var(--border);border-radius:7px;padding:10px 13px;font-size:14px;color:var(--text);font-family:inherit}
+  .form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--teal-mid)}
+  .form-group textarea{min-height:90px;resize:vertical}
+  .form-submit{background:var(--teal-dark);color:white;border:none;padding:13px;width:100%;border-radius:7px;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px}
+  .form-submit:hover{background:var(--teal)}
+  .close-modal{position:absolute;top:16px;right:20px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted)}
+  .success-msg{display:none;background:#e8f7f0;border:1px solid #a3dcc0;border-radius:8px;padding:16px;font-size:15px;color:#1a6b4a;font-weight:500;text-align:center;margin-top:12px}
+  .loading{text-align:center;padding:80px 20px;color:var(--text-muted)}
+  footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px}
+  footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
+  @media(max-width:768px){.content-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <svg width="36" height="40" viewBox="0 0 80 88" fill="none">
+      <path d="M62 20 Q72 35 68 55" stroke="#4ab8d4" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+      <path d="M66 14 Q80 35 74 62" stroke="#4ab8d4" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.45"/>
+      <path d="M30 8 C34 4 42 6 40 14 L36 28 L44 22 C50 18 54 22 50 28 L38 48 L50 42 C56 39 58 44 54 50 L36 70 L28 78 L24 72 L34 56 L22 62 C16 65 12 60 16 54 L30 34 L18 40 C12 43 8 38 12 32 Z" fill="#1a7a9a"/>
+      <path d="M30 8 L24 4 L28 12 Z" fill="#0e5a70"/>
+      <circle cx="31" cy="11" r="2.5" fill="white"/>
+    </svg>
+    <span class="nav-brand">Hawkeye Solutions</span>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#services">Services</a>
+    <a href="tenders.html">Tenders</a>
+    <a href="index.html#about">About Us</a>
+    <a href="index.html#contact" class="nav-cta">Free Consultation</a>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <a href="tenders.html">Tenders</a> &rsaquo; <span id="bc-title">Loading...</span>
+</div>
+
+<div id="page-content" class="loading">Loading tender details...</div>
+
+<!-- Enquiry Modal -->
+<div class="modal-overlay" id="enquiry-modal">
+  <div class="modal">
+    <button class="close-modal" onclick="closeModal()">&#x2715;</button>
+    <h2>Enquire About This Tender</h2>
+    <p class="sub" id="modal-tender-name"></p>
+    <form name="tender-enquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="handleSubmit(event)">
+      <input type="hidden" name="form-name" value="tender-enquiry">
+      <input type="hidden" name="tender-title" id="modal-hidden-title">
+      <p style="display:none"><input name="bot-field"></p>
+      <div class="form-group"><label>Full name *</label><input type="text" name="name" placeholder="Your full name" required></div>
+      <div class="form-group"><label>Company name *</label><input type="text" name="company" placeholder="Your organisation" required></div>
+      <div class="form-group"><label>Phone number *</label><input type="tel" name="phone" placeholder="Your contact number" required></div>
+      <div class="form-group"><label>Email address *</label><input type="email" name="email" placeholder="you@company.com" required></div>
+      <div class="form-group"><label>Briefly describe your requirement</label><textarea name="requirement" placeholder="Tell us a little about how you can help with this tender opportunity..."></textarea></div>
+      <button type="submit" class="form-submit">Submit for Consultation</button>
+    </form>
+    <div class="success-msg" id="modal-success">Thank you, one of our team will be in touch as soon as possible.</div>
+  </div>
+</div>
+
+<script>
+var tenderData = null;
+
+function getParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+function daysUntil(d) {
+  if (!d) return 999;
+  const dd = new Date(d), n = new Date();
+  n.setHours(0,0,0,0);
+  return Math.ceil((dd - n) / 86400000);
+}
+
+function formatDate(d) {
+  if (!d) return 'TBC';
+  return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+}
+
+function sectorLabel(s) {
+  return s==='recruitment'?'Recruitment and Staffing':s==='it'?'IT and Technology':'Other';
+}
+
+function deadlineClass(days) {
+  return days <= 14 ? 'deadline-urgent' : days <= 30 ? 'deadline-soon' : 'deadline-ok';
+}
+
+function tagClass(s) {
+  return s==='recruitment'?'tag-recruitment':s==='it'?'tag-it':'tag-other';
+}
+
+async function loadTender() {
+  const slug = decodeURIComponent(getParam('id') || '');
+  if (!slug) { showError(); return; }
+  try {
+    const r = await fetch('/_tenders/' + slug + '.md');
+    if (!r.ok) throw new Error('Not found');
+    const text = await r.text();
+    const match = text.match(/^---\n([\s\S]*?)\n---/);
+    if (!match) throw new Error('Bad format');
+    tenderData = jsyaml.load(match[1]);
+    // Get body content after frontmatter
+    const body = text.replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
+    if (body) tenderData.description = body;
+    renderTender(tenderData);
+  } catch(e) {
+    // Try tenders-data.json fallback
+    try {
+      const r = await fetch('/tenders-data.json');
+      const all = await r.json();
+      tenderData = all.find(t => t._slug === slug || encodeURIComponent(t._slug) === slug);
+      if (!tenderData) throw new Error('Not found');
+      renderTender(tenderData);
+    } catch(e2) { showError(); }
+  }
+}
+
+function renderTender(t) {
+  document.title = (t.title || 'Tender') + ' — Hawkeye Solutions';
+  document.getElementById('bc-title').textContent = t.title || '';
+  const days = daysUntil(t.deadline);
+  const daysLabel = days <= 0 ? 'Deadline passed' : days + ' days remaining';
+  document.getElementById('page-content').outerHTML = `
+  <div class="detail-header">
+    <div>
+      <span class="status-badge status-${t.status||'live'}">${(t.status||'live').charAt(0).toUpperCase()+(t.status||'live').slice(1)}</span>
+      <span class="sector-tag ${tagClass(t.sector)}">${sectorLabel(t.sector)}</span>
+    </div>
+    <h1>${t.title||''}</h1>
+    <div class="authority">${t.contracting_authority||''}</div>
+  </div>
+  <div class="content-grid">
+    <div class="main-col">
+      <div class="section-block">
+        <h2>Description</h2>
+        <p>${(t.description||'No description provided.').replace(/\n/g,'<br>')}</p>
+      </div>
+      <div class="section-block">
+        <h2>Tender Details</h2>
+        <div class="detail-rows">
+          ${row('Reference Number', t.reference)}
+          ${row('Sector', sectorLabel(t.sector))}
+          ${row('Location', t.location)}
+          ${row('Lots Involved', t.lots)}
+          ${row('Estimated Value', t.value)}
+          ${row('Publish Date', formatDate(t.date))}
+          ${row('Deadline', formatDate(t.deadline) + (days > 0 ? ' (' + days + ' days remaining)' : ' — Deadline passed'))}
+          ${row('Portal / Reference Link', t.portal_link ? '<a href="'+t.portal_link+'" target="_blank" style="color:var(--teal-mid)">View on portal</a>' : null)}
+        </div>
+      </div>
+      <div class="section-block">
+        <h2>Contracting Authority</h2>
+        <div class="detail-rows">
+          ${row('Authority', t.contracting_authority)}
+          ${row('Address', t.authority_address ? t.authority_address.replace(/\n/g,'<br>') : null)}
+          ${row('Contact Name', t.contact_name)}
+          ${row('Telephone', t.contact_telephone)}
+          ${row('Email', t.contact_email ? '<a href="mailto:'+t.contact_email+'" style="color:var(--teal-mid)">'+t.contact_email+'</a>' : null)}
+        </div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="section-block">
+        <div class="deadline-box ${deadlineClass(days)}">
+          <div><div class="days">${days > 0 ? days : '0'}</div><div class="date-label">days remaining</div></div>
+          <div><div class="date-label">Deadline</div><div class="date-val">${formatDate(t.deadline)}</div></div>
+        </div>
+        ${t.value ? '<div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Estimated value: <strong style="color:var(--steel)">' + t.value + '</strong></div>' : ''}
+        <button class="btn-enquire" onclick="openModal('${(t.title||'').replace(/'/g,"\\'")}')">Enquire About This Tender</button>
+        <a href="tenders.html" class="btn-secondary">Back to All Tenders</a>
+        ${t.document ? '<a href="'+t.document+'" target="_blank" class="doc-link"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Download Tender Document</a>' : ''}
+      </div>
+      <div class="section-block">
+        <h2 style="font-size:15px">Need help with this bid?</h2>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:14px">Our specialist bid writers can assess your fit and build a winning submission. Free consultation available.</p>
+        <a href="index.html#contact" class="btn-secondary">Book Free Consultation</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function row(label, value) {
+  if (!value || value === 'null' || value === 'undefined') return '';
+  return '<div class="detail-row"><div class="detail-label">'+label+'</div><div class="detail-value">'+value+'</div></div>';
+}
+
+function showError() {
+  document.getElementById('page-content').innerHTML = '<div style="padding:60px 5%;text-align:center;color:var(--text-muted)"><h2 style="color:var(--steel);margin-bottom:12px">Tender not found</h2><p>This tender may have been removed or the link may be incorrect.</p><br><a href="tenders.html" style="color:var(--teal-mid);font-weight:700">Back to all tenders</a></div>';
+}
+
+function openModal(title) {
+  document.getElementById('modal-tender-name').textContent = 'Tender: ' + title;
+  document.getElementById('modal-hidden-title').value = title;
+  document.getElementById('enquiry-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('enquiry-modal').classList.remove('open');
+}
+
+function handleSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  fetch('/', {method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(new FormData(form)).toString()})
+    .then(() => {
+      form.style.display = 'none';
+      document.getElementById('modal-success').style.display = 'block';
+    })
+    .catch(() => {
+      document.getElementById('modal-success').textContent = 'Thank you, one of our team will be in touch as soon as possible.';
+      document.getElementById('modal-success').style.display = 'block';
+      form.style.display = 'none';
+    });
+}
+
+loadTender();
+</script>
+
+<footer>
+  <span class="brand">Hawkeye Solutions</span>
+  <span>Precision Bids. Proven Results.</span>
+  <span>© 2025 Hawkeye Solutions. All rights reserved.</span>
+</footer>
+</body>
+</html>
