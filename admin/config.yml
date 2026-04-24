@@ -1,0 +1,121 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "tenders"
+    label: "Tenders"
+    label_singular: "Tender"
+    folder: "_tenders"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} — {{contracting_authority}} — {{status}}"
+    sortable_fields: ["date", "title", "status"]
+    view_groups:
+      - label: Status
+        field: status
+    fields:
+      - label: "Tender Title"
+        name: "title"
+        widget: "string"
+        hint: "Full title of the tender opportunity"
+
+      - label: "Reference Number"
+        name: "reference"
+        widget: "string"
+        required: false
+        hint: "Contract Finder or portal reference number"
+
+      - label: "Status"
+        name: "status"
+        widget: "select"
+        options:
+          - { label: "Live", value: "live" }
+          - { label: "Closed", value: "closed" }
+        default: "live"
+
+      - label: "Publish Date"
+        name: "date"
+        widget: "datetime"
+        default: ""
+        date_format: "DD/MM/YYYY"
+        time_format: false
+
+      - label: "Deadline"
+        name: "deadline"
+        widget: "datetime"
+        date_format: "DD/MM/YYYY"
+        time_format: true
+        hint: "Submission deadline date and time"
+
+      - label: "Estimated Value"
+        name: "value"
+        widget: "string"
+        required: false
+        hint: "e.g. £2.4m or £500k — £1m"
+
+      - label: "Sector"
+        name: "sector"
+        widget: "select"
+        options:
+          - { label: "Recruitment and Staffing", value: "recruitment" }
+          - { label: "IT and Technology", value: "it" }
+          - { label: "Other", value: "other" }
+
+      - label: "Location"
+        name: "location"
+        widget: "string"
+        hint: "e.g. London Borough of Hackney or National"
+
+      - label: "Lots Involved"
+        name: "lots"
+        widget: "string"
+        required: false
+        hint: "e.g. Lot 1: Temporary Staff, Lot 2: Permanent Staff"
+
+      - label: "Contracting Authority Name"
+        name: "contracting_authority"
+        widget: "string"
+
+      - label: "Contracting Authority Address"
+        name: "authority_address"
+        widget: "text"
+        required: false
+
+      - label: "Contact Name"
+        name: "contact_name"
+        widget: "string"
+        required: false
+
+      - label: "Contact Telephone"
+        name: "contact_telephone"
+        widget: "string"
+        required: false
+
+      - label: "Contact Email"
+        name: "contact_email"
+        widget: "string"
+        required: false
+
+      - label: "Description"
+        name: "description"
+        widget: "markdown"
+        hint: "Full description of the tender scope and requirements"
+
+      - label: "Document Upload"
+        name: "document"
+        widget: "file"
+        required: false
+        media_library:
+          config:
+            multiple: false
+        hint: "Upload tender document (PDF or Word)"
+
+      - label: "Portal / Reference Link"
+        name: "portal_link"
+        widget: "string"
+        required: false
+        hint: "URL to the tender on Contracts Finder or buyer portal"
