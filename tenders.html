@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Tenders — Hawkeye Solutions</title>
+<script src="https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee}
+  body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
+  a{text-decoration:none;color:inherit}
+  nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
+  .nav-logo{display:flex;align-items:center;gap:12px}
+  .nav-brand{color:var(--white);font-size:18px;font-weight:700}
+  .nav-links{display:flex;gap:28px}
+  .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500}
+  .nav-links a:hover{color:var(--white)}
+  .nav-cta{background:var(--teal-mid)!important;color:var(--white)!important;padding:8px 18px;border-radius:6px;font-weight:600!important}
+  .page-header{background:linear-gradient(135deg,var(--steel),var(--teal-dark));padding:60px 5% 50px}
+  .page-header .label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7dd4e8;margin-bottom:10px}
+  .page-header h1{font-size:40px;font-weight:800;color:var(--white);margin-bottom:12px}
+  .page-header p{font-size:17px;color:rgba(255,255,255,0.7);max-width:580px}
+  section{padding:50px 5%}
+  .search-bar{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap}
+  .search-bar input{flex:1;min-width:200px;border:1px solid var(--border);border-radius:8px;padding:11px 16px;font-size:15px;font-family:inherit;color:var(--text)}
+  .search-bar input:focus{outline:none;border-color:var(--teal-mid)}
+  .filter-btns{display:flex;gap:8px;flex-wrap:wrap}
+  .filter-btn{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+  .filter-btn.active,.filter-btn:hover{background:var(--teal-dark);color:var(--white);border-color:var(--teal-dark)}
+  .tender-count{font-size:13px;color:var(--text-muted);margin-bottom:20px}
+  .tender-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .tender-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:26px;position:relative;overflow:hidden;transition:box-shadow 0.2s,border-color 0.2s;cursor:pointer}
+  .tender-card:hover{box-shadow:0 4px 20px rgba(26,107,124,0.12);border-color:var(--teal-mid)}
+  .tender-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--teal-mid)}
+  .tender-card.urgent::before{background:#d94f3d}
+  .tender-card.soon::before{background:#e8920a}
+  .sector-tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px}
+  .tag-recruitment{background:#e8f4f7;color:var(--teal-dark)}
+  .tag-it{background:#eef0fb;color:#3a3faa}
+  .tag-other{background:#f3f0fb;color:#5a3faa}
+  .tender-card h3{font-size:16px;font-weight:700;color:var(--steel);margin-bottom:6px;line-height:1.4}
+  .tender-authority{font-size:13px;color:var(--text-muted);margin-bottom:14px}
+  .deadline-badge{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:7px;margin-bottom:12px}
+  .deadline-badge svg{width:14px;height:14px;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;flex-shrink:0}
+  .deadline-ok{background:#eaf7f1;color:#1a7a50}.deadline-ok svg{stroke:#1a7a50}
+  .deadline-soon{background:#fef6e8;color:#b7670a}.deadline-soon svg{stroke:#b7670a}
+  .deadline-urgent{background:#fdf0ee;color:#c0392b}.deadline-urgent svg{stroke:#c0392b}
+  .tender-value{font-size:12px;color:var(--text-muted);margin-bottom:14px}
+  .tender-value span{font-weight:700;color:var(--steel)}
+  .tender-desc{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .tender-link{font-size:13px;font-weight:600;color:var(--teal-mid)}
+  .no-results{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-muted);font-size:15px}
+  .loading{text-align:center;padding:80px 20px;color:var(--text-muted)}
+  .loading-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--teal-mid);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px}
+  footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
+  @media(max-width:768px){.tender-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <svg width="36" height="40" viewBox="0 0 80 88" fill="none">
+      <path d="M62 20 Q72 35 68 55" stroke="#4ab8d4" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+      <path d="M66 14 Q80 35 74 62" stroke="#4ab8d4" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.45"/>
+      <path d="M30 8 C34 4 42 6 40 14 L36 28 L44 22 C50 18 54 22 50 28 L38 48 L50 42 C56 39 58 44 54 50 L36 70 L28 78 L24 72 L34 56 L22 62 C16 65 12 60 16 54 L30 34 L18 40 C12 43 8 38 12 32 Z" fill="#1a7a9a"/>
+      <path d="M30 8 L24 4 L28 12 Z" fill="#0e5a70"/>
+      <circle cx="31" cy="11" r="2.5" fill="white"/>
+    </svg>
+    <span class="nav-brand">Hawkeye Solutions</span>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#sectors">Sectors</a>
+    <a href="tenders.html" style="color:white;font-weight:700">Tenders</a>
+    <a href="index.html#about">About Us</a>
+    <a href="index.html#contact" class="nav-cta">Free Consultation</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="label">Live Opportunities</div>
+  <h1>Current Tenders</h1>
+  <p>Live public sector opportunities in recruitment and IT. Our team can help you assess fit and build a winning submission.</p>
+</div>
+
+<section>
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search tenders by title, authority or keyword..." oninput="filterTenders()">
+    <div class="filter-btns">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('recruitment',this)">Recruitment</button>
+      <button class="filter-btn" onclick="setFilter('it',this)">IT and Technology</button>
+      <button class="filter-btn" onclick="setFilter('other',this)">Other</button>
+    </div>
+  </div>
+  <div class="tender-count" id="tender-count"></div>
+  <div class="tender-grid" id="tender-grid">
+    <div class="loading"><div class="loading-spinner"></div>Loading tenders...</div>
+  </div>
+  <div style="margin-top:48px;background:var(--teal-light);border-radius:12px;padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
+    <div>
+      <p style="font-size:16px;font-weight:700;color:var(--steel);margin-bottom:6px">Do not see your opportunity listed?</p>
+      <p style="font-size:14px;color:var(--text-muted)">We cover a wide range of public sector tenders beyond those listed here. Get in touch and our team will help you find and assess the right opportunities.</p>
+    </div>
+    <a href="index.html#contact" style="background:var(--teal-dark);color:white;padding:12px 24px;border-radius:7px;font-weight:700;font-size:14px;white-space:nowrap">Talk to Our Team</a>
+  </div>
+</section>
+
+<footer>
+  <span class="brand">Hawkeye Solutions</span>
+  <span>Precision Bids. Proven Results.</span>
+  <span>© 2025 Hawkeye Solutions. All rights reserved.</span>
+</footer>
+
+<script>
+var allTenders = [];
+var currentFilter = 'all';
+
+// Load all tender markdown files from _tenders/
+async function loadTenders() {
+  try {
+    // Fetch the list of tender files via the GitHub API
+    // This reads from the _tenders folder in your repo
+    const resp = await fetch('/_tenders/index.json');
+    if (!resp.ok) throw new Error('No index');
+    const files = await resp.json();
+    const tenders = [];
+    for (const f of files) {
+      const r = await fetch('/_tenders/' + f);
+      if (!r.ok) continue;
+      const text = await r.text();
+      const t = parseFrontmatter(text, f);
+      if (t) tenders.push(t);
+    }
+    allTenders = tenders.filter(t => t.status === 'live').sort((a,b) => new Date(b.date) - new Date(a.date));
+    renderTenders(allTenders);
+  } catch(e) {
+    // Fallback: try reading tenders-data.json (generated at build)
+    try {
+      const r = await fetch('/tenders-data.json');
+      if (!r.ok) throw new Error('No data');
+      allTenders = (await r.json()).filter(t => t.status === 'live').sort((a,b) => new Date(b.date) - new Date(a.date));
+      renderTenders(allTenders);
+    } catch(e2) {
+      document.getElementById('tender-grid').innerHTML = '<div class="no-results">Tenders loading shortly. Check back in a moment after setup is complete.</div>';
+    }
+  }
+}
+
+function parseFrontmatter(text, filename) {
+  try {
+    const match = text.match(/^---\n([\s\S]*?)\n---/);
+    if (!match) return null;
+    const data = jsyaml.load(match[1]);
+    data._filename = filename;
+    data._slug = filename.replace(/\.md$/, '');
+    return data;
+  } catch(e) { return null; }
+}
+
+function daysUntil(dateStr) {
+  if (!dateStr) return 999;
+  const d = new Date(dateStr), n = new Date();
+  n.setHours(0,0,0,0);
+  return Math.ceil((d - n) / 86400000);
+}
+
+function formatDate(d) {
+  if (!d) return 'TBC';
+  return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+}
+
+function sectorLabel(s) {
+  return s==='recruitment'?'Recruitment':s==='it'?'IT and Technology':'Other';
+}
+
+function sectorTagClass(s) {
+  return s==='recruitment'?'tag-recruitment':s==='it'?'tag-it':'tag-other';
+}
+
+function deadlineClass(days) {
+  return days <= 14 ? 'deadline-urgent' : days <= 30 ? 'deadline-soon' : 'deadline-ok';
+}
+
+function cardUrgency(days) {
+  return days <= 14 ? ' urgent' : days <= 30 ? ' soon' : '';
+}
+
+function renderTenders(list) {
+  const grid = document.getElementById('tender-grid');
+  const countEl = document.getElementById('tender-count');
+  countEl.textContent = 'Showing ' + list.length + ' opportunit' + (list.length === 1 ? 'y' : 'ies');
+  if (!list.length) {
+    grid.innerHTML = '<div class="no-results">No tenders found matching your search.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(t => {
+    const days = daysUntil(t.deadline);
+    const daysLabel = days <= 0 ? 'Deadline passed' : days === 1 ? '1 day remaining' : days + ' days remaining';
+    const slug = encodeURIComponent(t._slug || t.title);
+    return '<div class="tender-card' + cardUrgency(days) + '" onclick="window.location=\'tender-detail.html?id=' + slug + '\'">' +
+      '<span class="sector-tag ' + sectorTagClass(t.sector) + '">' + sectorLabel(t.sector) + '</span>' +
+      '<h3>' + (t.title || '') + '</h3>' +
+      '<div class="tender-authority">' + (t.contracting_authority || '') + (t.location ? ' &nbsp;·&nbsp; ' + t.location : '') + '</div>' +
+      '<div class="deadline-badge ' + deadlineClass(days) + '"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' +
+      formatDate(t.deadline) + '&nbsp;·&nbsp;' + daysLabel + '</div>' +
+      (t.value ? '<div class="tender-value">Estimated value: <span>' + t.value + '</span></div>' : '') +
+      '<p class="tender-desc">' + (t.description || '').replace(/[#*`]/g,'').substring(0,180) + '...</p>' +
+      '<span class="tender-link">View full details</span>' +
+    '</div>';
+  }).join('');
+}
+
+function filterTenders() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  let list = allTenders;
+  if (currentFilter !== 'all') list = list.filter(t => t.sector === currentFilter);
+  if (q) list = list.filter(t =>
+    (t.title||'').toLowerCase().includes(q) ||
+    (t.contracting_authority||'').toLowerCase().includes(q) ||
+    (t.description||'').toLowerCase().includes(q) ||
+    (t.location||'').toLowerCase().includes(q)
+  );
+  renderTenders(list);
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterTenders();
+}
+
+loadTenders();
+</script>
+</body>
+</html>
