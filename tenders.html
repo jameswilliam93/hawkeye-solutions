@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Tenders — Hawkeye Solutions</title>
-<script src="https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee}
@@ -121,46 +120,17 @@
 var allTenders = [];
 var currentFilter = 'all';
 
-// Load all tender markdown files from _tenders/
 async function loadTenders() {
   try {
-    // Fetch the list of tender files via the GitHub API
-    // This reads from the _tenders folder in your repo
-    const resp = await fetch('/_tenders/index.json');
-    if (!resp.ok) throw new Error('No index');
-    const files = await resp.json();
-    const tenders = [];
-    for (const f of files) {
-      const r = await fetch('/_tenders/' + f);
-      if (!r.ok) continue;
-      const text = await r.text();
-      const t = parseFrontmatter(text, f);
-      if (t) tenders.push(t);
-    }
-    allTenders = tenders.filter(t => t.status === 'live').sort((a,b) => new Date(b.date) - new Date(a.date));
+    const r = await fetch('/tenders-data.json?v=' + Date.now());
+    if (!r.ok) throw new Error('Failed to load');
+    const data = await r.json();
+    allTenders = data.filter(t => t.status === 'live').sort((a,b) => new Date(b.date||0) - new Date(a.date||0));
     renderTenders(allTenders);
   } catch(e) {
-    // Fallback: try reading tenders-data.json (generated at build)
-    try {
-      const r = await fetch('/tenders-data.json');
-      if (!r.ok) throw new Error('No data');
-      allTenders = (await r.json()).filter(t => t.status === 'live').sort((a,b) => new Date(b.date) - new Date(a.date));
-      renderTenders(allTenders);
-    } catch(e2) {
-      document.getElementById('tender-grid').innerHTML = '<div class="no-results">Tenders loading shortly. Check back in a moment after setup is complete.</div>';
-    }
+    console.error('Failed to load tenders:', e);
+    document.getElementById('tender-grid').innerHTML = '<div class="no-results">Tenders loading shortly. Check back in a moment.</div>';
   }
-}
-
-function parseFrontmatter(text, filename) {
-  try {
-    const match = text.match(/^---\n([\s\S]*?)\n---/);
-    if (!match) return null;
-    const data = jsyaml.load(match[1]);
-    data._filename = filename;
-    data._slug = filename.replace(/\.md$/, '');
-    return data;
-  } catch(e) { return null; }
 }
 
 function daysUntil(dateStr) {
@@ -202,7 +172,7 @@ function renderTenders(list) {
   grid.innerHTML = list.map(t => {
     const days = daysUntil(t.deadline);
     const daysLabel = days <= 0 ? 'Deadline passed' : days === 1 ? '1 day remaining' : days + ' days remaining';
-    const slug = encodeURIComponent(t._slug || t.title);
+    const slug = encodeURIComponent(t.slug || t.title);
     return '<div class="tender-card' + cardUrgency(days) + '" onclick="window.location=\'tender-detail.html?id=' + slug + '\'">' +
       '<span class="sector-tag ' + sectorTagClass(t.sector) + '">' + sectorLabel(t.sector) + '</span>' +
       '<h3>' + (t.title || '') + '</h3>' +
