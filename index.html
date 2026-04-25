@@ -125,32 +125,6 @@
   .footer-col a:hover{color:var(--white)}
   .footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;font-size:12px;display:flex;justify-content:space-between}
 
-  /* TENDERS */
-  .tender-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
-  .filter-btn{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;transition:all 0.2s}
-  .filter-btn.active,.filter-btn:hover{background:var(--teal-dark);color:var(--white);border-color:var(--teal-dark)}
-  .tender-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-  .tender-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;transition:box-shadow 0.2s,border-color 0.2s;position:relative;overflow:hidden}
-  .tender-card:hover{box-shadow:0 4px 20px rgba(26,107,124,0.1);border-color:var(--teal-mid)}
-  .tender-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--teal-mid)}
-  .tender-card.urgent::before{background:#d94f3d}
-  .tender-card.soon::before{background:#e8920a}
-  .tender-tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px}
-  .sector-recruitment{background:#e8f4f7;color:var(--teal-dark)}
-  .sector-it{background:#eef0fb;color:#3a3faa}
-  .sector-other{background:#f3f0fb;color:#5a3faa}
-  .tender-card h4{font-size:15px;font-weight:700;color:var(--steel);margin-bottom:6px;line-height:1.4}
-  .tender-card .tender-authority{font-size:13px;color:var(--text-muted);margin-bottom:14px}
-  .tender-deadline{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:7px;margin-bottom:14px}
-  .tender-deadline svg{width:14px;height:14px;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;flex-shrink:0}
-  .deadline-urgent{background:#fdf0ee;color:#c0392b}.deadline-urgent svg{stroke:#c0392b}
-  .deadline-soon{background:#fef6e8;color:#b7670a}.deadline-soon svg{stroke:#b7670a}
-  .deadline-ok{background:#eaf7f1;color:#1a7a50}.deadline-ok svg{stroke:#1a7a50}
-  .tender-value{font-size:12px;color:var(--text-muted);margin-bottom:14px}
-  .tender-value span{font-weight:700;color:var(--steel)}
-  .tender-cta{font-size:13px;font-weight:600;color:var(--teal-mid);cursor:pointer;background:none;border:none;padding:0}
-  .no-tenders{text-align:center;padding:40px;color:var(--text-muted);font-size:15px;grid-column:1/-1}
-
   /* ADMIN */
   .admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:center;justify-content:center}
   .admin-overlay.open{display:flex}
@@ -185,7 +159,7 @@
   @media(max-width:768px){
     .hero{flex-direction:column;text-align:center;padding:60px 5%}
     .hero h1{font-size:34px}
-    .stats-grid,.services-grid,.sectors-grid,.why-grid,.testi-grid,.process-steps,.contact-grid,.footer-grid,.action-grid,.tender-grid,.admin-form-grid{grid-template-columns:1fr}
+    .stats-grid,.services-grid,.sectors-grid,.why-grid,.testi-grid,.process-steps,.contact-grid,.footer-grid,.action-grid,.admin-form-grid{grid-template-columns:1fr}
     .process-steps::before{display:none}
     nav .nav-links{display:none}
     .hero-btns{justify-content:center}
@@ -267,7 +241,7 @@
     <a href="#" onclick="showPage('home')">Home</a>
     <a href="#" onclick="showPage('services')">Services</a>
     <a href="#" onclick="showPage('sectors')">Sectors</a>
-    <a href="#" onclick="showPage('tenders')">Tenders</a>
+    <a href="tenders.html">Tenders</a>
     <a href="#" onclick="showPage('about')">About Us</a>
     <a href="#" onclick="openAdmin()" style="color:rgba(255,255,255,0.4);font-size:12px">Admin</a>
     <a href="#" onclick="showPage('contact')" class="nav-cta">Free Consultation</a>
@@ -514,34 +488,6 @@
   </section>
 </div>
 
-<!-- TENDERS PAGE -->
-<div id="tenders" class="page">
-  <div style="background:var(--steel);padding:60px 5% 50px">
-    <div class="section-label" style="color:#7dd4e8">Live Opportunities</div>
-    <h1 style="font-size:40px;font-weight:800;color:var(--white);margin-bottom:12px">Upcoming Tenders</h1>
-    <p style="font-size:17px;color:rgba(255,255,255,0.7);max-width:600px">A selection of current public sector opportunities in recruitment and IT. Our team can help you assess fit and build a winning submission.</p>
-  </div>
-  <section>
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px">
-      <div class="tender-filters" style="margin-bottom:0">
-        <button class="filter-btn active" onclick="filterTenders('all',this)">All</button>
-        <button class="filter-btn" onclick="filterTenders('recruitment',this)">Recruitment</button>
-        <button class="filter-btn" onclick="filterTenders('it',this)">IT and Technology</button>
-        <button class="filter-btn" onclick="filterTenders('other',this)">Other</button>
-      </div>
-      <div style="font-size:13px;color:var(--text-muted)" id="tender-count"></div>
-    </div>
-    <div class="tender-grid" id="tender-grid"></div>
-    <div style="margin-top:48px;background:var(--teal-light);border-radius:12px;padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-      <div>
-        <p style="font-size:16px;font-weight:700;color:var(--steel);margin-bottom:6px">Do not see your opportunity listed?</p>
-        <p style="font-size:14px;color:var(--text-muted)">We cover a wide range of public sector tenders beyond those listed here. Get in touch and our team will help you find and assess the right opportunities for your business.</p>
-      </div>
-      <a href="#" class="btn-primary" style="background:var(--teal-dark);color:var(--white);white-space:nowrap" onclick="showPage('contact')">Talk to Our Team</a>
-    </div>
-  </section>
-</div>
-
 <!-- ABOUT PAGE -->
 <div id="about" class="page">
   <div style="background:var(--steel);padding:60px 5% 50px">
@@ -610,7 +556,7 @@
   <div class="footer-grid">
     <div><p style="color:rgba(255,255,255,0.9);font-size:16px;font-weight:700;margin-bottom:8px">Hawkeye Solutions</p><p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.6)">Precision Bids. Proven Results.<br>Specialist bid writing for public sector recruitment and IT consultancy contracts.</p></div>
     <div class="footer-col"><h4>Services</h4><a href="#" onclick="showPage('services')">Bid Writing</a><a href="#" onclick="showPage('services')">Bid Management</a><a href="#" onclick="showPage('services')">Bid Review</a><a href="#" onclick="showPage('services')">Training</a></div>
-    <div class="footer-col"><h4>Company</h4><a href="#" onclick="showPage('about')">About Us</a><a href="#" onclick="showPage('sectors')">Sectors</a><a href="#" onclick="showPage('tenders')">Tenders</a><a href="#" onclick="showPage('contact')">Contact</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="#" onclick="showPage('about')">About Us</a><a href="#" onclick="showPage('sectors')">Sectors</a><a href="tenders.html">Tenders</a><a href="#" onclick="showPage('contact')">Contact</a></div>
     <div class="footer-col"><h4>Sectors</h4><a href="#" onclick="showPage('sectors')">Recruitment and Staffing</a><a href="#" onclick="showPage('sectors')">IT Consultancy</a><a href="#" onclick="showPage('sectors')">Public Sector</a></div>
   </div>
   <div class="footer-bottom"><span>© 2025 Hawkeye Solutions. All rights reserved.</span><span>Privacy Policy · Terms of Use</span></div>
@@ -618,65 +564,6 @@
 
 <script>
 var ADMIN_PASSWORD='hawkeye2025';
-
-// ---- TENDER STORAGE ----
-var defaultTenders=[
-  {id:1,title:'Temporary Recruitment Services Framework',authority:'London Borough of Hackney',sector:'recruitment',value:'£4.2m',deadline:'2026-04-28',ref:'',description:'Supply of temporary and interim staffing across all council departments.'},
-  {id:2,title:'Managed IT Support Services',authority:'NHS South West ICB',sector:'it',value:'£1.8m',deadline:'2026-05-09',ref:'',description:'End-to-end managed IT support for integrated care board offices.'},
-  {id:3,title:'Digital Transformation Consultancy',authority:'Department for Work and Pensions',sector:'it',value:'£3.5m',deadline:'2026-05-22',ref:'',description:'Strategic digital consultancy to support modernisation of citizen-facing services.'},
-  {id:4,title:'Professional Staffing Services',authority:'West Midlands Combined Authority',sector:'recruitment',value:'£6.1m',deadline:'2026-06-04',ref:'',description:'Professional and specialist staffing across transport and planning functions.'},
-  {id:5,title:'Cyber Security Assessment Services',authority:'Cabinet Office',sector:'it',value:'£900k',deadline:'2026-06-17',ref:'',description:'Penetration testing and cyber risk assessment services across central government estates.'},
-  {id:6,title:'Social Care Workforce Recruitment',authority:'Surrey County Council',sector:'recruitment',value:'£2.3m',deadline:'2026-07-01',ref:'',description:'Recruitment and retention support for adult social care frontline workforce.'},
-];
-
-function loadTenders(){
-  try{var s=localStorage.getItem('hawkeye_tenders');return s?JSON.parse(s):defaultTenders;}catch(e){return defaultTenders;}
-}
-function saveTenders(t){
-  try{localStorage.setItem('hawkeye_tenders',JSON.stringify(t));}catch(e){}
-}
-var tenders=loadTenders();
-var nextId=tenders.reduce(function(m,t){return Math.max(m,t.id);},0)+1;
-var currentFilter='all';
-
-// ---- TENDER RENDERING ----
-function daysUntil(d){var dd=new Date(d),n=new Date();n.setHours(0,0,0,0);return Math.ceil((dd-n)/86400000);}
-function deadlineClass(days){return days<=14?'deadline-urgent':days<=30?'deadline-soon':'deadline-ok';}
-function cardUrgency(days){return days<=14?' urgent':days<=30?' soon':'';}
-function sectorLabel(s){return s==='recruitment'?'Recruitment':s==='it'?'IT and Technology':'Other';}
-function sectorTagClass(s){return s==='recruitment'?'sector-recruitment':s==='it'?'sector-it':'sector-other';}
-function formatDate(d){return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}
-
-function filterTenders(f,btn){
-  currentFilter=f;
-  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  renderTenders(f);
-}
-
-function renderTenders(f){
-  var grid=document.getElementById('tender-grid');
-  var countEl=document.getElementById('tender-count');
-  if(!grid)return;
-  var list=tenders.filter(function(t){return f==='all'||t.sector===f;});
-  if(countEl)countEl.textContent='Showing '+list.length+' opportunit'+(list.length===1?'y':'ies');
-  if(!list.length){grid.innerHTML='<div class="no-tenders">No tenders in this category at the moment. Check back soon.</div>';return;}
-  grid.innerHTML=list.map(function(t){
-    var days=daysUntil(t.deadline);
-    var daysLabel=days<=0?'Deadline passed':days===1?'1 day remaining':days+' days remaining';
-    return '<div class="tender-card'+cardUrgency(days)+'">'+
-      '<span class="tender-tag '+sectorTagClass(t.sector)+'">'+sectorLabel(t.sector)+'</span>'+
-      '<h4>'+t.title+'</h4>'+
-      '<div class="tender-authority">'+t.authority+'</div>'+
-      '<div class="tender-deadline '+deadlineClass(days)+'"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'+
-      formatDate(t.deadline)+'&nbsp;·&nbsp;'+daysLabel+'</div>'+
-      (t.value?'<div class="tender-value">Estimated value: <span>'+t.value+'</span></div>':'')+
-      '<p style="font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:14px">'+t.description+'</p>'+
-      (t.ref?'<p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Ref: '+t.ref+'</p>':'')+
-      '<button class="tender-cta" onclick="showPage(\'contact\')">Get help with this bid</button>'+
-    '</div>';
-  }).join('');
-}
 
 // ---- ADMIN ----
 var adminLoggedIn=false;
@@ -707,76 +594,17 @@ function adminLogin(){
 }
 
 function renderAdminList(){
-  document.getElementById('tender-count-admin').textContent=tenders.length;
+  document.getElementById('tender-count-admin').textContent=0;
   var list=document.getElementById('admin-tender-list');
-  if(!tenders.length){list.innerHTML='<p style="font-size:14px;color:var(--text-muted);padding:12px 0">No tenders added yet. Use the form above to add your first one.</p>';return;}
-  list.innerHTML=tenders.map(function(t){
-    var days=daysUntil(t.deadline);
-    var daysLabel=days<=0?'Deadline passed':days+' days remaining';
-    return '<div class="tender-list-item">'+
-      '<div class="tli-info">'+
-        '<h4>'+t.title+'</h4>'+
-        '<p>'+t.authority+' &nbsp;·&nbsp; '+sectorLabel(t.sector)+' &nbsp;·&nbsp; '+formatDate(t.deadline)+' ('+daysLabel+')</p>'+
-      '</div>'+
-      '<div class="tli-actions">'+
-        '<button class="admin-btn secondary" style="padding:7px 14px;font-size:13px" onclick="editTender('+t.id+')">Edit</button>'+
-        '<button class="admin-btn danger" style="padding:7px 14px;font-size:13px" onclick="deleteTender('+t.id+')">Remove</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
+  list.innerHTML='<p style="font-size:14px;color:var(--text-muted);padding:12px 0">Tenders are now managed via the <a href="/admin/" style="color:var(--teal-mid);font-weight:600">Decap CMS admin portal</a>.</p>';
 }
 
 function saveTender(){
-  var title=document.getElementById('f-title').value.trim();
-  var authority=document.getElementById('f-authority').value.trim();
-  var deadline=document.getElementById('f-deadline').value;
-  var desc=document.getElementById('f-desc').value.trim();
-  if(!title||!authority||!deadline||!desc){alert('Please fill in title, authority, deadline, and description.');return;}
-  var editId=document.getElementById('f-edit-id').value;
-  var obj={
-    id:editId?parseInt(editId):nextId++,
-    title:title,
-    authority:authority,
-    sector:document.getElementById('f-sector').value,
-    value:document.getElementById('f-value').value.trim(),
-    deadline:deadline,
-    ref:document.getElementById('f-ref').value.trim(),
-    description:desc
-  };
-  if(editId){
-    tenders=tenders.map(function(t){return t.id===obj.id?obj:t;});
-  } else {
-    tenders.push(obj);
-  }
-  saveTenders(tenders);
-  clearForm();
-  renderAdminList();
-  renderTenders(currentFilter);
-  document.getElementById('admin-form-title').textContent='Add New Tender';
+  alert('Tenders are now managed via the Decap CMS admin portal at /admin/');
 }
 
-function editTender(id){
-  var t=tenders.find(function(x){return x.id===id;});
-  if(!t)return;
-  document.getElementById('f-title').value=t.title;
-  document.getElementById('f-authority').value=t.authority;
-  document.getElementById('f-sector').value=t.sector;
-  document.getElementById('f-value').value=t.value||'';
-  document.getElementById('f-deadline').value=t.deadline;
-  document.getElementById('f-ref').value=t.ref||'';
-  document.getElementById('f-desc').value=t.description;
-  document.getElementById('f-edit-id').value=t.id;
-  document.getElementById('admin-form-title').textContent='Edit Tender';
-  document.querySelector('.admin-box').scrollTop=0;
-}
-
-function deleteTender(id){
-  if(!confirm('Are you sure you want to remove this tender?'))return;
-  tenders=tenders.filter(function(t){return t.id!==id;});
-  saveTenders(tenders);
-  renderAdminList();
-  renderTenders(currentFilter);
-}
+function editTender(){}
+function deleteTender(){}
 
 function clearForm(){
   ['f-title','f-authority','f-value','f-ref','f-desc'].forEach(function(id){document.getElementById(id).value='';});
@@ -795,7 +623,6 @@ var searchIndex=[
   {page:'services',title:'Training',text:'training bid writing programme in-house capability recruitment IT consultancy tenders'},
   {page:'sectors',title:'Recruitment and Staffing',text:'recruitment staffing CCS frameworks NHS local government managed services social value temporary staffing'},
   {page:'sectors',title:'IT Consultancy and Technology',text:'IT consultancy G-Cloud digital outcomes cyber security digital transformation central government technology'},
-  {page:'tenders',title:'Upcoming Tenders',text:'upcoming tenders live opportunities deadlines public sector recruitment IT consultancy framework'},
   {page:'about',title:'About Us',text:'about hawkeye solutions story values precision partnership transparency results consultancy'},
   {page:'contact',title:'Free Consultation',text:'contact free consultation enquiry callback phone email get in touch'},
 ];
@@ -804,11 +631,16 @@ function doSearch(q){
   var box=document.getElementById('search-results');
   q=q.trim().toLowerCase();
   if(!q){box.style.display='none';return;}
-  var staticResults=searchIndex.filter(function(item){return item.title.toLowerCase().includes(q)||item.text.toLowerCase().includes(q);});
-  var tenderResults=tenders.filter(function(t){return t.title.toLowerCase().includes(q)||t.authority.toLowerCase().includes(q)||t.description.toLowerCase().includes(q);}).map(function(t){return{page:'tenders',title:t.title,text:t.authority};});
-  var results=staticResults.concat(tenderResults).slice(0,7);
+  var results=searchIndex.filter(function(item){return item.title.toLowerCase().includes(q)||item.text.toLowerCase().includes(q);}).slice(0,7);
+  // Also add a direct link to tenders page if relevant
+  if('tenders'.includes(q)||'tender'.includes(q)||'opportunities'.includes(q)){
+    results.unshift({page:'tenders.html',title:'Live Tenders',text:'Current public sector opportunities',external:true});
+  }
   if(!results.length){box.innerHTML='<div class="search-no-results">No results found for "'+q+'"</div>';}
-  else{box.innerHTML=results.map(function(r){return'<div class="search-result-item" onmousedown="showPage(\''+r.page+'\');closeSearch()"><div class="sri-page">'+r.page+'</div><div class="sri-title">'+r.title+'</div></div>';}).join('');}
+  else{box.innerHTML=results.map(function(r){
+    var action=r.external?"window.location='tenders.html'":"showPage('"+r.page+"')";
+    return'<div class="search-result-item" onmousedown="'+action+';closeSearch()"><div class="sri-page">'+(r.external?'tenders':r.page)+'</div><div class="sri-title">'+r.title+'</div></div>';
+  }).join('');}
   box.style.display='block';
 }
 function closeSearch(){document.getElementById('search-results').style.display='none';document.getElementById('site-search').value='';}
@@ -818,7 +650,6 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(function(p){p.style.display='none';});
   var el=document.getElementById(id);
   if(el){el.style.display='block';window.scrollTo(0,0);}
-  if(id==='tenders')renderTenders(currentFilter);
 }
 
 // ---- FORMS ----
