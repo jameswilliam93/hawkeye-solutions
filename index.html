@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hawkeye Solutions – Precision Bids. Proven Results.</title>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{
@@ -159,15 +160,12 @@
   .admin-login{max-width:360px;margin:0 auto;text-align:center;padding:40px 0}
   .admin-login h3{font-size:20px;font-weight:700;color:var(--steel);margin-bottom:8px}
   .admin-login p{font-size:14px;color:var(--text-muted);margin-bottom:24px}
-  .admin-login input{width:100%;border:1px solid var(--border);border-radius:7px;padding:11px 14px;font-size:15px;margin-bottom:12px;font-family:inherit}
-  .admin-login input:focus{outline:none;border-color:var(--teal-mid)}
   .admin-btn{background:var(--teal-dark);color:var(--white);border:none;padding:11px 24px;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer;transition:background 0.2s}
   .admin-btn:hover{background:var(--teal)}
   .admin-btn.danger{background:#c0392b}
   .admin-btn.danger:hover{background:#a93226}
   .admin-btn.secondary{background:var(--white);color:var(--steel);border:1px solid var(--border)}
   .admin-btn.secondary:hover{background:var(--off-white)}
-  .admin-error{color:#c0392b;font-size:13px;margin-top:8px;display:none}
   .admin-tender-form{background:var(--off-white);border-radius:12px;padding:24px;margin-bottom:28px}
   .admin-tender-form h3{font-size:16px;font-weight:700;color:var(--steel);margin-bottom:18px}
   .admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -769,7 +767,6 @@ function editTender(id){
   document.getElementById('f-desc').value=t.description;
   document.getElementById('f-edit-id').value=t.id;
   document.getElementById('admin-form-title').textContent='Edit Tender';
-  document.getElementById('admin-box') && document.getElementById('admin-box').scrollTo(0,0);
   document.querySelector('.admin-box').scrollTop=0;
 }
 
@@ -833,5 +830,19 @@ dz.addEventListener('drop',function(e){e.preventDefault();dz.style.borderColor='
 function submitUpload(){var n=document.getElementById('upload-name').value,e=document.getElementById('upload-email').value;if(!n||!e){alert('Please enter your name and email address.');return;}document.getElementById('upload-success').style.display='block';}
 function submitCallback(){var n=document.getElementById('cb-name').value,p=document.getElementById('cb-phone').value;if(!n||!p){alert('Please enter your name and phone number.');return;}document.getElementById('cb-success').style.display='block';}
 </script>
+
+<!-- Netlify Identity redirect -->
+<script>
+if (window.netlifyIdentity) {
+  window.netlifyIdentity.on('init', user => {
+    if (!user) {
+      window.netlifyIdentity.on('login', () => {
+        document.location.href = '/admin/';
+      });
+    }
+  });
+}
+</script>
+
 </body>
 </html>
