@@ -1,0 +1,11 @@
+{
+  "name": "hawkeye-solutions",
+  "version": "1.0.0",
+  "description": "Hawkeye Solutions website",
+  "scripts": {
+    "build": "node build-tenders.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
