@@ -2,6 +2,9 @@
   publish = "."
   command = "node build-tenders.js"
 
+[build.environment]
+  NODE_VERSION = "18"
+
 [[redirects]]
   from = "/admin"
   to = "/admin/index.html"
@@ -11,14 +14,3 @@
   from = "/admin/"
   to = "/admin/index.html"
   status = 200
-
-[[headers]]
-  for = "/admin/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-
-[[headers]]
-  for = "/*.json"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
