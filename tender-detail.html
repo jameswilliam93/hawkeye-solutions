@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tender Details — Hawkeye Solutions</title>
-<script src="https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee}
@@ -30,12 +29,9 @@
   .detail-header h1{font-size:34px;font-weight:800;color:var(--white);line-height:1.2;margin-bottom:8px}
   .detail-header .authority{font-size:17px;color:rgba(255,255,255,0.75);margin-top:8px}
   .content-grid{display:grid;grid-template-columns:1fr 340px;gap:32px;padding:40px 5%;align-items:start}
-  .main-col{}
-  .sidebar{}
   .section-block{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:22px}
   .section-block h2{font-size:18px;font-weight:700;color:var(--steel);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
   .section-block p{font-size:15px;color:var(--text-muted);line-height:1.8}
-  .detail-rows{}
   .detail-row{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--border)}
   .detail-row:last-child{border-bottom:none}
   .detail-label{font-size:13px;font-weight:600;color:var(--steel);width:160px;flex-shrink:0}
@@ -56,8 +52,6 @@
   .btn-secondary:hover{border-color:var(--teal-mid)}
   .doc-link{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;color:var(--teal-dark);background:var(--teal-light);margin-top:12px}
   .doc-link svg{width:18px;height:18px;stroke:var(--teal-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-
-  /* Enquiry modal */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:center;justify-content:center}
   .modal-overlay.open{display:flex}
   .modal{background:var(--white);border-radius:16px;width:90%;max-width:540px;padding:36px;position:relative;max-height:90vh;overflow-y:auto}
@@ -106,7 +100,6 @@
 
 <div id="page-content" class="loading">Loading tender details...</div>
 
-<!-- Enquiry Modal -->
 <div class="modal-overlay" id="enquiry-modal">
   <div class="modal">
     <button class="close-modal" onclick="closeModal()">&#x2715;</button>
@@ -162,25 +155,14 @@ async function loadTender() {
   const slug = decodeURIComponent(getParam('id') || '');
   if (!slug) { showError(); return; }
   try {
-    const r = await fetch('/_tenders/' + slug + '.md');
-    if (!r.ok) throw new Error('Not found');
-    const text = await r.text();
-    const match = text.match(/^---\n([\s\S]*?)\n---/);
-    if (!match) throw new Error('Bad format');
-    tenderData = jsyaml.load(match[1]);
-    // Get body content after frontmatter
-    const body = text.replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
-    if (body) tenderData.description = body;
+    const r = await fetch('/tenders-data.json?v=' + Date.now());
+    if (!r.ok) throw new Error('Failed to load');
+    const all = await r.json();
+    tenderData = all.find(t => t.slug === slug || encodeURIComponent(t.slug) === slug);
+    if (!tenderData) throw new Error('Not found');
     renderTender(tenderData);
   } catch(e) {
-    // Try tenders-data.json fallback
-    try {
-      const r = await fetch('/tenders-data.json');
-      const all = await r.json();
-      tenderData = all.find(t => t._slug === slug || encodeURIComponent(t._slug) === slug);
-      if (!tenderData) throw new Error('Not found');
-      renderTender(tenderData);
-    } catch(e2) { showError(); }
+    showError();
   }
 }
 
@@ -188,7 +170,6 @@ function renderTender(t) {
   document.title = (t.title || 'Tender') + ' — Hawkeye Solutions';
   document.getElementById('bc-title').textContent = t.title || '';
   const days = daysUntil(t.deadline);
-  const daysLabel = days <= 0 ? 'Deadline passed' : days + ' days remaining';
   document.getElementById('page-content').outerHTML = `
   <div class="detail-header">
     <div>
@@ -214,14 +195,12 @@ function renderTender(t) {
           ${row('Estimated Value', t.value)}
           ${row('Publish Date', formatDate(t.date))}
           ${row('Deadline', formatDate(t.deadline) + (days > 0 ? ' (' + days + ' days remaining)' : ' — Deadline passed'))}
-          ${row('Portal / Reference Link', t.portal_link ? '<a href="'+t.portal_link+'" target="_blank" style="color:var(--teal-mid)">View on portal</a>' : null)}
         </div>
       </div>
       <div class="section-block">
         <h2>Contracting Authority</h2>
         <div class="detail-rows">
           ${row('Authority', t.contracting_authority)}
-          ${row('Address', t.authority_address ? t.authority_address.replace(/\n/g,'<br>') : null)}
           ${row('Contact Name', t.contact_name)}
           ${row('Telephone', t.contact_telephone)}
           ${row('Email', t.contact_email ? '<a href="mailto:'+t.contact_email+'" style="color:var(--teal-mid)">'+t.contact_email+'</a>' : null)}
@@ -237,7 +216,6 @@ function renderTender(t) {
         ${t.value ? '<div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Estimated value: <strong style="color:var(--steel)">' + t.value + '</strong></div>' : ''}
         <button class="btn-enquire" onclick="openModal('${(t.title||'').replace(/'/g,"\\'")}')">Enquire About This Tender</button>
         <a href="tenders.html" class="btn-secondary">Back to All Tenders</a>
-        ${t.document ? '<a href="'+t.document+'" target="_blank" class="doc-link"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Download Tender Document</a>' : ''}
       </div>
       <div class="section-block">
         <h2 style="font-size:15px">Need help with this bid?</h2>
