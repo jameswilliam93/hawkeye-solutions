@@ -120,12 +120,25 @@
 var allTenders = [];
 var currentFilter = 'all';
 
+function sortTenders(list) {
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  var live = [], expired = [];
+  list.forEach(function(t) {
+    var d = t.deadline ? new Date(t.deadline) : null;
+    (d && d >= today ? live : expired).push(t);
+  });
+  live.sort(function(a,b){ return new Date(a.deadline) - new Date(b.deadline); });
+  expired.sort(function(a,b){ return new Date(b.deadline) - new Date(a.deadline); });
+  return live.concat(expired);
+}
+
 async function loadTenders() {
   try {
     const r = await fetch('/tenders-data.json?v=' + Date.now());
     if (!r.ok) throw new Error('Failed to load');
     const data = await r.json();
-    allTenders = data.filter(t => t.status === 'live').sort((a,b) => new Date(b.date||0) - new Date(a.date||0));
+    allTenders = sortTenders(data.filter(t => t.status === 'live'));
     renderTenders(allTenders);
   } catch(e) {
     console.error('Failed to load tenders:', e);
@@ -196,7 +209,7 @@ function filterTenders() {
     (t.description||'').toLowerCase().includes(q) ||
     (t.location||'').toLowerCase().includes(q)
   );
-  renderTenders(list);
+  renderTenders(sortTenders(list));
 }
 
 function setFilter(f, btn) {
