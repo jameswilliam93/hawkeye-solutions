@@ -13,24 +13,38 @@ if (!fs.existsSync(tendersDir)) {
 const files = fs.readdirSync(tendersDir).filter(f => f.endsWith('.md'));
 console.log(`Found ${files.length} tender files`);
 
-// Bug 1 fix: Strip time component from ISO date strings, keep only YYYY-MM-DD
-const stripDate = val => val ? val.trim().replace(/^['"]|['"]$/g, '').split('T')[0] : '';
+function normaliseDate(val) {
+  if (!val) return '';
+  val = val.trim().replace(/^['"]|['"]$/g, '');
+  // Strip time component if present
+  val = val.split('T')[0];
+  // Handle DD/MM/YYYY format
+  const dmyMatch = val.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (dmyMatch) {
+    return `${dmyMatch[3]}-${dmyMatch[2]}-${dmyMatch[1]}`;
+  }
+  return val;
+}
 
 const tenders = [];
 
 for (const file of files) {
   const content = fs.readFileSync(path.join(tendersDir, file), 'utf8').replace(/\r\n/g, '\n');
-
   const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
   if (!frontmatterMatch) continue;
 
   const fm = frontmatterMatch[1];
 
-  // Bug 2 fix: Capture multi-line values by matching everything up to the next
-  // key (line starting with a word character followed by a colon) or end of string.
   const get = key => {
-    const match = fm.match(new RegExp(`^${key}:\\s*([\\s\\S]*?)(?=\\n\\w[\\w-]*:|$)`, 'm'));
-    return match ? match[1].trim().replace(/^['"]|['"]$/g, '') : '';
+    const match = fm.match(new RegExp(`^${key}:\\s*([\\s\\S]*?)(?=\\n[\\w-]+:|$)`, 'm'));
+    if (!match) return '';
+    // Handle YAML block scalars - join continuation lines
+    return match[1]
+      .split('\n')
+      .map(line => line.replace(/^\s+/, ''))
+      .join(' ')
+      .trim()
+      .replace(/^['"]|['"]$/g, '');
   };
 
   tenders.push({
@@ -38,8 +52,8 @@ for (const file of files) {
     title: get('title'),
     reference: get('reference'),
     status: get('status'),
-    date: stripDate(get('date')),
-    deadline: stripDate(get('deadline')),
+    date: normaliseDate(get('date')),
+    deadline: normaliseDate(get('deadline')),
     value: get('value'),
     sector: get('sector'),
     location: get('location'),
