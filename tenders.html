@@ -32,6 +32,7 @@
   .tender-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:26px;position:relative;overflow:hidden;transition:box-shadow 0.2s,border-color 0.2s;cursor:pointer}
   .tender-card:hover{box-shadow:0 4px 20px rgba(26,107,124,0.12);border-color:var(--teal-mid)}
   .tender-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--teal-mid)}
+  /* urgent = deadline passed (red), soon = 25 days or fewer (orange) */
   .tender-card.urgent::before{background:#d94f3d}
   .tender-card.soon::before{background:#e8920a}
   .sector-tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px}
@@ -42,8 +43,11 @@
   .tender-authority{font-size:13px;color:var(--text-muted);margin-bottom:14px}
   .deadline-badge{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:7px;margin-bottom:12px}
   .deadline-badge svg{width:14px;height:14px;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;flex-shrink:0}
+  /* Green: more than 25 days remaining */
   .deadline-ok{background:#eaf7f1;color:#1a7a50}.deadline-ok svg{stroke:#1a7a50}
+  /* Orange: 25 days or fewer remaining, deadline not yet passed */
   .deadline-soon{background:#fef6e8;color:#b7670a}.deadline-soon svg{stroke:#b7670a}
+  /* Red: deadline has passed */
   .deadline-urgent{background:#fdf0ee;color:#c0392b}.deadline-urgent svg{stroke:#c0392b}
   .tender-value{font-size:12px;color:var(--text-muted);margin-bottom:14px}
   .tender-value span{font-weight:700;color:var(--steel)}
@@ -166,12 +170,14 @@ function sectorTagClass(s) {
   return s==='recruitment'?'tag-recruitment':s==='it'?'tag-it':'tag-other';
 }
 
+// Green: > 25 days | Orange: 1–25 days | Red: deadline passed (0 or negative)
 function deadlineClass(days) {
-  return days <= 14 ? 'deadline-urgent' : days <= 30 ? 'deadline-soon' : 'deadline-ok';
+  return days <= 0 ? 'deadline-urgent' : days <= 25 ? 'deadline-soon' : 'deadline-ok';
 }
 
+// Red left border: deadline passed | Orange: 25 days or fewer remaining
 function cardUrgency(days) {
-  return days <= 14 ? ' urgent' : days <= 30 ? ' soon' : '';
+  return days <= 0 ? ' urgent' : days <= 25 ? ' soon' : '';
 }
 
 function renderTenders(list) {
