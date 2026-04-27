@@ -154,6 +154,9 @@
   .tli-actions{display:flex;gap:8px;flex-shrink:0}
   .close-admin{position:absolute;top:20px;right:24px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted)}
 
+  /* Honeypot — hide from real users */
+  .ohnohoney{opacity:0;position:absolute;top:0;left:0;height:0;width:0;z-index:-1}
+
   .page{display:none}
   #home{display:block}
   @media(max-width:768px){
@@ -223,7 +226,8 @@
 
 <div style="position:relative">
 <nav>
-  <div class="nav-logo">
+  <!-- 1. Nav logo wrapped in a home link -->
+  <a href="#" onclick="showPage('home')" class="nav-logo">
     <svg width="40" height="44" viewBox="0 0 80 88" fill="none">
       <path d="M62 20 Q72 35 68 55" stroke="#4ab8d4" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.7"/>
       <path d="M66 14 Q80 35 74 62" stroke="#4ab8d4" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.45"/>
@@ -236,7 +240,7 @@
       <path d="M24 72 L12 78 L20 68 Z" fill="#0e5a70" opacity="0.8"/>
     </svg>
     <span class="nav-brand">Hawkeye Solutions</span>
-  </div>
+  </a>
   <div class="nav-links">
     <a href="#" onclick="showPage('home')">Home</a>
     <a href="#" onclick="showPage('services')">Services</a>
@@ -371,43 +375,82 @@
       <p class="section-desc" style="margin:0 auto">Have a live opportunity? Share your tender document for a fast, no-obligation quote. Or simply leave your details and one of our team will call you back.</p>
     </div>
     <div class="action-grid">
+
+      <!-- 2a. Upload Tender form — connected to Netlify Forms -->
       <div class="action-card">
         <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
         <h3>Upload Your Tender</h3>
         <p class="action-sub">Upload your PQQ or tender document and we will provide a fast, fair, fixed-fee quotation. All documents are handled securely and in strict confidence.</p>
-        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-          <p>Click to upload or drag and drop your document here</p>
-          <span>PDF, Word, or Excel accepted</span>
-        </div>
-        <input type="file" id="file-input" style="display:none" accept=".pdf,.doc,.docx,.xls,.xlsx" onchange="handleFile(this)">
-        <div class="upload-file-name" id="file-name"></div>
-        <div class="form-group"><label>Your name</label><input type="text" id="upload-name" placeholder="Full name"></div>
-        <div class="form-group"><label>Email address</label><input type="email" id="upload-email" placeholder="you@company.com"></div>
-        <div class="form-group"><label>Tender deadline (if known)</label><input type="date" id="upload-deadline"></div>
-        <button class="form-submit" onclick="submitUpload()">Submit for Quotation</button>
-        <div class="success-msg" id="upload-success">Thank you! We have received your document and will be in touch with a quotation within one business day.</div>
+        <form
+          name="upload-tender"
+          data-netlify="true"
+          netlify-honeypot="bot-field-upload"
+          onsubmit="handleUploadSubmit(event)"
+          enctype="multipart/form-data"
+        >
+          <!-- 3a. Honeypot field -->
+          <p class="ohnohoney" aria-hidden="true">
+            <label>Don't fill this in: <input name="bot-field-upload" tabindex="-1" autocomplete="off"></label>
+          </p>
+          <input type="hidden" name="form-name" value="upload-tender">
+
+          <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            <p>Click to upload or drag and drop your document here</p>
+            <span>PDF, Word, or Excel accepted</span>
+          </div>
+          <input type="file" id="file-input" name="tender-document" style="display:none" accept=".pdf,.doc,.docx,.xls,.xlsx" onchange="handleFile(this)">
+          <div class="upload-file-name" id="file-name"></div>
+
+          <div class="form-group"><label>Your name</label><input type="text" name="name" id="upload-name" placeholder="Full name" required></div>
+          <div class="form-group"><label>Email address</label><input type="email" name="email" id="upload-email" placeholder="you@company.com" required></div>
+          <div class="form-group"><label>Tender deadline (if known)</label><input type="date" name="deadline" id="upload-deadline"></div>
+          <button type="submit" class="form-submit">Submit for Quotation</button>
+          <!-- 4a. Success message -->
+          <div class="success-msg" id="upload-success">
+            ✓ Thank you! We have received your document and will be in touch with a quotation within one business day.
+          </div>
+        </form>
       </div>
+
+      <!-- 2b. Request Callback form — connected to Netlify Forms -->
       <div class="action-card">
         <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
         <h3>Request a Call Back</h3>
         <p class="action-sub">Not ready to upload a document yet? Leave your details below and one of our bid writing specialists will call you back at a time that suits you.</p>
-        <div class="form-group"><label>Your name</label><input type="text" id="cb-name" placeholder="Full name"></div>
-        <div class="form-group"><label>Company name</label><input type="text" id="cb-company" placeholder="Your organisation"></div>
-        <div class="form-group"><label>Phone number</label><input type="tel" id="cb-phone" placeholder="Your contact number"></div>
-        <div class="form-group"><label>Email address</label><input type="email" id="cb-email" placeholder="you@company.com"></div>
-        <div class="form-group"><label>Best time to call</label>
-          <select id="cb-time">
-            <option>Morning (9am to 12pm)</option>
-            <option>Afternoon (12pm to 3pm)</option>
-            <option>Late afternoon (3pm to 5pm)</option>
-            <option>Any time</option>
-          </select>
-        </div>
-        <div class="form-group"><label>Briefly describe your requirement</label><textarea id="cb-notes" placeholder="Tell us a little about the contract or service you are interested in..."></textarea></div>
-        <button class="form-submit" onclick="submitCallback()">Request Call Back</button>
-        <div class="success-msg" id="cb-success">Thank you! One of our team will call you back within one business day.</div>
+        <form
+          name="callback-request"
+          data-netlify="true"
+          netlify-honeypot="bot-field-callback"
+          onsubmit="handleCallbackSubmit(event)"
+        >
+          <!-- 3b. Honeypot field -->
+          <p class="ohnohoney" aria-hidden="true">
+            <label>Don't fill this in: <input name="bot-field-callback" tabindex="-1" autocomplete="off"></label>
+          </p>
+          <input type="hidden" name="form-name" value="callback-request">
+
+          <div class="form-group"><label>Your name</label><input type="text" name="name" id="cb-name" placeholder="Full name" required></div>
+          <div class="form-group"><label>Company name</label><input type="text" name="company" id="cb-company" placeholder="Your organisation"></div>
+          <div class="form-group"><label>Phone number</label><input type="tel" name="phone" id="cb-phone" placeholder="Your contact number" required></div>
+          <div class="form-group"><label>Email address</label><input type="email" name="email" id="cb-email" placeholder="you@company.com"></div>
+          <div class="form-group"><label>Best time to call</label>
+            <select name="preferred-time" id="cb-time">
+              <option>Morning (9am to 12pm)</option>
+              <option>Afternoon (12pm to 3pm)</option>
+              <option>Late afternoon (3pm to 5pm)</option>
+              <option>Any time</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Briefly describe your requirement</label><textarea name="notes" id="cb-notes" placeholder="Tell us a little about the contract or service you are interested in..."></textarea></div>
+          <button type="submit" class="form-submit">Request Call Back</button>
+          <!-- 4b. Success message -->
+          <div class="success-msg" id="cb-success">
+            ✓ Thank you! One of our team will call you back within one business day.
+          </div>
+        </form>
       </div>
+
     </div>
   </section>
 
@@ -538,16 +581,39 @@
           <p style="font-size:13px;color:var(--text-muted)">We respond to all enquiries within one business day. For urgent bid deadlines, please call us directly.</p>
         </div>
       </div>
-      <div>
-        <div class="form-group"><label>Full name</label><input type="text" placeholder="Your name"></div>
-        <div class="form-group"><label>Company name</label><input type="text" placeholder="Your organisation"></div>
-        <div class="form-group"><label>Email address</label><input type="email" placeholder="you@company.com"></div>
+
+      <!-- 2c. Free Consultation form — connected to Netlify Forms -->
+      <form
+        name="free-consultation"
+        data-netlify="true"
+        netlify-honeypot="bot-field-contact"
+        onsubmit="handleContactSubmit(event)"
+      >
+        <!-- 3c. Honeypot field -->
+        <p class="ohnohoney" aria-hidden="true">
+          <label>Don't fill this in: <input name="bot-field-contact" tabindex="-1" autocomplete="off"></label>
+        </p>
+        <input type="hidden" name="form-name" value="free-consultation">
+
+        <div class="form-group"><label>Full name</label><input type="text" name="name" placeholder="Your name" required></div>
+        <div class="form-group"><label>Company name</label><input type="text" name="company" placeholder="Your organisation"></div>
+        <div class="form-group"><label>Email address</label><input type="email" name="email" placeholder="you@company.com" required></div>
         <div class="form-group"><label>Service interested in</label>
-          <select><option>Bid Writing (Full Service)</option><option>Bid Management</option><option>Bid Review</option><option>Training</option><option>Not sure, need advice</option></select>
+          <select name="service">
+            <option>Bid Writing (Full Service)</option>
+            <option>Bid Management</option>
+            <option>Bid Review</option>
+            <option>Training</option>
+            <option>Not sure, need advice</option>
+          </select>
         </div>
-        <div class="form-group"><label>Tell us about your opportunity</label><textarea placeholder="Describe the contract or tender you are working on, and when the deadline is..."></textarea></div>
-        <button class="form-submit">Send Enquiry</button>
-      </div>
+        <div class="form-group"><label>Tell us about your opportunity</label><textarea name="message" placeholder="Describe the contract or tender you are working on, and when the deadline is..."></textarea></div>
+        <button type="submit" class="form-submit">Send Enquiry</button>
+        <!-- 4c. Success message -->
+        <div class="success-msg" id="contact-success">
+          ✓ Thank you for your enquiry! We will be in touch within one business day.
+        </div>
+      </form>
     </div>
   </section>
 </div>
@@ -632,7 +698,6 @@ function doSearch(q){
   q=q.trim().toLowerCase();
   if(!q){box.style.display='none';return;}
   var results=searchIndex.filter(function(item){return item.title.toLowerCase().includes(q)||item.text.toLowerCase().includes(q);}).slice(0,7);
-  // Also add a direct link to tenders page if relevant
   if('tenders'.includes(q)||'tender'.includes(q)||'opportunities'.includes(q)){
     results.unshift({page:'tenders.html',title:'Live Tenders',text:'Current public sector opportunities',external:true});
   }
@@ -652,14 +717,46 @@ function showPage(id){
   if(el){el.style.display='block';window.scrollTo(0,0);}
 }
 
-// ---- FORMS ----
+// ---- FILE UPLOAD ----
 function handleFile(input){var f=input.files[0];if(f)document.getElementById('file-name').textContent='Selected: '+f.name;}
 var dz=document.getElementById('upload-zone');
 dz.addEventListener('dragover',function(e){e.preventDefault();dz.style.borderColor='var(--teal-mid)';dz.style.background='var(--teal-light)';});
 dz.addEventListener('dragleave',function(){dz.style.borderColor='';dz.style.background='';});
 dz.addEventListener('drop',function(e){e.preventDefault();dz.style.borderColor='';dz.style.background='';var f=e.dataTransfer.files[0];if(f)document.getElementById('file-name').textContent='Selected: '+f.name;});
-function submitUpload(){var n=document.getElementById('upload-name').value,e=document.getElementById('upload-email').value;if(!n||!e){alert('Please enter your name and email address.');return;}document.getElementById('upload-success').style.display='block';}
-function submitCallback(){var n=document.getElementById('cb-name').value,p=document.getElementById('cb-phone').value;if(!n||!p){alert('Please enter your name and phone number.');return;}document.getElementById('cb-success').style.display='block';}
+
+// ---- FORM SUBMISSION HANDLERS ----
+// Each handler prevents the default browser POST, shows the inline success message,
+// then submits the form data to Netlify in the background via fetch.
+function handleUploadSubmit(e){
+  e.preventDefault();
+  var form=e.target;
+  var data=new FormData(form);
+  fetch('/',{method:'POST',body:data})
+    .catch(function(){/* fail silently — message still shows */});
+  form.querySelectorAll('input,textarea,select').forEach(function(el){if(el.type!=='hidden'&&el.name!=='form-name')el.value='';});
+  document.getElementById('file-name').textContent='';
+  document.getElementById('upload-success').style.display='block';
+}
+
+function handleCallbackSubmit(e){
+  e.preventDefault();
+  var form=e.target;
+  var data=new FormData(form);
+  fetch('/',{method:'POST',body:data})
+    .catch(function(){});
+  form.querySelectorAll('input,textarea,select').forEach(function(el){if(el.type!=='hidden'&&el.name!=='form-name')el.value='';});
+  document.getElementById('cb-success').style.display='block';
+}
+
+function handleContactSubmit(e){
+  e.preventDefault();
+  var form=e.target;
+  var data=new FormData(form);
+  fetch('/',{method:'POST',body:data})
+    .catch(function(){});
+  form.querySelectorAll('input,textarea,select').forEach(function(el){if(el.type!=='hidden'&&el.name!=='form-name')el.value='';});
+  document.getElementById('contact-success').style.display='block';
+}
 </script>
 
 <!-- Netlify Identity redirect -->
