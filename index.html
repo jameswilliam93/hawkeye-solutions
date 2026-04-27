@@ -171,6 +171,35 @@
 </head>
 <body>
 
+<!-- NETLIFY STATIC FORM DETECTION — hidden, do not remove -->
+<form name="upload-tender" data-netlify="true" netlify-honeypot="bot-field-upload" hidden>
+  <input type="hidden" name="form-name" value="upload-tender">
+  <input name="bot-field-upload">
+  <input type="text" name="name">
+  <input type="email" name="email">
+  <input type="date" name="deadline">
+  <input type="file" name="document">
+</form>
+<form name="callback-request" data-netlify="true" netlify-honeypot="bot-field-callback" hidden>
+  <input type="hidden" name="form-name" value="callback-request">
+  <input name="bot-field-callback">
+  <input type="text" name="name">
+  <input type="text" name="company">
+  <input type="tel" name="phone">
+  <input type="email" name="email">
+  <input type="text" name="best-time">
+  <input type="text" name="requirement">
+</form>
+<form name="free-consultation" data-netlify="true" netlify-honeypot="bot-field-contact" hidden>
+  <input type="hidden" name="form-name" value="free-consultation">
+  <input name="bot-field-contact">
+  <input type="text" name="name">
+  <input type="text" name="company">
+  <input type="email" name="email">
+  <input type="text" name="service">
+  <input type="text" name="message">
+</form>
+
 <!-- ADMIN OVERLAY -->
 <div class="admin-overlay" id="admin-overlay">
   <div class="admin-box" style="position:relative">
@@ -376,7 +405,7 @@
     </div>
     <div class="action-grid">
 
-      <!-- 2a. Upload Tender form — connected to Netlify Forms -->
+      <!-- Upload Tender form -->
       <div class="action-card">
         <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
         <h3>Upload Your Tender</h3>
@@ -388,7 +417,6 @@
           onsubmit="handleUploadSubmit(event)"
           enctype="multipart/form-data"
         >
-          <!-- 3a. Honeypot field -->
           <p class="ohnohoney" aria-hidden="true">
             <label>Don't fill this in: <input name="bot-field-upload" tabindex="-1" autocomplete="off"></label>
           </p>
@@ -406,14 +434,13 @@
           <div class="form-group"><label>Email address</label><input type="email" name="email" id="upload-email" placeholder="you@company.com" required></div>
           <div class="form-group"><label>Tender deadline (if known)</label><input type="date" name="deadline" id="upload-deadline"></div>
           <button type="submit" class="form-submit">Submit for Quotation</button>
-          <!-- 4a. Success message -->
           <div class="success-msg" id="upload-success">
             ✓ Thank you! We have received your document and will be in touch with a quotation within one business day.
           </div>
         </form>
       </div>
 
-      <!-- 2b. Request Callback form — connected to Netlify Forms -->
+      <!-- Request Callback form -->
       <div class="action-card">
         <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
         <h3>Request a Call Back</h3>
@@ -424,7 +451,6 @@
           netlify-honeypot="bot-field-callback"
           onsubmit="handleCallbackSubmit(event)"
         >
-          <!-- 3b. Honeypot field -->
           <p class="ohnohoney" aria-hidden="true">
             <label>Don't fill this in: <input name="bot-field-callback" tabindex="-1" autocomplete="off"></label>
           </p>
@@ -444,7 +470,6 @@
           </div>
           <div class="form-group"><label>Briefly describe your requirement</label><textarea name="notes" id="cb-notes" placeholder="Tell us a little about the contract or service you are interested in..."></textarea></div>
           <button type="submit" class="form-submit">Request Call Back</button>
-          <!-- 4b. Success message -->
           <div class="success-msg" id="cb-success">
             ✓ Thank you! One of our team will call you back within one business day.
           </div>
@@ -582,14 +607,13 @@
         </div>
       </div>
 
-      <!-- 2c. Free Consultation form — connected to Netlify Forms -->
+      <!-- Free Consultation form -->
       <form
         name="free-consultation"
         data-netlify="true"
         netlify-honeypot="bot-field-contact"
         onsubmit="handleContactSubmit(event)"
       >
-        <!-- 3c. Honeypot field -->
         <p class="ohnohoney" aria-hidden="true">
           <label>Don't fill this in: <input name="bot-field-contact" tabindex="-1" autocomplete="off"></label>
         </p>
@@ -609,7 +633,6 @@
         </div>
         <div class="form-group"><label>Tell us about your opportunity</label><textarea name="message" placeholder="Describe the contract or tender you are working on, and when the deadline is..."></textarea></div>
         <button type="submit" class="form-submit">Send Enquiry</button>
-        <!-- 4c. Success message -->
         <div class="success-msg" id="contact-success">
           ✓ Thank you for your enquiry! We will be in touch within one business day.
         </div>
@@ -725,14 +748,12 @@ dz.addEventListener('dragleave',function(){dz.style.borderColor='';dz.style.back
 dz.addEventListener('drop',function(e){e.preventDefault();dz.style.borderColor='';dz.style.background='';var f=e.dataTransfer.files[0];if(f)document.getElementById('file-name').textContent='Selected: '+f.name;});
 
 // ---- FORM SUBMISSION HANDLERS ----
-// Each handler prevents the default browser POST, shows the inline success message,
-// then submits the form data to Netlify in the background via fetch.
 function handleUploadSubmit(e){
   e.preventDefault();
   var form=e.target;
   var data=new FormData(form);
   fetch('/',{method:'POST',body:data})
-    .catch(function(){/* fail silently — message still shows */});
+    .catch(function(){});
   form.querySelectorAll('input,textarea,select').forEach(function(el){if(el.type!=='hidden'&&el.name!=='form-name')el.value='';});
   document.getElementById('file-name').textContent='';
   document.getElementById('upload-success').style.display='block';
