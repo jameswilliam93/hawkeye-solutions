@@ -1,7 +1,7 @@
 ---
 title: Executive and Senior Specialist Search
 reference: PFB1048 AP
-status: closed
+status: live
 date: 13/03/2026
 deadline: 13/04/2026T12:00
 value: £12m
