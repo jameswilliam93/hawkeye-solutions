@@ -15,15 +15,34 @@ console.log(`Found ${files.length} tender files`);
 
 function normaliseDate(val) {
   if (!val) return '';
-  val = val.trim().replace(/^['"]|['"]$/g, '');
-  // Strip time component if present
-  val = val.split('T')[0];
-  // Handle DD/MM/YYYY format
+  val = val.trim().replace(/^['"]|['"]$/g, '').split('T')[0];
   const dmyMatch = val.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-  if (dmyMatch) {
-    return `${dmyMatch[3]}-${dmyMatch[2]}-${dmyMatch[1]}`;
-  }
+  if (dmyMatch) return `${dmyMatch[3]}-${dmyMatch[2]}-${dmyMatch[1]}`;
   return val;
+}
+
+function parseFrontmatter(text) {
+  const result = {};
+  const lines = text.split('\n');
+  let currentKey = null;
+  let currentValue = [];
+
+  for (const line of lines) {
+    const keyMatch = line.match(/^([\w-]+):\s*(.*)/);
+    if (keyMatch) {
+      if (currentKey) {
+        result[currentKey] = currentValue.join(' ').trim().replace(/^['"]|['"]$/g, '');
+      }
+      currentKey = keyMatch[1];
+      currentValue = [keyMatch[2]];
+    } else if (currentKey && line.match(/^\s+\S/)) {
+      currentValue.push(line.trim());
+    }
+  }
+  if (currentKey) {
+    result[currentKey] = currentValue.join(' ').trim().replace(/^['"]|['"]$/g, '');
+  }
+  return result;
 }
 
 const tenders = [];
@@ -33,32 +52,20 @@ for (const file of files) {
   const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
   if (!frontmatterMatch) continue;
 
-  const fm = frontmatterMatch[1];
-
-  const get = key => {
-    const match = fm.match(new RegExp(`^${key}:\\s*([\\s\\S]*?)(?=\\n[\\w-]+:|$)`, 'm'));
-    if (!match) return '';
-    // Handle YAML block scalars - join continuation lines
-    return match[1]
-      .split('\n')
-      .map(line => line.replace(/^\s+/, ''))
-      .join(' ')
-      .trim()
-      .replace(/^['"]|['"]$/g, '');
-  };
+  const data = parseFrontmatter(frontmatterMatch[1]);
 
   tenders.push({
     slug: file.replace('.md', ''),
-    title: get('title'),
-    reference: get('reference'),
-    status: get('status'),
-    date: normaliseDate(get('date')),
-    deadline: normaliseDate(get('deadline')),
-    value: get('value'),
-    sector: get('sector'),
-    location: get('location'),
-    contracting_authority: get('contracting_authority'),
-    description: get('description'),
+    title: data.title || '',
+    reference: data.reference || '',
+    status: data.status || 'live',
+    date: normaliseDate(data.date || ''),
+    deadline: normaliseDate(data.deadline || ''),
+    value: data.value || '',
+    sector: data.sector || '',
+    location: data.location || '',
+    contracting_authority: data.contracting_authority || '',
+    description: data.description || '',
   });
 }
 
