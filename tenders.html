@@ -16,6 +16,23 @@
   .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500}
   .nav-links a:hover{color:var(--white)}
   .nav-cta{background:var(--teal-mid)!important;color:var(--white)!important;padding:8px 18px;border-radius:6px;font-weight:600!important}
+  /* Hamburger */
+  .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;cursor:pointer;padding:4px;background:none;border:none}
+  .hamburger span{display:block;height:2px;background:var(--white);border-radius:2px;transition:transform 0.3s,opacity 0.3s,width 0.3s}
+  .hamburger span:nth-child(1){width:22px}
+  .hamburger span:nth-child(2){width:16px}
+  .hamburger span:nth-child(3){width:22px}
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);width:22px}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);width:22px}
+  /* Mobile menu */
+  .mobile-menu{display:none;flex-direction:column;background:var(--steel);padding:0 5%;position:sticky;top:68px;z-index:99;border-top:1px solid rgba(255,255,255,0.08)}
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.07)}
+  .mobile-menu a:last-child{border-bottom:none}
+  .mobile-menu a:hover{color:var(--white)}
+  .mob-cta{background:var(--teal-mid);color:var(--white)!important;padding:10px 18px!important;border-radius:6px;font-weight:700!important;margin:14px 0;text-align:center;border-bottom:none!important}
+  .mob-admin{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6)!important;padding:10px 18px!important;border-radius:6px;font-size:13px!important;text-align:center;border-bottom:none!important;margin-bottom:6px}
   .page-header{background:linear-gradient(135deg,var(--steel),var(--teal-dark));padding:60px 5% 50px}
   .page-header .label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7dd4e8;margin-bottom:10px}
   .page-header h1{font-size:40px;font-weight:800;color:var(--white);margin-bottom:12px}
@@ -32,7 +49,6 @@
   .tender-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:26px;position:relative;overflow:hidden;transition:box-shadow 0.2s,border-color 0.2s;cursor:pointer}
   .tender-card:hover{box-shadow:0 4px 20px rgba(26,107,124,0.12);border-color:var(--teal-mid)}
   .tender-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--teal-mid)}
-  /* urgent = deadline passed (red), soon = 25 days or fewer (orange) */
   .tender-card.urgent::before{background:#d94f3d}
   .tender-card.soon::before{background:#e8920a}
   .sector-tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px}
@@ -43,11 +59,8 @@
   .tender-authority{font-size:13px;color:var(--text-muted);margin-bottom:14px}
   .deadline-badge{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:7px;margin-bottom:12px}
   .deadline-badge svg{width:14px;height:14px;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;flex-shrink:0}
-  /* Green: more than 25 days remaining */
   .deadline-ok{background:#eaf7f1;color:#1a7a50}.deadline-ok svg{stroke:#1a7a50}
-  /* Orange: 25 days or fewer remaining, deadline not yet passed */
   .deadline-soon{background:#fef6e8;color:#b7670a}.deadline-soon svg{stroke:#b7670a}
-  /* Red: deadline has passed */
   .deadline-urgent{background:#fdf0ee;color:#c0392b}.deadline-urgent svg{stroke:#c0392b}
   .tender-value{font-size:12px;color:var(--text-muted);margin-bottom:14px}
   .tender-value span{font-weight:700;color:var(--steel)}
@@ -59,7 +72,11 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px}
   footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
-  @media(max-width:768px){.tender-grid{grid-template-columns:1fr}.nav-links{display:none}}
+  @media(max-width:768px){
+    .tender-grid{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .hamburger{display:flex}
+  }
 </style>
 </head>
 <body>
@@ -77,7 +94,21 @@
     <a href="index.html#about">About Us</a>
     <a href="index.html#contact" class="nav-cta">Free Consultation</a>
   </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="index.html#services">Services</a>
+  <a href="index.html#sectors">Sectors</a>
+  <a href="tenders.html">Tenders</a>
+  <a href="index.html#about">About Us</a>
+  <a href="index.html#contact" class="mob-cta">Free Consultation</a>
+</div>
 
 <div class="page-header">
   <div class="label">Live Opportunities</div>
@@ -115,6 +146,21 @@
 </footer>
 
 <script>
+function toggleMobileMenu() {
+  var menu = document.getElementById('mobile-menu');
+  var burger = document.getElementById('hamburger');
+  var isOpen = menu.classList.contains('open');
+  menu.classList.toggle('open');
+  burger.classList.toggle('open');
+  burger.setAttribute('aria-expanded', String(!isOpen));
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('hamburger').setAttribute('aria-expanded', 'false');
+}
+
 var allTenders = [];
 var currentFilter = 'all';
 
@@ -164,12 +210,10 @@ function sectorTagClass(s) {
   return s==='recruitment'?'tag-recruitment':s==='it'?'tag-it':'tag-other';
 }
 
-// Green: > 25 days | Orange: 1–25 days | Red: deadline passed (0 or negative)
 function deadlineClass(days) {
   return days <= 0 ? 'deadline-urgent' : days <= 25 ? 'deadline-soon' : 'deadline-ok';
 }
 
-// Red left border: deadline passed | Orange: 25 days or fewer remaining
 function cardUrgency(days) {
   return days <= 0 ? ' urgent' : days <= 25 ? ' soon' : '';
 }
