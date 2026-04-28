@@ -16,6 +16,16 @@
   .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500}
   .nav-links a:hover{color:var(--white)}
   .nav-cta{background:var(--teal-mid)!important;color:var(--white)!important;padding:8px 18px;border-radius:6px;font-weight:600!important}
+  .hamburger{display:none;flex-direction:column;justify-content:space-between;width:28px;height:20px;background:none;border:none;cursor:pointer;padding:0;margin-left:16px}
+  .hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:all 0.3s}
+  .hamburger.open span:nth-child(1){transform:translateY(9px) rotate(45deg)}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:translateY(-9px) rotate(-45deg)}
+  .mobile-menu{display:none;flex-direction:column;background:var(--steel);padding:12px 5%;border-top:1px solid rgba(255,255,255,0.1)}
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
+  .mobile-menu a:last-child{border-bottom:none}
+  .mobile-menu .mob-cta{color:var(--white);font-weight:700}
   .breadcrumb{padding:16px 5%;font-size:13px;color:var(--text-muted);background:var(--off-white);border-bottom:1px solid var(--border)}
   .breadcrumb a{color:var(--teal-mid)}
   .detail-header{background:linear-gradient(135deg,var(--steel),var(--teal-dark));padding:48px 5% 40px}
@@ -69,7 +79,7 @@
   .loading{text-align:center;padding:80px 20px;color:var(--text-muted)}
   footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px}
   footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
-  @media(max-width:768px){.content-grid{grid-template-columns:1fr}.nav-links{display:none}}
+  @media(max-width:768px){.content-grid{grid-template-columns:1fr}.nav-links{display:none}.hamburger{display:flex}}
 </style>
 </head>
 <body>
@@ -86,7 +96,19 @@
     <a href="index.html#about">About Us</a>
     <a href="index.html#contact" class="nav-cta">Free Consultation</a>
   </div>
+  <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href='index.html'>Home</a>
+  <a href='index.html#services'>Services</a>
+  <a href='index.html#sectors'>Sectors</a>
+  <a href='tenders.html'>Tenders</a>
+  <a href='index.html#about'>About Us</a>
+  <a href='index.html#contact' class='mob-cta'>Free Consultation</a>
+</div>
 
 <div class="breadcrumb">
   <a href="tenders.html">Tenders</a> &rsaquo; <span id="bc-title">Loading...</span>
@@ -252,6 +274,19 @@ function handleSubmit(e) {
       document.getElementById('modal-success').style.display = 'block';
       form.style.display = 'none';
     });
+}
+
+function toggleMobileMenu(){
+  var menu=document.getElementById('mobile-menu');
+  var btn=document.getElementById('hamburger-btn');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+  btn.setAttribute('aria-expanded', menu.classList.contains('open'));
+}
+
+function closeMobileMenu(){
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger-btn').classList.remove('open');
 }
 
 loadTender();
