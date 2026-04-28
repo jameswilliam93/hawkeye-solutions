@@ -20,6 +20,24 @@
   .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;transition:color 0.2s}
   .nav-links a:hover{color:var(--white)}
   .nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important}
+
+  /* Hamburger button */
+  .hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
+  .hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:transform 0.25s,opacity 0.25s}
+  .hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+
+  /* Mobile dropdown */
+  .mobile-menu{display:none;position:absolute;top:68px;left:0;right:0;background:var(--steel);z-index:99;flex-direction:column;border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:14px 5%;border-bottom:1px solid rgba(255,255,255,0.07);transition:background 0.15s,color 0.15s}
+  .mobile-menu a:last-child{border-bottom:none}
+  .mobile-menu a:hover{background:rgba(255,255,255,0.07);color:var(--white)}
+  .mobile-menu .mob-cta{background:var(--teal-mid);color:var(--white);margin:12px 5%;border-radius:6px;text-align:center;border-bottom:none!important;padding:12px 5%}
+  .mobile-menu .mob-cta:hover{background:var(--teal)}
+  .mobile-menu .mob-admin{color:rgba(255,255,255,0.4)!important;font-size:13px!important}
+
   .search-bar{background:var(--teal-dark);padding:10px 5%;display:flex;align-items:center;gap:12px}
   .search-bar input{flex:1;border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:9px 14px;font-size:14px;color:var(--white);background:rgba(255,255,255,0.1);font-family:inherit}
   .search-bar input::placeholder{color:rgba(255,255,255,0.5)}
@@ -154,17 +172,20 @@
   .tli-actions{display:flex;gap:8px;flex-shrink:0}
   .close-admin{position:absolute;top:20px;right:24px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted)}
 
-  /* Honeypot — hide from real users */
+  /* Honeypot */
   .ohnohoney{opacity:0;position:absolute;top:0;left:0;height:0;width:0;z-index:-1}
 
   .page{display:none}
   #home{display:block}
+
   @media(max-width:768px){
     .hero{flex-direction:column;text-align:center;padding:60px 5%}
     .hero h1{font-size:34px}
     .stats-grid,.services-grid,.sectors-grid,.why-grid,.testi-grid,.process-steps,.contact-grid,.footer-grid,.action-grid,.admin-form-grid{grid-template-columns:1fr}
     .process-steps::before{display:none}
+    /* Hide desktop nav links, show hamburger */
     nav .nav-links{display:none}
+    .hamburger{display:flex}
     .hero-btns{justify-content:center}
   }
 </style>
@@ -204,8 +225,6 @@
 <div class="admin-overlay" id="admin-overlay">
   <div class="admin-box" style="position:relative">
     <button class="close-admin" onclick="closeAdmin()">&#x2715;</button>
-
-    <!-- Login screen -->
     <div id="admin-login-screen" class="admin-login">
       <h3>Admin Login</h3>
       <p>Enter your password to manage tenders</p>
@@ -213,12 +232,9 @@
       <div style="margin-top:4px"><button class="admin-btn" style="width:100%" onclick="adminLogin()">Log In</button></div>
       <p class="admin-error" id="admin-error">Incorrect password. Please try again.</p>
     </div>
-
-    <!-- Management screen -->
     <div id="admin-manage-screen" style="display:none">
       <h2>Tender Management</h2>
       <p class="admin-sub">Add, edit, or remove tenders. Changes are saved to this browser and will appear on the Tenders page immediately.</p>
-
       <div class="admin-tender-form">
         <h3 id="admin-form-title">Add New Tender</h3>
         <div class="admin-form-grid">
@@ -242,7 +258,6 @@
         </div>
         <input type="hidden" id="f-edit-id" value="">
       </div>
-
       <h3 style="font-size:16px;font-weight:700;color:var(--steel);margin-bottom:14px">Current Tenders (<span id="tender-count-admin">0</span>)</h3>
       <div id="admin-tender-list"></div>
       <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
@@ -255,7 +270,6 @@
 
 <div style="position:relative">
 <nav>
-  <!-- 1. Nav logo wrapped in a home link -->
   <a href="#" onclick="showPage('home')" class="nav-logo">
     <img src="/logo.png" alt="Hawkeye Solutions" height="44" style="display:block">
     <span class="nav-brand">Hawkeye Solutions</span>
@@ -269,7 +283,25 @@
     <a href="#" onclick="openAdmin()" style="color:rgba(255,255,255,0.4);font-size:12px">Admin</a>
     <a href="#" onclick="showPage('contact')" class="nav-cta">Free Consultation</a>
   </div>
+  <!-- Hamburger button (mobile only) -->
+  <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
+
+<!-- Mobile dropdown menu -->
+<div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+  <a href="#" onclick="mobileNav('home')">Home</a>
+  <a href="#" onclick="mobileNav('services')">Services</a>
+  <a href="#" onclick="mobileNav('sectors')">Sectors</a>
+  <a href="tenders.html" onclick="closeMobileMenu()">Tenders</a>
+  <a href="#" onclick="mobileNav('about')">About Us</a>
+  <a href="#" class="mob-admin" onclick="mobileAdmin()">Admin</a>
+  <a href="#" class="mob-cta" onclick="mobileNav('contact')">Free Consultation</a>
+</div>
+
 <div class="search-bar">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
   <input type="text" id="site-search" placeholder="Search services, sectors, tenders..." autocomplete="off" oninput="doSearch(this.value)" onfocus="doSearch(this.value)" onblur="setTimeout(()=>closeSearch(),200)">
@@ -384,24 +416,13 @@
       <p class="section-desc" style="margin:0 auto">Have a live opportunity? Share your tender document for a fast, no-obligation quote. Or simply leave your details and one of our team will call you back.</p>
     </div>
     <div class="action-grid">
-
-      <!-- Upload Tender form -->
       <div class="action-card">
         <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
         <h3>Upload Your Tender</h3>
         <p class="action-sub">Upload your PQQ or tender document and we will provide a fast, fair, fixed-fee quotation. All documents are handled securely and in strict confidence.</p>
-        <form
-          name="upload-tender"
-          data-netlify="true"
-          netlify-honeypot="bot-field-upload"
-          onsubmit="handleUploadSubmit(event)"
-          enctype="multipart/form-data"
-        >
-          <p class="ohnohoney" aria-hidden="true">
-            <label>Don't fill this in: <input name="bot-field-upload" tabindex="-1" autocomplete="off"></label>
-          </p>
+        <form name="upload-tender" data-netlify="true" netlify-honeypot="bot-field-upload" onsubmit="handleUploadSubmit(event)" enctype="multipart/form-data">
+          <p class="ohnohoney" aria-hidden="true"><label>Don't fill this in: <input name="bot-field-upload" tabindex="-1" autocomplete="off"></label></p>
           <input type="hidden" name="form-name" value="upload-tender">
-
           <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
             <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
             <p>Click to upload or drag and drop your document here</p>
@@ -409,33 +430,20 @@
           </div>
           <input type="file" id="file-input" name="tender-document" style="display:none" accept=".pdf,.doc,.docx,.xls,.xlsx" onchange="handleFile(this)">
           <div class="upload-file-name" id="file-name"></div>
-
           <div class="form-group"><label>Your name</label><input type="text" name="name" id="upload-name" placeholder="Full name" required></div>
           <div class="form-group"><label>Email address</label><input type="email" name="email" id="upload-email" placeholder="you@company.com" required></div>
           <div class="form-group"><label>Tender deadline (if known)</label><input type="date" name="deadline" id="upload-deadline"></div>
           <button type="submit" class="form-submit">Submit for Quotation</button>
-          <div class="success-msg" id="upload-success">
-            ✓ Thank you! We have received your document and will be in touch with a quotation within one business day.
-          </div>
+          <div class="success-msg" id="upload-success">✓ Thank you! We have received your document and will be in touch with a quotation within one business day.</div>
         </form>
       </div>
-
-      <!-- Request Callback form -->
       <div class="action-card">
         <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
         <h3>Request a Call Back</h3>
         <p class="action-sub">Not ready to upload a document yet? Leave your details below and one of our bid writing specialists will call you back at a time that suits you.</p>
-        <form
-          name="callback-request"
-          data-netlify="true"
-          netlify-honeypot="bot-field-callback"
-          onsubmit="handleCallbackSubmit(event)"
-        >
-          <p class="ohnohoney" aria-hidden="true">
-            <label>Don't fill this in: <input name="bot-field-callback" tabindex="-1" autocomplete="off"></label>
-          </p>
+        <form name="callback-request" data-netlify="true" netlify-honeypot="bot-field-callback" onsubmit="handleCallbackSubmit(event)">
+          <p class="ohnohoney" aria-hidden="true"><label>Don't fill this in: <input name="bot-field-callback" tabindex="-1" autocomplete="off"></label></p>
           <input type="hidden" name="form-name" value="callback-request">
-
           <div class="form-group"><label>Your name</label><input type="text" name="name" id="cb-name" placeholder="Full name" required></div>
           <div class="form-group"><label>Company name</label><input type="text" name="company" id="cb-company" placeholder="Your organisation"></div>
           <div class="form-group"><label>Phone number</label><input type="tel" name="phone" id="cb-phone" placeholder="Your contact number" required></div>
@@ -450,12 +458,9 @@
           </div>
           <div class="form-group"><label>Briefly describe your requirement</label><textarea name="notes" id="cb-notes" placeholder="Tell us a little about the contract or service you are interested in..."></textarea></div>
           <button type="submit" class="form-submit">Request Call Back</button>
-          <div class="success-msg" id="cb-success">
-            ✓ Thank you! One of our team will call you back within one business day.
-          </div>
+          <div class="success-msg" id="cb-success">✓ Thank you! One of our team will call you back within one business day.</div>
         </form>
       </div>
-
     </div>
   </section>
 
@@ -586,19 +591,9 @@
           <p style="font-size:13px;color:var(--text-muted)">We respond to all enquiries within one business day. For urgent bid deadlines, please call us directly.</p>
         </div>
       </div>
-
-      <!-- Free Consultation form -->
-      <form
-        name="free-consultation"
-        data-netlify="true"
-        netlify-honeypot="bot-field-contact"
-        onsubmit="handleContactSubmit(event)"
-      >
-        <p class="ohnohoney" aria-hidden="true">
-          <label>Don't fill this in: <input name="bot-field-contact" tabindex="-1" autocomplete="off"></label>
-        </p>
+      <form name="free-consultation" data-netlify="true" netlify-honeypot="bot-field-contact" onsubmit="handleContactSubmit(event)">
+        <p class="ohnohoney" aria-hidden="true"><label>Don't fill this in: <input name="bot-field-contact" tabindex="-1" autocomplete="off"></label></p>
         <input type="hidden" name="form-name" value="free-consultation">
-
         <div class="form-group"><label>Full name</label><input type="text" name="name" placeholder="Your name" required></div>
         <div class="form-group"><label>Company name</label><input type="text" name="company" placeholder="Your organisation"></div>
         <div class="form-group"><label>Email address</label><input type="email" name="email" placeholder="you@company.com" required></div>
@@ -613,9 +608,7 @@
         </div>
         <div class="form-group"><label>Tell us about your opportunity</label><textarea name="message" placeholder="Describe the contract or tender you are working on, and when the deadline is..."></textarea></div>
         <button type="submit" class="form-submit">Send Enquiry</button>
-        <div class="success-msg" id="contact-success">
-          ✓ Thank you for your enquiry! We will be in touch within one business day.
-        </div>
+        <div class="success-msg" id="contact-success">✓ Thank you for your enquiry! We will be in touch within one business day.</div>
       </form>
     </div>
   </section>
@@ -633,10 +626,38 @@
 
 <script>
 var ADMIN_PASSWORD='hawkeye2025';
-
-// ---- ADMIN ----
 var adminLoggedIn=false;
 
+// ---- MOBILE MENU ----
+function toggleMobileMenu(){
+  var btn=document.getElementById('hamburger-btn');
+  var menu=document.getElementById('mobile-menu');
+  var isOpen=menu.classList.contains('open');
+  if(isOpen){
+    menu.classList.remove('open');
+    btn.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+  } else {
+    menu.classList.add('open');
+    btn.classList.add('open');
+    btn.setAttribute('aria-expanded','true');
+  }
+}
+function closeMobileMenu(){
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger-btn').classList.remove('open');
+  document.getElementById('hamburger-btn').setAttribute('aria-expanded','false');
+}
+function mobileNav(page){
+  closeMobileMenu();
+  showPage(page);
+}
+function mobileAdmin(){
+  closeMobileMenu();
+  openAdmin();
+}
+
+// ---- ADMIN ----
 function openAdmin(){
   document.getElementById('admin-overlay').classList.add('open');
   if(adminLoggedIn)showManageScreen();
@@ -661,20 +682,14 @@ function adminLogin(){
   if(pw===ADMIN_PASSWORD){adminLoggedIn=true;showManageScreen();}
   else{document.getElementById('admin-error').style.display='block';}
 }
-
 function renderAdminList(){
   document.getElementById('tender-count-admin').textContent=0;
   var list=document.getElementById('admin-tender-list');
   list.innerHTML='<p style="font-size:14px;color:var(--text-muted);padding:12px 0">Tenders are now managed via the <a href="/admin/" style="color:var(--teal-mid);font-weight:600">Decap CMS admin portal</a>.</p>';
 }
-
-function saveTender(){
-  alert('Tenders are now managed via the Decap CMS admin portal at /admin/');
-}
-
+function saveTender(){alert('Tenders are now managed via the Decap CMS admin portal at /admin/');}
 function editTender(){}
 function deleteTender(){}
-
 function clearForm(){
   ['f-title','f-authority','f-value','f-ref','f-desc'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('f-sector').value='recruitment';
@@ -695,7 +710,6 @@ var searchIndex=[
   {page:'about',title:'About Us',text:'about hawkeye solutions story values precision partnership transparency results consultancy'},
   {page:'contact',title:'Free Consultation',text:'contact free consultation enquiry callback phone email get in touch'},
 ];
-
 function doSearch(q){
   var box=document.getElementById('search-results');
   q=q.trim().toLowerCase();
@@ -727,34 +741,26 @@ dz.addEventListener('dragover',function(e){e.preventDefault();dz.style.borderCol
 dz.addEventListener('dragleave',function(){dz.style.borderColor='';dz.style.background='';});
 dz.addEventListener('drop',function(e){e.preventDefault();dz.style.borderColor='';dz.style.background='';var f=e.dataTransfer.files[0];if(f)document.getElementById('file-name').textContent='Selected: '+f.name;});
 
-// ---- FORM SUBMISSION HANDLERS ----
+// ---- FORM HANDLERS ----
 function handleUploadSubmit(e){
   e.preventDefault();
   var form=e.target;
-  var data=new FormData(form);
-  fetch('/',{method:'POST',body:data})
-    .catch(function(){});
+  fetch('/',{method:'POST',body:new FormData(form)}).catch(function(){});
   form.querySelectorAll('input,textarea,select').forEach(function(el){if(el.type!=='hidden'&&el.name!=='form-name')el.value='';});
   document.getElementById('file-name').textContent='';
   document.getElementById('upload-success').style.display='block';
 }
-
 function handleCallbackSubmit(e){
   e.preventDefault();
   var form=e.target;
-  var data=new FormData(form);
-  fetch('/',{method:'POST',body:data})
-    .catch(function(){});
+  fetch('/',{method:'POST',body:new FormData(form)}).catch(function(){});
   form.querySelectorAll('input,textarea,select').forEach(function(el){if(el.type!=='hidden'&&el.name!=='form-name')el.value='';});
   document.getElementById('cb-success').style.display='block';
 }
-
 function handleContactSubmit(e){
   e.preventDefault();
   var form=e.target;
-  var data=new FormData(form);
-  fetch('/',{method:'POST',body:data})
-    .catch(function(){});
+  fetch('/',{method:'POST',body:new FormData(form)}).catch(function(){});
   form.querySelectorAll('input,textarea,select').forEach(function(el){if(el.type!=='hidden'&&el.name!=='form-name')el.value='';});
   document.getElementById('contact-success').style.display='block';
 }
