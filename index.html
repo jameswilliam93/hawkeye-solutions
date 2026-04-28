@@ -21,14 +21,12 @@
   .nav-links a:hover{color:var(--white)}
   .nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important}
 
-  /* Hamburger button */
   .hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
   .hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:transform 0.25s,opacity 0.25s}
   .hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
   .hamburger.open span:nth-child(2){opacity:0}
   .hamburger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
 
-  /* Mobile dropdown */
   .mobile-menu{display:none;position:absolute;top:68px;left:0;right:0;background:var(--steel);z-index:99;flex-direction:column;border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
   .mobile-menu.open{display:flex}
   .mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:14px 5%;border-bottom:1px solid rgba(255,255,255,0.07);transition:background 0.15s,color 0.15s}
@@ -175,6 +173,40 @@
   /* Honeypot */
   .ohnohoney{opacity:0;position:absolute;top:0;left:0;height:0;width:0;z-index:-1}
 
+  /* ---- ABOUT PAGE: TEAM CARDS ---- */
+  .team-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+  .team-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:36px 32px;text-align:center;box-shadow:0 2px 12px rgba(26,107,124,0.06);transition:box-shadow 0.2s,border-color 0.2s}
+  .team-card:hover{box-shadow:0 6px 28px rgba(26,107,124,0.13);border-color:var(--teal-mid)}
+  .team-photo{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid var(--teal-light);margin:0 auto 20px;display:block;background:var(--teal-light)}
+  .team-name{font-size:22px;font-weight:800;color:var(--steel);margin-bottom:4px}
+  .team-title{font-size:13px;font-weight:700;color:var(--teal-mid);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:16px}
+  .team-bio{font-size:14px;color:var(--text-muted);line-height:1.8;text-align:left}
+
+  /* ---- ABOUT PAGE: TIMELINE ---- */
+  .timeline-section{background:var(--off-white);padding:70px 5%}
+  .timeline{position:relative;max-width:860px;margin:0 auto}
+  .timeline::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;background:var(--teal-mid);transform:translateX(-50%);border-radius:2px}
+  .tl-entry{display:flex;align-items:flex-start;gap:0;margin-bottom:36px;position:relative}
+  .tl-entry.left{flex-direction:row}
+  .tl-entry.right{flex-direction:row-reverse}
+  .tl-content{width:calc(50% - 44px);background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px;position:relative}
+  .tl-entry.left .tl-content{margin-right:auto;text-align:right}
+  .tl-entry.right .tl-content{margin-left:auto;text-align:left}
+  .tl-year-wrap{width:88px;flex-shrink:0;display:flex;justify-content:center;align-items:flex-start;padding-top:14px;position:relative;z-index:1}
+  .tl-year{width:62px;height:62px;background:var(--teal-dark);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;text-align:center;line-height:1.2;border:3px solid var(--white);box-shadow:0 0 0 3px var(--teal-mid)}
+  .tl-milestone{font-size:14px;color:var(--text-muted);line-height:1.7}
+  .tl-milestone strong{display:block;font-size:15px;color:var(--steel);font-weight:700;margin-bottom:4px}
+
+  /* ---- ABOUT PAGE: VALUES ---- */
+  .about-values{background:var(--steel);padding:70px 5%}
+  .about-values .section-title{color:var(--white)}
+  .about-values .section-desc{color:rgba(255,255,255,0.7)}
+  .values-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:800px}
+  .value-item{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:24px}
+  .value-dot{width:10px;height:10px;background:var(--teal-mid);border-radius:50%;margin-top:6px;flex-shrink:0}
+  .value-item strong{font-size:15px;color:var(--white);display:block;margin-bottom:5px}
+  .value-item p{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7}
+
   .page{display:none}
   #home{display:block}
 
@@ -183,10 +215,17 @@
     .hero h1{font-size:34px}
     .stats-grid,.services-grid,.sectors-grid,.why-grid,.testi-grid,.process-steps,.contact-grid,.footer-grid,.action-grid,.admin-form-grid{grid-template-columns:1fr}
     .process-steps::before{display:none}
-    /* Hide desktop nav links, show hamburger */
     nav .nav-links{display:none}
     .hamburger{display:flex}
     .hero-btns{justify-content:center}
+    /* About page responsive */
+    .team-grid{grid-template-columns:1fr}
+    .timeline::before{left:30px}
+    .tl-entry.left,.tl-entry.right{flex-direction:row}
+    .tl-year-wrap{width:60px;padding-top:10px}
+    .tl-year{width:52px;height:52px;font-size:11px}
+    .tl-content{width:auto;flex:1;margin-left:0!important;margin-right:0!important;text-align:left!important}
+    .values-grid{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -283,7 +322,6 @@
     <a href="#" onclick="openAdmin()" style="color:rgba(255,255,255,0.4);font-size:12px">Admin</a>
     <a href="#" onclick="showPage('contact')" class="nav-cta">Free Consultation</a>
   </div>
-  <!-- Hamburger button (mobile only) -->
   <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileMenu()">
     <span></span>
     <span></span>
@@ -543,32 +581,156 @@
 
 <!-- ABOUT PAGE -->
 <div id="about" class="page">
-  <div style="background:var(--steel);padding:60px 5% 50px">
+
+  <!-- 1. Hero Banner -->
+  <div style="background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 60%,var(--teal) 100%);padding:60px 5% 50px">
     <div class="section-label" style="color:#7dd4e8">About Us</div>
-    <h1 style="font-size:40px;font-weight:800;color:var(--white);margin-bottom:12px">Who We Are</h1>
-    <p style="font-size:17px;color:rgba(255,255,255,0.7);max-width:560px">A specialist bid writing consultancy built around one goal: helping recruitment and IT businesses win public sector contracts.</p>
+    <h1 style="font-size:40px;font-weight:800;color:var(--white);margin-bottom:12px">Meet the Team Behind Hawkeye</h1>
+    <p style="font-size:17px;color:rgba(255,255,255,0.7);max-width:620px">Over three decades of combined expertise in public sector bid writing, recruitment frameworks and IT consultancy.</p>
   </div>
-  <section>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start">
-      <div>
-        <h2 style="font-size:28px;font-weight:800;color:var(--steel);margin-bottom:16px">Our story</h2>
-        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px">Hawkeye Solutions was founded with a clear purpose: to give recruitment and IT consultancy businesses the same quality of bid support that large corporations enjoy, with a personal, partnership-driven approach.</p>
-        <p style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:16px">We saw too many capable businesses losing public sector contracts not because of poor service delivery, but because of poor bid writing. That is a problem we knew we could fix.</p>
-        <p style="font-size:15px;color:var(--text-muted);line-height:1.8">Today, Hawkeye works with organisations across the UK, from growing SMEs bidding for their first public sector contract to established firms managing complex framework lots. Whatever your stage, we bring precision, experience, and genuine commitment to your success.</p>
+
+  <!-- 2. Meet the Team -->
+  <section style="background:var(--off-white)">
+    <div class="section-header" style="text-align:center;max-width:600px;margin:0 auto 44px">
+      <div class="section-label">The people behind your success</div>
+      <div class="section-title">Meet the Team</div>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <img src="/philip.jpg" alt="Philip Pitt" class="team-photo">
+        <div class="team-name">Philip Pitt</div>
+        <div class="team-title">Founder and Managing Director</div>
+        <p class="team-bio">Philip has over 24 years of recruitment experience working across large, small and niche agencies, delivering recruitment services and IT consultancy to the public and private sector including Government, NHS, IT, utilities and financial services. For the last 14 years he has provided specialist bid, proposal and tender writing services across all major frameworks including managed services, temporary and permanent recruitment and executive search. Business wins include multiple frameworks run by Crown Commercial Service, Workforce Alliance, HTE, Local Authorities, utilities, charities and private sector companies.</p>
       </div>
-      <div>
-        <div style="background:var(--off-white);border-radius:12px;padding:32px">
-          <h3 style="font-size:18px;font-weight:700;color:var(--steel);margin-bottom:20px">Our values</h3>
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <div style="display:flex;gap:14px;align-items:flex-start"><div style="width:8px;height:8px;background:var(--teal-mid);border-radius:50%;margin-top:7px;flex-shrink:0"></div><div><strong style="font-size:14px;color:var(--steel)">Precision</strong><p style="font-size:13px;color:var(--text-muted);margin-top:3px">Every response is crafted with care, evidence, and a sharp eye for what the evaluator needs to see.</p></div></div>
-            <div style="display:flex;gap:14px;align-items:flex-start"><div style="width:8px;height:8px;background:var(--teal-mid);border-radius:50%;margin-top:7px;flex-shrink:0"></div><div><strong style="font-size:14px;color:var(--steel)">Partnership</strong><p style="font-size:13px;color:var(--text-muted);margin-top:3px">We work as part of your team, not as an outsider. Your success is our success.</p></div></div>
-            <div style="display:flex;gap:14px;align-items:flex-start"><div style="width:8px;height:8px;background:var(--teal-mid);border-radius:50%;margin-top:7px;flex-shrink:0"></div><div><strong style="font-size:14px;color:var(--steel)">Transparency</strong><p style="font-size:13px;color:var(--text-muted);margin-top:3px">Fixed fees, clear timelines, and honest advice, always.</p></div></div>
-            <div style="display:flex;gap:14px;align-items:flex-start"><div style="width:8px;height:8px;background:var(--teal-mid);border-radius:50%;margin-top:7px;flex-shrink:0"></div><div><strong style="font-size:14px;color:var(--steel)">Results</strong><p style="font-size:13px;color:var(--text-muted);margin-top:3px">We are judged by your win rate. We take that responsibility seriously.</p></div></div>
-          </div>
-        </div>
+      <div class="team-card">
+        <img src="/james.jpg" alt="James Pitt" class="team-photo">
+        <div class="team-name">James Pitt</div>
+        <div class="team-title">Senior Director, Business Development</div>
+        <p class="team-bio">James brings a background in finance and a sharp commercial instinct to Hawkeye Solutions, having transitioned into business development and bid management to help drive the company's growth. Since joining the team James has played a pivotal role in securing significant client relationships, with particular success across G-Cloud and Digital Outcomes and Specialists frameworks. Working alongside his father Philip, James has helped expand Hawkeye's reach across the utilities sector and beyond, building lasting partnerships with organisations navigating the complexities of public sector procurement.</p>
       </div>
     </div>
   </section>
+
+  <!-- 3. Company Timeline -->
+  <div class="timeline-section">
+    <div class="section-header" style="text-align:center;max-width:600px;margin:0 auto 52px">
+      <div class="section-label">Our journey</div>
+      <div class="section-title">Company Timeline</div>
+      <p class="section-desc" style="margin:0 auto">From a focused IT recruitment specialist to a full-service public sector bid consultancy.</p>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-entry left">
+        <div class="tl-content">
+          <div class="tl-milestone"><strong>Company founded</strong>Established with a focused specialism in IT recruitment tenders, laying the foundation for public sector success.</div>
+        </div>
+        <div class="tl-year-wrap"><div class="tl-year">2011</div></div>
+        <div style="width:calc(50% - 44px)"></div>
+      </div>
+
+      <div class="tl-entry right">
+        <div style="width:calc(50% - 44px)"></div>
+        <div class="tl-year-wrap"><div class="tl-year">2013</div></div>
+        <div class="tl-content">
+          <div class="tl-milestone"><strong>IT Consultancy &amp; first G-Cloud win</strong>Expanded into IT Consultancy frameworks and secured the first G-Cloud win at G-Cloud 3.</div>
+        </div>
+      </div>
+
+      <div class="tl-entry left">
+        <div class="tl-content">
+          <div class="tl-milestone"><strong>First NHS win</strong>Secured the first win at an NHS Trust for IT Consultancy services, opening a major new sector.</div>
+        </div>
+        <div class="tl-year-wrap"><div class="tl-year">2016</div></div>
+        <div style="width:calc(50% - 44px)"></div>
+      </div>
+
+      <div class="tl-entry right">
+        <div style="width:calc(50% - 44px)"></div>
+        <div class="tl-year-wrap"><div class="tl-year">2019</div></div>
+        <div class="tl-content">
+          <div class="tl-milestone"><strong>Thames Tideway win</strong>High-profile recruitment tender win for Thames Tideway, one of the UK's largest infrastructure projects.</div>
+        </div>
+      </div>
+
+      <div class="tl-entry left">
+        <div class="tl-content">
+          <div class="tl-milestone"><strong>NHS staffing frameworks</strong>A series of NHS staffing framework wins, cementing Hawkeye's position in the healthcare recruitment sector.</div>
+        </div>
+        <div class="tl-year-wrap"><div class="tl-year">2020</div></div>
+        <div style="width:calc(50% - 44px)"></div>
+      </div>
+
+      <div class="tl-entry right">
+        <div style="width:calc(50% - 44px)"></div>
+        <div class="tl-year-wrap"><div class="tl-year" style="font-size:10px">2020–21</div></div>
+        <div class="tl-content">
+          <div class="tl-milestone"><strong>James joins &amp; international wins</strong>James joined the team in a business development role, and Hawkeye secured its first international recruitment tender wins.</div>
+        </div>
+      </div>
+
+      <div class="tl-entry left">
+        <div class="tl-content">
+          <div class="tl-milestone"><strong>Utilities sector expansion</strong>Formally expanded to encompass utilities sector tenders, broadening the client base significantly.</div>
+        </div>
+        <div class="tl-year-wrap"><div class="tl-year">2022</div></div>
+        <div style="width:calc(50% - 44px)"></div>
+      </div>
+
+      <div class="tl-entry right">
+        <div style="width:calc(50% - 44px)"></div>
+        <div class="tl-year-wrap"><div class="tl-year">2024</div></div>
+        <div class="tl-content">
+          <div class="tl-milestone"><strong>Company growth</strong>Continued growth saw new staff engaged to meet increasing client demand across all service lines.</div>
+        </div>
+      </div>
+
+      <div class="tl-entry left">
+        <div class="tl-content">
+          <div class="tl-milestone"><strong>Continuing to grow</strong>Building on strong foundations, Hawkeye Solutions continues to expand its reach and client partnerships.</div>
+        </div>
+        <div class="tl-year-wrap"><div class="tl-year">2026</div></div>
+        <div style="width:calc(50% - 44px)"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. Our Values -->
+  <div class="about-values">
+    <div style="padding:0 5%">
+      <div class="section-header" style="margin-bottom:36px">
+        <div class="section-label" style="color:#7dd4e8">What drives us</div>
+        <div class="section-title">Our Values</div>
+        <p class="section-desc">The principles that guide everything we do for our clients.</p>
+      </div>
+      <div class="values-grid">
+        <div class="value-item">
+          <div class="value-dot"></div>
+          <div><strong>Precision</strong><p>Every response is crafted with care, evidence, and a sharp eye for what the evaluator needs to see.</p></div>
+        </div>
+        <div class="value-item">
+          <div class="value-dot"></div>
+          <div><strong>Partnership</strong><p>We work as part of your team, not as an outsider. Your success is our success.</p></div>
+        </div>
+        <div class="value-item">
+          <div class="value-dot"></div>
+          <div><strong>Transparency</strong><p>Fixed fees, clear timelines, and honest advice, always.</p></div>
+        </div>
+        <div class="value-item">
+          <div class="value-dot"></div>
+          <div><strong>Results</strong><p>We are judged by your win rate. We take that responsibility seriously.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. CTA Banner -->
+  <div class="cta-banner">
+    <h2>Work with a team that knows how to win</h2>
+    <p>Talk to us today about your next public sector opportunity.</p>
+    <a href="#" class="btn-primary" onclick="showPage('contact')">Get a Free Consultation</a>
+  </div>
+
 </div>
 
 <!-- CONTACT PAGE -->
@@ -707,7 +869,7 @@ var searchIndex=[
   {page:'services',title:'Training',text:'training bid writing programme in-house capability recruitment IT consultancy tenders'},
   {page:'sectors',title:'Recruitment and Staffing',text:'recruitment staffing CCS frameworks NHS local government managed services social value temporary staffing'},
   {page:'sectors',title:'IT Consultancy and Technology',text:'IT consultancy G-Cloud digital outcomes cyber security digital transformation central government technology'},
-  {page:'about',title:'About Us',text:'about hawkeye solutions story values precision partnership transparency results consultancy'},
+  {page:'about',title:'About Us',text:'about hawkeye solutions team Philip Pitt James Pitt founder managing director business development timeline values'},
   {page:'contact',title:'Free Consultation',text:'contact free consultation enquiry callback phone email get in touch'},
 ];
 function doSearch(q){
