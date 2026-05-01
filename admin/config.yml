@@ -1,10 +1,8 @@
 backend:
   name: git-gateway
   branch: main
-
 media_folder: "uploads"
 public_folder: "/uploads"
-
 collections:
   - name: "tenders"
     label: "Tenders"
@@ -22,13 +20,11 @@ collections:
         name: "title"
         widget: "string"
         hint: "Full title of the tender opportunity"
-
       - label: "Reference Number"
         name: "reference"
         widget: "string"
         required: false
         hint: "Contract Finder or portal reference number"
-
       - label: "Status"
         name: "status"
         widget: "select"
@@ -36,27 +32,23 @@ collections:
           - { label: "Live", value: "live" }
           - { label: "Closed", value: "closed" }
         default: "live"
-
       - label: "Publish Date"
         name: "date"
         widget: "datetime"
         default: ""
         date_format: "DD/MM/YYYY"
         time_format: false
-
       - label: "Deadline"
         name: "deadline"
         widget: "datetime"
         date_format: "DD/MM/YYYY"
         time_format: true
         hint: "Submission deadline date and time"
-
       - label: "Estimated Value"
         name: "value"
         widget: "string"
         required: false
         hint: "e.g. £2.4m or £500k — £1m"
-
       - label: "Sector"
         name: "sector"
         widget: "select"
@@ -64,47 +56,38 @@ collections:
           - { label: "Recruitment and Staffing", value: "recruitment" }
           - { label: "IT and Technology", value: "it" }
           - { label: "Other", value: "other" }
-
       - label: "Location"
         name: "location"
         widget: "string"
         hint: "e.g. London Borough of Hackney or National"
-
       - label: "Lots Involved"
         name: "lots"
         widget: "string"
         required: false
         hint: "e.g. Lot 1: Temporary Staff, Lot 2: Permanent Staff"
-
       - label: "Contracting Authority Name"
         name: "contracting_authority"
         widget: "string"
-
       - label: "Contracting Authority Address"
         name: "authority_address"
         widget: "text"
         required: false
-
       - label: "Contact Name"
         name: "contact_name"
         widget: "string"
         required: false
-
       - label: "Contact Telephone"
         name: "contact_telephone"
         widget: "string"
         required: false
-
       - label: "Contact Email"
         name: "contact_email"
         widget: "string"
         required: false
-
       - label: "Description"
         name: "description"
         widget: "markdown"
         hint: "Full description of the tender scope and requirements"
-
       - label: "Document Upload"
         name: "document"
         widget: "file"
@@ -113,9 +96,85 @@ collections:
           config:
             multiple: false
         hint: "Upload tender document (PDF or Word)"
-
       - label: "Portal / Reference Link"
         name: "portal_link"
         widget: "string"
         required: false
         hint: "URL to the tender on Contracts Finder or buyer portal"
+
+  - name: "blog"
+    label: "Blog Posts"
+    label_singular: "Blog Post"
+    folder: "_blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} — {{author}} — {{status}}"
+    sortable_fields: ["date", "title", "status", "author"]
+    view_groups:
+      - label: Status
+        field: status
+      - label: Category
+        field: category
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        required: true
+        hint: "The full title of the blog post"
+      - label: "Slug"
+        name: "slug"
+        widget: "string"
+        required: true
+        hint: "URL-friendly post name e.g. how-to-write-a-winning-tender"
+      - label: "Date"
+        name: "date"
+        widget: "datetime"
+        required: true
+        date_format: "YYYY-MM-DD"
+        time_format: false
+      - label: "Author"
+        name: "author"
+        widget: "string"
+        required: true
+        default: "Hawkeye Solutions"
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "Bid Writing", value: "Bid Writing" }
+          - { label: "Procurement Basics", value: "Procurement Basics" }
+          - { label: "Sector Guides", value: "Sector Guides" }
+          - { label: "Common Mistakes", value: "Common Mistakes" }
+      - label: "Status"
+        name: "status"
+        widget: "select"
+        options:
+          - { label: "Published", value: "published" }
+          - { label: "Draft", value: "draft" }
+        default: "published"
+      - label: "Excerpt"
+        name: "excerpt"
+        widget: "text"
+        required: true
+        hint: "Short summary shown on the blog listing page (max 160 characters)"
+        pattern: ['^.{1,160}$', "Excerpt must be 160 characters or fewer"]
+      - label: "Meta Title"
+        name: "metaTitle"
+        widget: "string"
+        required: false
+        hint: "SEO page title (leave blank to use post title)"
+      - label: "Meta Description"
+        name: "metaDescription"
+        widget: "text"
+        required: false
+        hint: "SEO meta description"
+      - label: "Reading Time"
+        name: "readingTime"
+        widget: "string"
+        required: false
+        hint: "e.g. 5 min read"
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        required: true
+        hint: "The full post content"
