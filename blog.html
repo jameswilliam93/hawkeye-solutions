@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Hawkeye Solutions</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee}
+  body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
+  a{text-decoration:none;color:inherit}
+
+  /* NAV */
+  nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
+  .nav-logo{display:flex;align-items:center;gap:12px}
+  .nav-brand{color:var(--white);font-size:18px;font-weight:700}
+  .nav-links{display:flex;gap:28px}
+  .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500}
+  .nav-links a:hover{color:var(--white)}
+  .nav-cta{background:var(--teal-mid)!important;color:var(--white)!important;padding:8px 18px;border-radius:6px;font-weight:600!important}
+
+  /* HAMBURGER */
+  .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;cursor:pointer;padding:4px;background:none;border:none}
+  .hamburger span{display:block;height:2px;background:var(--white);border-radius:2px;transition:transform 0.3s,opacity 0.3s,width 0.3s}
+  .hamburger span:nth-child(1){width:22px}
+  .hamburger span:nth-child(2){width:16px}
+  .hamburger span:nth-child(3){width:22px}
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);width:22px}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);width:22px}
+
+  /* MOBILE MENU */
+  .mobile-menu{display:none;flex-direction:column;background:var(--steel);padding:0 5%;position:sticky;top:68px;z-index:99;border-top:1px solid rgba(255,255,255,0.08)}
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.07)}
+  .mobile-menu a:last-child{border-bottom:none}
+  .mobile-menu a:hover{color:var(--white)}
+  .mob-cta{background:var(--teal-mid);color:var(--white)!important;padding:10px 18px!important;border-radius:6px;font-weight:700!important;margin:14px 0;text-align:center;border-bottom:none!important}
+
+  /* PAGE HEADER */
+  .page-header{background:linear-gradient(135deg,var(--steel),var(--teal-dark));padding:60px 5% 50px}
+  .page-header .label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7dd4e8;margin-bottom:10px}
+  .page-header h1{font-size:40px;font-weight:800;color:var(--white);margin-bottom:12px}
+  .page-header p{font-size:17px;color:rgba(255,255,255,0.7);max-width:580px}
+
+  /* MAIN SECTION */
+  section{padding:50px 5%}
+
+  /* SEARCH & FILTER */
+  .search-bar{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap}
+  .search-bar input{flex:1;min-width:200px;border:1px solid var(--border);border-radius:8px;padding:11px 16px;font-size:15px;font-family:inherit;color:var(--text)}
+  .search-bar input:focus{outline:none;border-color:var(--teal-mid)}
+  .filter-btns{display:flex;gap:8px;flex-wrap:wrap}
+  .filter-btn{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+  .filter-btn.active,.filter-btn:hover{background:var(--teal-dark);color:var(--white);border-color:var(--teal-dark)}
+  .post-count{font-size:13px;color:var(--text-muted);margin-bottom:20px}
+
+  /* BLOG GRID */
+  .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+
+  /* BLOG CARD */
+  .blog-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:26px;position:relative;overflow:hidden;transition:box-shadow 0.2s,border-color 0.2s;cursor:pointer;display:flex;flex-direction:column}
+  .blog-card:hover{box-shadow:0 4px 20px rgba(26,107,124,0.12);border-color:var(--teal-mid)}
+  .blog-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--teal-mid)}
+  .blog-card.cat-bid-writing::before{background:var(--teal-mid)}
+  .blog-card.cat-procurement::before{background:#3a3faa}
+  .blog-card.cat-sector::before{background:#1a7a50}
+  .blog-card.cat-mistakes::before{background:#e8920a}
+
+  .category-tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px}
+  .tag-bid-writing{background:#e8f4f7;color:var(--teal-dark)}
+  .tag-procurement{background:#eef0fb;color:#3a3faa}
+  .tag-sector{background:#eaf7f1;color:#1a7a50}
+  .tag-mistakes{background:#fef6e8;color:#b7670a}
+
+  .blog-card h3{font-size:16px;font-weight:700;color:var(--steel);margin-bottom:8px;line-height:1.4}
+  .blog-card h3 a{color:inherit}
+  .blog-card h3 a:hover{color:var(--teal-mid)}
+
+  .post-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-muted);margin-bottom:12px;flex-wrap:wrap}
+  .post-meta .dot{opacity:0.4}
+
+  .post-excerpt{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+  .card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+  .author{display:flex;align-items:center;gap:8px}
+  .author-avatar{width:28px;height:28px;border-radius:50%;background:var(--teal-dark);color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .author-name{font-size:12px;color:var(--text-muted);font-weight:500}
+  .read-more{font-size:13px;font-weight:600;color:var(--teal-mid)}
+  .read-more:hover{color:var(--teal-dark)}
+
+  .no-results{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-muted);font-size:15px}
+  .loading{text-align:center;padding:80px 20px;color:var(--text-muted)}
+  .loading-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--teal-mid);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* NEWSLETTER CTA */
+  .newsletter-cta{margin-top:48px;background:var(--teal-dark);border-radius:12px;padding:40px 36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px}
+  .newsletter-cta h3{font-size:20px;font-weight:800;color:var(--white);margin-bottom:6px}
+  .newsletter-cta p{font-size:14px;color:rgba(255,255,255,0.7);max-width:420px}
+  .newsletter-form{display:flex;gap:10px;flex-wrap:wrap}
+  .newsletter-form input{padding:11px 16px;border-radius:8px;border:none;font-size:14px;font-family:inherit;width:260px;min-width:180px;color:var(--text)}
+  .newsletter-form input:focus{outline:2px solid #7dd4e8}
+  .newsletter-form button{background:var(--teal-mid);color:var(--white);border:none;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.2s;white-space:nowrap}
+  .newsletter-form button:hover{background:#1f7a93}
+
+  /* FOOTER */
+  footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px}
+  footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
+
+  /* RESPONSIVE */
+  @media(max-width:1024px){
+    .blog-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(max-width:768px){
+    .blog-grid{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .hamburger{display:flex}
+    .newsletter-cta{padding:28px 22px}
+    .newsletter-form input{width:100%}
+    .newsletter-form{width:100%}
+    .page-header h1{font-size:30px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="/logo.png" alt="Hawkeye Solutions" height="44" style="display:block">
+    <span class="nav-brand">Hawkeye Solutions</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#sectors">Sectors</a>
+    <a href="tenders.html">Tenders</a>
+    <a href="index.html#about">About Us</a>
+    <a href="blog.html" style="color:white;font-weight:700">Blog</a>
+    <a href="index.html#contact" class="nav-cta">Free Consultation</a>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="index.html#services">Services</a>
+  <a href="index.html#sectors">Sectors</a>
+  <a href="tenders.html">Tenders</a>
+  <a href="index.html#about">About Us</a>
+  <a href="blog.html">Blog</a>
+  <a href="index.html#contact" class="mob-cta">Free Consultation</a>
+</div>
+
+<div class="page-header">
+  <div class="label">Insights and Advice</div>
+  <h1>The Hawkeye Blog</h1>
+  <p>Expert guidance on public sector bid writing, procurement strategy and winning tenders. New articles every week.</p>
+</div>
+
+<section>
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search articles by title, topic or keyword..." oninput="filterPosts()">
+    <div class="filter-btns">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('bid-writing',this)">Bid Writing</button>
+      <button class="filter-btn" onclick="setFilter('procurement',this)">Procurement Basics</button>
+      <button class="filter-btn" onclick="setFilter('sector',this)">Sector Guides</button>
+      <button class="filter-btn" onclick="setFilter('mistakes',this)">Common Mistakes</button>
+    </div>
+  </div>
+  <div class="post-count" id="post-count"></div>
+  <div class="blog-grid" id="blog-grid">
+    <div class="loading"><div class="loading-spinner"></div>Loading articles...</div>
+  </div>
+
+  <!-- Newsletter CTA -->
+  <div class="newsletter-cta">
+    <div>
+      <h3>Want expert bid writing tips in your inbox?</h3>
+      <p>Join hundreds of public sector suppliers getting practical advice every week — no spam, unsubscribe any time.</p>
+    </div>
+    <div class="newsletter-form">
+      <input type="email" id="newsletter-email" placeholder="Enter your email address">
+      <button onclick="handleSubscribe()">Subscribe</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="brand">Hawkeye Solutions</span>
+  <span>Precision Bids. Proven Results.</span>
+  <span>© 2025 Hawkeye Solutions. All rights reserved.</span>
+</footer>
+
+<script>
+function toggleMobileMenu() {
+  var menu = document.getElementById('mobile-menu');
+  var burger = document.getElementById('hamburger');
+  var isOpen = menu.classList.contains('open');
+  menu.classList.toggle('open');
+  burger.classList.toggle('open');
+  burger.setAttribute('aria-expanded', String(!isOpen));
+}
+
+var allPosts = [];
+var currentFilter = 'all';
+
+function categoryLabel(c) {
+  var map = {'bid-writing':'Bid Writing','procurement':'Procurement Basics','sector':'Sector Guides','mistakes':'Common Mistakes'};
+  return map[c] || c;
+}
+
+function categoryTagClass(c) {
+  var map = {'bid-writing':'tag-bid-writing','procurement':'tag-procurement','sector':'tag-sector','mistakes':'tag-mistakes'};
+  return map[c] || 'tag-bid-writing';
+}
+
+function categoryCardClass(c) {
+  var map = {'bid-writing':'cat-bid-writing','procurement':'cat-procurement','sector':'cat-sector','mistakes':'cat-mistakes'};
+  return map[c] || 'cat-bid-writing';
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+}
+
+function initials(name) {
+  if (!name) return '?';
+  return name.split(' ').map(function(p){return p[0];}).join('').toUpperCase().substring(0,2);
+}
+
+function renderPosts(list) {
+  var grid = document.getElementById('blog-grid');
+  var countEl = document.getElementById('post-count');
+  countEl.textContent = 'Showing ' + list.length + ' article' + (list.length === 1 ? '' : 's');
+  if (!list.length) {
+    grid.innerHTML = '<div class="no-results">No posts found. Check back soon.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(function(p) {
+    var excerpt = (p.excerpt || p.description || '').replace(/[#*`]/g,'').substring(0,160);
+    var slug = p.slug || encodeURIComponent(p.title);
+    return '<div class="blog-card ' + categoryCardClass(p.category) + '" onclick="window.location=\'/blog/' + slug + '.html\'">' +
+      '<span class="category-tag ' + categoryTagClass(p.category) + '">' + categoryLabel(p.category) + '</span>' +
+      '<h3><a href="/blog/' + slug + '.html" onclick="event.stopPropagation()">' + (p.title || '') + '</a></h3>' +
+      '<div class="post-meta">' +
+        '<span>' + formatDate(p.date) + '</span>' +
+        (p.reading_time ? '<span class="dot">·</span><span>' + p.reading_time + ' min read</span>' : '') +
+      '</div>' +
+      '<p class="post-excerpt">' + excerpt + (excerpt.length >= 160 ? '...' : '') + '</p>' +
+      '<div class="card-footer">' +
+        '<div class="author">' +
+          '<div class="author-avatar">' + initials(p.author) + '</div>' +
+          '<span class="author-name">' + (p.author || 'Hawkeye Team') + '</span>' +
+        '</div>' +
+        '<a class="read-more" href="/blog/' + slug + '.html" onclick="event.stopPropagation()">Read more →</a>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function filterPosts() {
+  var q = document.getElementById('search-input').value.toLowerCase().trim();
+  var list = allPosts;
+  if (currentFilter !== 'all') list = list.filter(function(p){ return p.category === currentFilter; });
+  if (q) list = list.filter(function(p) {
+    return (p.title||'').toLowerCase().includes(q) ||
+           (p.excerpt||'').toLowerCase().includes(q) ||
+           (p.description||'').toLowerCase().includes(q) ||
+           (p.author||'').toLowerCase().includes(q);
+  });
+  renderPosts(list);
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  filterPosts();
+}
+
+function handleSubscribe() {
+  var email = document.getElementById('newsletter-email').value.trim();
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  alert('Thanks for subscribing! We\'ll be in touch soon.');
+  document.getElementById('newsletter-email').value = '';
+}
+
+async function loadPosts() {
+  try {
+    var r = await fetch('/blog-data.json?v=' + Date.now());
+    if (!r.ok) throw new Error('Failed to load');
+    var data = await r.json();
+    allPosts = Array.isArray(data) ? data : (data.posts || []);
+    allPosts.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+    renderPosts(allPosts);
+  } catch(e) {
+    console.error('Failed to load blog posts:', e);
+    document.getElementById('blog-grid').innerHTML = '<div class="no-results">No posts found. Check back soon.</div>';
+  }
+}
+
+loadPosts();
+</script>
+</body>
+</html>
