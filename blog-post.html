@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Post — Hawkeye Solutions</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee}
+  body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
+  a{text-decoration:none;color:inherit}
+
+  /* NAV */
+  nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
+  .nav-logo{display:flex;align-items:center;gap:12px}
+  .nav-brand{color:var(--white);font-size:18px;font-weight:700}
+  .nav-links{display:flex;gap:28px}
+  .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500}
+  .nav-links a:hover{color:var(--white)}
+  .nav-cta{background:var(--teal-mid)!important;color:var(--white)!important;padding:8px 18px;border-radius:6px;font-weight:600!important}
+  .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;cursor:pointer;padding:4px;background:none;border:none}
+  .hamburger span{display:block;height:2px;background:var(--white);border-radius:2px;transition:transform 0.3s,opacity 0.3s,width 0.3s}
+  .hamburger span:nth-child(1){width:22px}
+  .hamburger span:nth-child(2){width:16px}
+  .hamburger span:nth-child(3){width:22px}
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);width:22px}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);width:22px}
+  .mobile-menu{display:none;flex-direction:column;background:var(--steel);padding:0 5%;position:sticky;top:68px;z-index:99;border-top:1px solid rgba(255,255,255,0.08)}
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.07)}
+  .mobile-menu a:last-child{border-bottom:none}
+  .mobile-menu a:hover{color:var(--white)}
+  .mob-cta{background:var(--teal-mid);color:var(--white)!important;padding:10px 18px!important;border-radius:6px;font-weight:700!important;margin:14px 0;text-align:center;border-bottom:none!important}
+
+  /* BREADCRUMB */
+  .breadcrumb{background:var(--off-white);border-bottom:1px solid var(--border);padding:12px 5%;font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:8px}
+  .breadcrumb a{color:var(--teal-mid);font-weight:500}
+  .breadcrumb a:hover{color:var(--teal-dark)}
+  .breadcrumb-sep{color:var(--border)}
+  .breadcrumb-current{color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px}
+
+  /* LAYOUT */
+  .post-container{max-width:1160px;margin:0 auto;padding:48px 5%;display:grid;grid-template-columns:1fr 320px;gap:52px;align-items:start}
+
+  /* MAIN CONTENT */
+  .post-main{}
+  .category-tag{display:inline-block;font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:16px;background:var(--teal-light);color:var(--teal-dark)}
+  .post-title{font-size:34px;font-weight:800;color:var(--steel);line-height:1.25;margin-bottom:18px}
+  .post-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;color:var(--text-muted);margin-bottom:28px}
+  .post-meta .meta-sep{color:var(--border)}
+  .post-meta .meta-author{font-weight:600;color:var(--steel)}
+  .post-hero{background:var(--teal-light);border-radius:12px;padding:32px 36px;margin-bottom:36px;border-left:4px solid var(--teal-mid)}
+  .post-hero p{font-size:17px;color:var(--teal-dark);line-height:1.7;font-style:italic}
+  .post-body{font-size:15px;line-height:1.8;color:var(--text)}
+  .post-body p{margin-bottom:20px}
+  .post-body h2{font-size:22px;font-weight:800;color:var(--steel);margin:36px 0 14px}
+  .post-body h3{font-size:18px;font-weight:700;color:var(--steel);margin:28px 0 10px}
+  .post-body ul,.post-body ol{margin:0 0 20px 0;padding-left:0;list-style:none}
+  .post-body ul li,.post-body ol li{padding:5px 0 5px 26px;position:relative;font-size:15px;color:var(--text)}
+  .post-body ul li::before{content:'';position:absolute;left:0;top:13px;width:8px;height:8px;border-radius:50%;background:var(--teal-mid)}
+  .post-body ol{counter-reset:ol-counter}
+  .post-body ol li{counter-increment:ol-counter}
+  .post-body ol li::before{content:counter(ol-counter)'.';position:absolute;left:0;top:5px;font-weight:700;color:var(--teal-mid);font-size:14px}
+  .post-body a{color:var(--teal-mid);font-weight:500}
+  .post-body a:hover{color:var(--teal-dark)}
+  .post-body blockquote{border-left:4px solid var(--teal-mid);background:var(--teal-light);padding:18px 22px;border-radius:0 8px 8px 0;margin:24px 0;font-style:italic;color:var(--teal-dark);font-size:16px}
+  .post-body strong{font-weight:700;color:var(--steel)}
+
+  /* CTA BOX */
+  .post-cta{background:linear-gradient(135deg,var(--steel),var(--teal-dark));border-radius:12px;padding:36px;margin-top:40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+  .post-cta-text h3{font-size:20px;font-weight:800;color:var(--white);margin-bottom:8px}
+  .post-cta-text p{font-size:14px;color:rgba(255,255,255,0.72);max-width:380px}
+  .post-cta a{background:var(--teal-mid);color:var(--white);padding:12px 26px;border-radius:7px;font-weight:700;font-size:14px;white-space:nowrap;display:inline-block}
+  .post-cta a:hover{background:#238faa}
+
+  /* SIDEBAR */
+  .post-sidebar{display:flex;flex-direction:column;gap:28px}
+  .sidebar-card{background:var(--off-white);border:1px solid var(--border);border-radius:12px;padding:24px}
+  .sidebar-card h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--teal-dark);margin-bottom:18px}
+
+  /* Author card */
+  .author-avatar{width:72px;height:72px;border-radius:50%;background:var(--teal-dark);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:var(--white);margin:0 auto 14px;overflow:hidden}
+  .author-avatar img{width:100%;height:100%;object-fit:cover}
+  .author-name{font-size:16px;font-weight:700;color:var(--steel);text-align:center;margin-bottom:4px}
+  .author-title{font-size:12px;color:var(--teal-mid);font-weight:600;text-align:center;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px}
+  .author-bio{font-size:13px;color:var(--text-muted);line-height:1.6;text-align:center}
+
+  /* Related posts */
+  .related-post{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer}
+  .related-post:last-child{border-bottom:none;padding-bottom:0}
+  .related-post:first-of-type{padding-top:0}
+  .related-thumb{width:56px;height:56px;border-radius:8px;background:var(--teal-light);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .related-thumb svg{width:22px;height:22px;stroke:var(--teal-mid);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .related-post-title{font-size:13px;font-weight:600;color:var(--steel);line-height:1.4;margin-bottom:4px}
+  .related-post-date{font-size:12px;color:var(--text-muted)}
+
+  /* Categories */
+  .category-list{display:flex;flex-direction:column;gap:8px}
+  .cat-item{display:flex;align-items:center;justify-content:space-between;font-size:14px;color:var(--text-muted);cursor:pointer;padding:6px 0;border-bottom:1px solid var(--border)}
+  .cat-item:last-child{border-bottom:none}
+  .cat-item:hover .cat-name{color:var(--teal-mid)}
+  .cat-name{font-weight:500}
+  .cat-count{background:var(--teal-light);color:var(--teal-dark);font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px}
+
+  /* Contact prompt */
+  .contact-prompt{text-align:center}
+  .contact-prompt p{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px}
+  .contact-prompt a{display:block;background:var(--teal-dark);color:var(--white);padding:11px 18px;border-radius:7px;font-size:13px;font-weight:700;text-align:center}
+  .contact-prompt a:hover{background:var(--teal-mid)}
+
+  /* MORE ARTICLES */
+  .more-articles{background:var(--off-white);border-top:1px solid var(--border);padding:60px 5%}
+  .more-articles h2{font-size:26px;font-weight:800;color:var(--steel);margin-bottom:6px}
+  .more-articles .subtitle{font-size:15px;color:var(--text-muted);margin-bottom:32px}
+  .articles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .article-card{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:box-shadow 0.2s,border-color 0.2s}
+  .article-card:hover{box-shadow:0 4px 20px rgba(26,107,124,0.1);border-color:var(--teal-mid)}
+  .article-card-thumb{height:140px;background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));display:flex;align-items:center;justify-content:center}
+  .article-card-thumb svg{width:40px;height:40px;stroke:rgba(255,255,255,0.6);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+  .article-card-body{padding:20px}
+  .article-card-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--teal-dark);background:var(--teal-light);padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:10px}
+  .article-card-title{font-size:15px;font-weight:700;color:var(--steel);line-height:1.4;margin-bottom:8px}
+  .article-card-date{font-size:12px;color:var(--text-muted)}
+
+  /* ERROR STATE */
+  .error-state{text-align:center;padding:100px 5%}
+  .error-state h2{font-size:28px;font-weight:800;color:var(--steel);margin-bottom:12px}
+  .error-state p{font-size:16px;color:var(--text-muted);margin-bottom:28px}
+  .error-state a{background:var(--teal-dark);color:var(--white);padding:12px 28px;border-radius:7px;font-weight:700;font-size:14px;display:inline-block}
+
+  /* LOADING */
+  .loading{text-align:center;padding:100px 5%;color:var(--text-muted)}
+  .loading-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--teal-mid);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px}
+  footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
+
+  @media(max-width:900px){
+    .post-container{grid-template-columns:1fr;gap:36px}
+    .post-sidebar{order:2}
+    .articles-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:600px){
+    .post-title{font-size:26px}
+    .articles-grid{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .hamburger{display:flex}
+    .post-container{padding:28px 5%}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="/logo.png" alt="Hawkeye Solutions" height="44" style="display:block">
+    <span class="nav-brand">Hawkeye Solutions</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#sectors">Sectors</a>
+    <a href="tenders.html">Tenders</a>
+    <a href="blog.html" style="color:white;font-weight:700">Blog</a>
+    <a href="index.html#about">About Us</a>
+    <a href="index.html#contact" class="nav-cta">Free Consultation</a>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="index.html#services">Services</a>
+  <a href="index.html#sectors">Sectors</a>
+  <a href="tenders.html">Tenders</a>
+  <a href="blog.html">Blog</a>
+  <a href="index.html#about">About Us</a>
+  <a href="index.html#contact" class="mob-cta">Free Consultation</a>
+</div>
+
+<div class="breadcrumb" id="breadcrumb">
+  <a href="blog.html">Blog</a>
+  <span class="breadcrumb-sep">›</span>
+  <span class="breadcrumb-current" id="breadcrumb-title">Loading...</span>
+</div>
+
+<div id="page-content">
+  <div class="loading"><div class="loading-spinner"></div>Loading article...</div>
+</div>
+
+<footer>
+  <span class="brand">Hawkeye Solutions</span>
+  <span>Precision Bids. Proven Results.</span>
+  <span>© 2025 Hawkeye Solutions. All rights reserved.</span>
+</footer>
+
+<script>
+function toggleMobileMenu() {
+  var menu = document.getElementById('mobile-menu');
+  var burger = document.getElementById('hamburger');
+  var isOpen = menu.classList.contains('open');
+  menu.classList.toggle('open');
+  burger.classList.toggle('open');
+  burger.setAttribute('aria-expanded', String(!isOpen));
+}
+
+function getSlug() {
+  var params = new URLSearchParams(window.location.search);
+  return params.get('slug') || '';
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'});
+}
+
+function readingTime(html) {
+  var text = html ? html.replace(/<[^>]+>/g,'') : '';
+  var words = text.trim().split(/\s+/).length;
+  return Math.max(1, Math.round(words / 200)) + ' min read';
+}
+
+function categoryTagClass(cat) {
+  if (!cat) return '';
+  var c = cat.toLowerCase();
+  if (c.includes('recruit')) return 'background:#e8f4f7;color:#0e4a57';
+  if (c.includes('it') || c.includes('tech')) return 'background:#eef0fb;color:#3a3faa';
+  return 'background:#f3f0fb;color:#5a3faa';
+}
+
+function getInitials(name) {
+  if (!name) return 'HS';
+  return name.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
+}
+
+var docIcon = '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>';
+
+function renderPost(post, allPosts) {
+  var slug = post.slug || '';
+  var related = allPosts.filter(function(p){ return (p.slug||p.title) !== (post.slug||post.title) && p.status !== 'draft'; }).slice(0,3);
+  var moreArticles = allPosts.filter(function(p){ return (p.slug||p.title) !== (post.slug||post.title) && p.status !== 'draft'; }).slice(0,3);
+
+  // Gather unique categories with counts
+  var catMap = {};
+  allPosts.forEach(function(p){
+    var c = p.category || 'General';
+    catMap[c] = (catMap[c]||0) + 1;
+  });
+
+  // Update breadcrumb
+  document.getElementById('breadcrumb-title').textContent = post.title || '';
+  document.title = (post.title || 'Blog Post') + ' — Hawkeye Solutions';
+
+  var readTime = post.reading_time || readingTime(post.body || '');
+
+  var relatedHTML = related.length ? related.map(function(r){
+    return '<div class="related-post" onclick="window.location=\'blog-post.html?slug='+encodeURIComponent(r.slug||r.title)+'\'">' +
+      '<div class="related-thumb">'+docIcon+'</div>' +
+      '<div><div class="related-post-title">'+(r.title||'')+'</div>' +
+      '<div class="related-post-date">'+formatDate(r.date)+'</div></div>' +
+    '</div>';
+  }).join('') : '<p style="font-size:13px;color:var(--text-muted)">No related articles yet.</p>';
+
+  var catHTML = Object.keys(catMap).map(function(cat){
+    return '<div class="cat-item" onclick="window.location=\'blog.html?category='+encodeURIComponent(cat)+'\'">' +
+      '<span class="cat-name">'+cat+'</span>' +
+      '<span class="cat-count">'+catMap[cat]+'</span>' +
+    '</div>';
+  }).join('');
+
+  var moreHTML = moreArticles.map(function(a){
+    return '<div class="article-card" onclick="window.location=\'blog-post.html?slug='+encodeURIComponent(a.slug||a.title)+'\'">' +
+      '<div class="article-card-thumb">'+docIcon+'</div>' +
+      '<div class="article-card-body">' +
+        '<span class="article-card-tag">'+(a.category||'General')+'</span>' +
+        '<div class="article-card-title">'+(a.title||'')+'</div>' +
+        '<div class="article-card-date">'+formatDate(a.date)+'</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  var authorInitials = getInitials(post.author_name || '');
+
+  var avatarInner = post.author_photo
+    ? '<img src="'+post.author_photo+'" alt="'+(post.author_name||'')+'">'
+    : authorInitials;
+
+  document.getElementById('page-content').innerHTML =
+    '<div class="post-container">' +
+      '<div class="post-main">' +
+        '<span class="category-tag" style="'+(categoryTagClass(post.category))+'">'+((post.category)||'General')+'</span>' +
+        '<h1 class="post-title">'+(post.title||'')+'</h1>' +
+        '<div class="post-meta">' +
+          '<span class="meta-author">'+(post.author_name||'Hawkeye Solutions')+'</span>' +
+          '<span class="meta-sep">·</span>' +
+          '<span>'+formatDate(post.date)+'</span>' +
+          '<span class="meta-sep">·</span>' +
+          '<span>'+readTime+'</span>' +
+        '</div>' +
+        (post.excerpt ? '<div class="post-hero"><p>'+(post.excerpt)+'</p></div>' : '') +
+        '<div class="post-body">'+(post.body||'<p>Content coming soon.</p>')+'</div>' +
+        '<div class="post-cta">' +
+          '<div class="post-cta-text">' +
+            '<h3>Need help with your next bid?</h3>' +
+            '<p>Our team of expert bid writers can help you craft a compelling, winning submission tailored to the specification.</p>' +
+          '</div>' +
+          '<a href="index.html#contact">Get in Touch</a>' +
+        '</div>' +
+      '</div>' +
+
+      '<aside class="post-sidebar">' +
+        '<div class="sidebar-card">' +
+          '<h4>About the Author</h4>' +
+          '<div class="author-avatar">'+avatarInner+'</div>' +
+          '<div class="author-name">'+(post.author_name||'Hawkeye Solutions')+'</div>' +
+          '<div class="author-title">'+(post.author_title||'Bid Writing Expert')+'</div>' +
+          '<div class="author-bio">'+(post.author_bio||'Specialist in public sector procurement and bid writing, helping organisations win contracts across recruitment, IT and professional services.')+'</div>' +
+        '</div>' +
+
+        '<div class="sidebar-card">' +
+          '<h4>Related Posts</h4>' +
+          relatedHTML +
+        '</div>' +
+
+        '<div class="sidebar-card">' +
+          '<h4>Categories</h4>' +
+          '<div class="category-list">'+catHTML+'</div>' +
+        '</div>' +
+
+        '<div class="sidebar-card">' +
+          '<h4>Get in Touch</h4>' +
+          '<div class="contact-prompt">' +
+            '<p>Have a tender you want to win? Our bid specialists are ready to help you put together a standout submission.</p>' +
+            '<a href="index.html#contact">Free Consultation</a>' +
+          '</div>' +
+        '</div>' +
+      '</aside>' +
+    '</div>' +
+
+    '<div class="more-articles">' +
+      '<h2>More Articles</h2>' +
+      '<p class="subtitle">Further reading from the Hawkeye team</p>' +
+      '<div class="articles-grid">'+(moreHTML||'<p style="color:var(--text-muted);font-size:14px">More articles coming soon.</p>')+'</div>' +
+    '</div>';
+}
+
+function renderError() {
+  document.getElementById('breadcrumb-title').textContent = 'Post not found';
+  document.getElementById('page-content').innerHTML =
+    '<div class="error-state">' +
+      '<h2>Article not found</h2>' +
+      '<p>Sorry, we couldn\'t find the article you\'re looking for. It may have been moved or the link may be incorrect.</p>' +
+      '<a href="blog.html">← Back to Blog</a>' +
+    '</div>';
+}
+
+async function loadPost() {
+  var slug = getSlug();
+  if (!slug) { renderError(); return; }
+  try {
+    var r = await fetch('/blog-data.json?v=' + Date.now());
+    if (!r.ok) throw new Error('Failed to fetch');
+    var data = await r.json();
+    var posts = Array.isArray(data) ? data : (data.posts || []);
+    var post = posts.find(function(p){ return (p.slug||'') === slug || encodeURIComponent(p.slug||p.title) === slug; });
+    if (!post) { renderError(); return; }
+    renderPost(post, posts.filter(function(p){ return p.status !== 'draft'; }));
+  } catch(e) {
+    console.error('Failed to load post:', e);
+    renderError();
+  }
+}
+
+loadPost();
+</script>
+</body>
+</html>
