@@ -13,4 +13,10 @@
     <lastmod>2026-05-07</lastmod>
   </sitemap>
 
+  <!-- Blog posts — auto-regenerated on every deploy -->
+  <sitemap>
+    <loc>https://hawkeye-solutions.co.uk/sitemap-blog.xml</loc>
+    <lastmod>2026-05-07</lastmod>
+  </sitemap>
+
 </sitemapindex>
