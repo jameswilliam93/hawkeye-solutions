@@ -236,7 +236,7 @@ function renderTenders(list) {
     const days = daysUntil(t.deadline);
     const daysLabel = days <= 0 ? 'Deadline passed' : days === 1 ? '1 day remaining' : days + ' days remaining';
     const slug = encodeURIComponent(t.slug || t.title);
-    return '<div class="tender-card' + cardUrgency(days) + '" onclick="window.location=\'tender-detail.html?id=' + slug + '\'">' +
+    return '<div class="tender-card' + cardUrgency(days) + '" onclick="window.location=\'/tenders/' + slug + '.html\'">' +
       '<span class="sector-tag ' + sectorTagClass(t.sector) + '">' + sectorLabel(t.sector) + '</span>' +
       '<h3>' + (t.title || '') + '</h3>' +
       '<div class="tender-authority">' + (t.contracting_authority || '') + (t.location ? ' &nbsp;·&nbsp; ' + t.location : '') + '</div>' +
