@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <meta name="description" content="Browse live public sector tenders updated weekly. Hawkeye Solutions tracks the latest procurement opportunities across recruitment, IT, consultancy and more.">
+<meta name="description" content="Browse live public sector tenders updated weekly. Hawkeye Solutions tracks the latest procurement opportunities across recruitment, IT, consultancy and more.">
 <title>Live Tenders — Hawkeye Solutions</title>
- <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="shortcut icon" href="/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RKL8KRV0S"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-5RKL8KRV0S');</script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee}
@@ -22,7 +24,6 @@
   .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500}
   .nav-links a:hover{color:var(--white)}
   .nav-cta{background:var(--teal-mid)!important;color:var(--white)!important;padding:8px 18px;border-radius:6px;font-weight:600!important}
-  /* Hamburger */
   .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;cursor:pointer;padding:4px;background:none;border:none}
   .hamburger span{display:block;height:2px;background:var(--white);border-radius:2px;transition:transform 0.3s,opacity 0.3s,width 0.3s}
   .hamburger span:nth-child(1){width:22px}
@@ -31,14 +32,12 @@
   .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);width:22px}
   .hamburger.open span:nth-child(2){opacity:0}
   .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);width:22px}
-  /* Mobile menu */
   .mobile-menu{display:none;flex-direction:column;background:var(--steel);padding:0 5%;position:sticky;top:68px;z-index:99;border-top:1px solid rgba(255,255,255,0.08)}
   .mobile-menu.open{display:flex}
   .mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.07)}
   .mobile-menu a:last-child{border-bottom:none}
   .mobile-menu a:hover{color:var(--white)}
   .mob-cta{background:var(--teal-mid);color:var(--white)!important;padding:10px 18px!important;border-radius:6px;font-weight:700!important;margin:14px 0;text-align:center;border-bottom:none!important}
-  .mob-admin{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6)!important;padding:10px 18px!important;border-radius:6px;font-size:13px!important;text-align:center;border-bottom:none!important;margin-bottom:6px}
   .page-header{background:linear-gradient(135deg,var(--steel),var(--teal-dark));padding:60px 5% 50px}
   .page-header .label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7dd4e8;margin-bottom:10px}
   .page-header h1{font-size:40px;font-weight:800;color:var(--white);margin-bottom:12px}
@@ -78,42 +77,38 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px}
   footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
-  @media(max-width:768px){
-    .tender-grid{grid-template-columns:1fr}
-    .nav-links{display:none}
-    .hamburger{display:flex}
-  }
+  @media(max-width:768px){.tender-grid{grid-template-columns:1fr}.nav-links{display:none}.hamburger{display:flex}}
 </style>
 </head>
 <body>
-
+<div style="position:relative">
 <nav>
-  <a href="index.html" class="nav-logo" style="text-decoration:none;display:flex;align-items:center;gap:12px">
+  <a href="/index.html" class="nav-logo">
     <img src="/logo.png" alt="Hawkeye Solutions" height="44" style="display:block">
     <span class="nav-brand">Hawkeye Solutions</span>
   </a>
   <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="index.html#services">Services</a>
-    <a href="index.html#sectors">Sectors</a>
-    <a href="tenders.html" style="color:white;font-weight:700">Tenders</a>
-    <a href="index.html#about">About Us</a>
-    <a href="index.html#contact" class="nav-cta">Free Consultation</a>
+    <a href="/index.html">Home</a>
+    <a href="/services.html">Services</a>
+    <a href="/sectors.html">Sectors</a>
+    <a href="/tenders.html" style="color:white;font-weight:700">Tenders</a>
+    <a href="/blog.html">Blog</a>
+    <a href="/about.html">About Us</a>
+    <a href="/contact.html" class="nav-cta">Free Consultation</a>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu">
-    <span></span>
-    <span></span>
-    <span></span>
+    <span></span><span></span><span></span>
   </button>
 </nav>
-
 <div class="mobile-menu" id="mobile-menu">
-  <a href="index.html">Home</a>
-  <a href="index.html#services">Services</a>
-  <a href="index.html#sectors">Sectors</a>
-  <a href="tenders.html">Tenders</a>
-  <a href="index.html#about">About Us</a>
-  <a href="index.html#contact" class="mob-cta">Free Consultation</a>
+  <a href="/index.html">Home</a>
+  <a href="/services.html">Services</a>
+  <a href="/sectors.html">Sectors</a>
+  <a href="/tenders.html">Tenders</a>
+  <a href="/blog.html">Blog</a>
+  <a href="/about.html">About Us</a>
+  <a href="/contact.html" class="mob-cta">Free Consultation</a>
+</div>
 </div>
 
 <div class="page-header">
@@ -141,134 +136,98 @@
       <p style="font-size:16px;font-weight:700;color:var(--steel);margin-bottom:6px">Do not see your opportunity listed?</p>
       <p style="font-size:14px;color:var(--text-muted)">We cover a wide range of public sector tenders beyond those listed here. Get in touch and our team will help you find and assess the right opportunities.</p>
     </div>
-    <a href="index.html#contact" style="background:var(--teal-dark);color:white;padding:12px 24px;border-radius:7px;font-weight:700;font-size:14px;white-space:nowrap">Talk to Our Team</a>
+    <a href="/contact.html" style="background:var(--teal-dark);color:white;padding:12px 24px;border-radius:7px;font-weight:700;font-size:14px;white-space:nowrap">Talk to Our Team</a>
   </div>
 </section>
 
 <footer>
   <span class="brand">Hawkeye Solutions</span>
   <span>Precision Bids. Proven Results.</span>
-  <span>© 2025 Hawkeye Solutions. All rights reserved.</span>
+  <span>&copy; 2025 Hawkeye Solutions. All rights reserved.</span>
 </footer>
 
 <script>
-function toggleMobileMenu() {
-  var menu = document.getElementById('mobile-menu');
-  var burger = document.getElementById('hamburger');
-  var isOpen = menu.classList.contains('open');
+function toggleMobileMenu(){
+  var menu=document.getElementById('mobile-menu');
+  var burger=document.getElementById('hamburger');
+  var isOpen=menu.classList.contains('open');
   menu.classList.toggle('open');
   burger.classList.toggle('open');
-  burger.setAttribute('aria-expanded', String(!isOpen));
+  burger.setAttribute('aria-expanded',String(!isOpen));
 }
-
-function closeMobileMenu() {
+function closeMobileMenu(){
   document.getElementById('mobile-menu').classList.remove('open');
   document.getElementById('hamburger').classList.remove('open');
-  document.getElementById('hamburger').setAttribute('aria-expanded', 'false');
+  document.getElementById('hamburger').setAttribute('aria-expanded','false');
 }
-
-var allTenders = [];
-var currentFilter = 'all';
-
-function sortTenders(list) {
-  var today = new Date();
-  today.setHours(0,0,0,0);
-  var live = [], expired = [];
-  list.forEach(function(t) {
-    var d = t.deadline ? new Date(t.deadline) : null;
-    (d && d >= today ? live : expired).push(t);
-  });
-  live.sort(function(a,b){ return new Date(a.deadline) - new Date(b.deadline); });
-  expired.sort(function(a,b){ return new Date(b.deadline) - new Date(a.deadline); });
+var allTenders=[];
+var currentFilter='all';
+function sortTenders(list){
+  var today=new Date();today.setHours(0,0,0,0);
+  var live=[],expired=[];
+  list.forEach(function(t){var d=t.deadline?new Date(t.deadline):null;(d&&d>=today?live:expired).push(t);});
+  live.sort(function(a,b){return new Date(a.deadline)-new Date(b.deadline);});
+  expired.sort(function(a,b){return new Date(b.deadline)-new Date(a.deadline);});
   return live.concat(expired);
 }
-
-async function loadTenders() {
-  try {
-    const r = await fetch('/tenders-data.json?v=' + Date.now());
-    if (!r.ok) throw new Error('Failed to load');
-    const data = await r.json();
-    allTenders = sortTenders(data.filter(t => t.status === 'live'));
+async function loadTenders(){
+  try{
+    const r=await fetch('/tenders-data.json?v='+Date.now());
+    if(!r.ok)throw new Error('Failed to load');
+    const data=await r.json();
+    allTenders=sortTenders(data.filter(t=>t.status==='live'));
     renderTenders(allTenders);
-  } catch(e) {
-    console.error('Failed to load tenders:', e);
-    document.getElementById('tender-grid').innerHTML = '<div class="no-results">Tenders loading shortly. Check back in a moment.</div>';
+  }catch(e){
+    document.getElementById('tender-grid').innerHTML='<div class="no-results">Tenders loading shortly. Check back in a moment.</div>';
   }
 }
-
-function daysUntil(dateStr) {
-  if (!dateStr) return 999;
-  const d = new Date(dateStr), n = new Date();
-  n.setHours(0,0,0,0);
-  return Math.ceil((d - n) / 86400000);
+function daysUntil(dateStr){
+  if(!dateStr)return 999;
+  const d=new Date(dateStr),n=new Date();n.setHours(0,0,0,0);
+  return Math.ceil((d-n)/86400000);
 }
-
-function formatDate(d) {
-  if (!d) return 'TBC';
+function formatDate(d){
+  if(!d)return'TBC';
   return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 }
-
-function sectorLabel(s) {
-  return s==='recruitment'?'Recruitment':s==='it'?'IT and Technology':'Other';
-}
-
-function sectorTagClass(s) {
-  return s==='recruitment'?'tag-recruitment':s==='it'?'tag-it':'tag-other';
-}
-
-function deadlineClass(days) {
-  return days <= 0 ? 'deadline-urgent' : days <= 25 ? 'deadline-soon' : 'deadline-ok';
-}
-
-function cardUrgency(days) {
-  return days <= 0 ? ' urgent' : days <= 25 ? ' soon' : '';
-}
-
-function renderTenders(list) {
-  const grid = document.getElementById('tender-grid');
-  const countEl = document.getElementById('tender-count');
-  countEl.textContent = 'Showing ' + list.length + ' opportunit' + (list.length === 1 ? 'y' : 'ies');
-  if (!list.length) {
-    grid.innerHTML = '<div class="no-results">No tenders found matching your search.</div>';
-    return;
-  }
-  grid.innerHTML = list.map(t => {
-    const days = daysUntil(t.deadline);
-    const daysLabel = days <= 0 ? 'Deadline passed' : days === 1 ? '1 day remaining' : days + ' days remaining';
-    const slug = encodeURIComponent(t.slug || t.title);
-    return '<div class="tender-card' + cardUrgency(days) + '" onclick="window.location=\'/tenders/' + slug + '.html\'">' +
-      '<span class="sector-tag ' + sectorTagClass(t.sector) + '">' + sectorLabel(t.sector) + '</span>' +
-      '<h3>' + (t.title || '') + '</h3>' +
-      '<div class="tender-authority">' + (t.contracting_authority || '') + (t.location ? ' &nbsp;·&nbsp; ' + t.location : '') + '</div>' +
-      '<div class="deadline-badge ' + deadlineClass(days) + '"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' +
-      formatDate(t.deadline) + '&nbsp;·&nbsp;' + daysLabel + '</div>' +
-      (t.value ? '<div class="tender-value">Estimated value: <span>' + t.value + '</span></div>' : '') +
-      '<p class="tender-desc">' + (t.description || '').replace(/[#*`]/g,'').substring(0,180) + '...</p>' +
-      '<span class="tender-link">View full details</span>' +
+function sectorLabel(s){return s==='recruitment'?'Recruitment':s==='it'?'IT and Technology':'Other';}
+function sectorTagClass(s){return s==='recruitment'?'tag-recruitment':s==='it'?'tag-it':'tag-other';}
+function deadlineClass(days){return days<=0?'deadline-urgent':days<=25?'deadline-soon':'deadline-ok';}
+function cardUrgency(days){return days<=0?' urgent':days<=25?' soon':'';}
+function renderTenders(list){
+  const grid=document.getElementById('tender-grid');
+  const countEl=document.getElementById('tender-count');
+  countEl.textContent='Showing '+list.length+' opportunit'+(list.length===1?'y':'ies');
+  if(!list.length){grid.innerHTML='<div class="no-results">No tenders found matching your search.</div>';return;}
+  grid.innerHTML=list.map(t=>{
+    const days=daysUntil(t.deadline);
+    const daysLabel=days<=0?'Deadline passed':days===1?'1 day remaining':days+' days remaining';
+    const slug=encodeURIComponent(t.slug||t.title);
+    return '<div class="tender-card'+cardUrgency(days)+'" data-url="/tenders/'+slug+'.html" onclick="window.location=this.dataset.url">'+
+      '<span class="sector-tag '+sectorTagClass(t.sector)+'">'+sectorLabel(t.sector)+'</span>'+
+      '<h3>'+(t.title||'')+'</h3>'+
+      '<div class="tender-authority">'+(t.contracting_authority||'')+(t.location?' &nbsp;&middot;&nbsp; '+t.location:'')+'</div>'+
+      '<div class="deadline-badge '+deadlineClass(days)+'"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'+
+      formatDate(t.deadline)+'&nbsp;&middot;&nbsp;'+daysLabel+'</div>'+
+      (t.value?'<div class="tender-value">Estimated value: <span>'+t.value+'</span></div>':'')+
+      '<p class="tender-desc">'+(t.description||'').replace(/[#*`]/g,'').substring(0,180)+'...</p>'+
+      '<span class="tender-link">View full details</span>'+
     '</div>';
   }).join('');
 }
-
-function filterTenders() {
-  const q = document.getElementById('search-input').value.toLowerCase().trim();
-  let list = allTenders;
-  if (currentFilter !== 'all') list = list.filter(t => t.sector === currentFilter);
-  if (q) list = list.filter(t =>
-    (t.title||'').toLowerCase().includes(q) ||
-    (t.contracting_authority||'').toLowerCase().includes(q) ||
-    (t.description||'').toLowerCase().includes(q) ||
-    (t.location||'').toLowerCase().includes(q)
-  );
+function filterTenders(){
+  const q=document.getElementById('search-input').value.toLowerCase().trim();
+  let list=allTenders;
+  if(currentFilter!=='all')list=list.filter(t=>t.sector===currentFilter);
+  if(q)list=list.filter(t=>(t.title||'').toLowerCase().includes(q)||(t.contracting_authority||'').toLowerCase().includes(q)||(t.description||'').toLowerCase().includes(q)||(t.location||'').toLowerCase().includes(q));
   renderTenders(sortTenders(list));
 }
-
-function setFilter(f, btn) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   filterTenders();
 }
-
 loadTenders();
 </script>
 </body>
