@@ -279,8 +279,8 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     <a href="/sectors.html">Sectors</a>
     <a href="tenders.html">Tenders</a>
     <a href="blog.html">Blog</a>
-    <a href="#" onclick="showPage('about')">About Us</a>
-    <a href="#" onclick="showPage('contact')" class="nav-cta">Free Consultation</a>
+    <a href="/about.html">About Us</a>
+    <a href="/contact.html" class="nav-cta">Free Consultation</a>
   </div>
   <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileMenu()">
     <span></span><span></span><span></span>
@@ -292,8 +292,8 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
   <a href="/sectors.html" onclick="closeMobileMenu()">Sectors</a>
   <a href="tenders.html" onclick="closeMobileMenu()">Tenders</a>
   <a href="blog.html" onclick="closeMobileMenu()">Blog</a>
-  <a href="#" onclick="mobileNav('about')">About Us</a>
-  <a href="#" class="mob-cta" onclick="mobileNav('contact')">Free Consultation</a>
+  <a href="/about.html" onclick="closeMobileMenu()">About Us</a>
+  <a href="/contact.html" class="mob-cta">Free Consultation</a>
 </div>
 <div class="search-bar">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -311,7 +311,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     <p class="hero-sub">Expert bid writing and management for public sector recruitment and IT contracts.</p>
     <p class="hero-desc">Hawkeye Solutions helps recruitment and IT consultancy businesses win the public sector contracts they deserve. We see what others miss.</p>
     <div class="hero-btns">
-      <a href="#" class="btn-primary" onclick="showPage('contact')">Get a Free Consultation</a>
+      <a href="/contact.html" class="btn-primary">Get a Free Consultation</a>
       <a href="/services.html" class="btn-secondary">Our Services</a>
     </div>
   </div>
@@ -468,7 +468,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
 <div class="cta-banner">
   <h2>Ready to win your next contract?</h2>
   <p>Book a free, no-obligation consultation with our team today.</p>
-  <a href="#" class="btn-primary" onclick="showPage('contact')">Book a Free Consultation</a>
+  <a href="/contact.html" class="btn-primary">Book a Free Consultation</a>
 </div>
 </div>
 
@@ -588,7 +588,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
   <div class="cta-banner">
     <h2>Work with a team that knows how to win</h2>
     <p>Talk to us today about your next public sector opportunity.</p>
-    <a href="#" class="btn-primary" onclick="showPage('contact')">Get a Free Consultation</a>
+    <a href="/contact.html" class="btn-primary">Get a Free Consultation</a>
   </div>
 </div>
 
@@ -656,7 +656,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
   <div class="footer-grid">
     <div><p style="color:rgba(255,255,255,0.9);font-size:16px;font-weight:700;margin-bottom:8px">Hawkeye Solutions</p><p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.6)">Precision Bids. Proven Results.<br>Specialist bid writing for public sector recruitment and IT consultancy contracts.</p></div>
     <div class="footer-col"><h4>Services</h4><a href="/bid-writing.html">Bid Writing</a><a href="/bid-management.html">Bid Management</a><a href="/bid-consultancy.html">Bid Consultancy &amp; Review</a><a href="/bid-training.html">Bid Writing Training</a></div>
-    <div class="footer-col"><h4>Company</h4><a href="#" onclick="showPage('about')">About Us</a><a href="/sectors.html">Sectors</a><a href="tenders.html">Tenders</a><a href="#" onclick="showPage('contact')">Contact</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="/about.html">About Us</a><a href="/sectors.html">Sectors</a><a href="tenders.html">Tenders</a><a href="/contact.html">Contact</a></div>
     <div class="footer-col"><h4>Sectors</h4><a href="/sectors.html#recruitment">Recruitment and Staffing</a><a href="/sectors.html#it">IT Consultancy</a><a href="/sectors.html#councils">Local Government</a></div>
   </div>
   <div class="footer-bottom"><span>&#169; 2025 Hawkeye Solutions. All rights reserved.</span><span>Privacy Policy &middot; Terms of Use</span></div>
@@ -699,15 +699,23 @@ async function loadTendersStrip(){
     var live=data.filter(function(t){return t.status==='live'&&(!t.deadline||new Date(t.deadline)>=today);});
     live.sort(function(a,b){return new Date(a.deadline)-new Date(b.deadline);});
     var top=live.slice(0,3);
-    if(!top.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--text-muted);font-size:14px">Check back soon for new opportunities, or <a href="/tenders.html" style="color:var(--teal-mid);font-weight:600">view all tenders</a>.</div>';return;}
+    if(!top.length){
+      grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--text-muted);font-size:14px">Check back soon, or <a href="/tenders.html" style="color:var(--teal-mid);font-weight:600">view all tenders</a>.</div>';
+      return;
+    }
     grid.innerHTML=top.map(function(t){
-      var days=daysUntil(t.deadline),dl=days<=0?'Deadline passed':days===1?'1 day left':days+' days left',dc=days<=0?'urgent':days<=25?'soon':'ok',slug=encodeURIComponent(t.slug||t.title);
-      return'<div class="strip-card '+dc+'" onclick="window.location=\'/tender-detail.html?id='+slug+'\'">'
-        +'<span class="strip-sector '+sTag(t.sector)+'">'+sLabel(t.sector)+'</span>'
-        +'<h4>'+t.title+'</h4>'
-        +'<div class="strip-authority">'+t.contracting_authority+(t.location?' &middot; '+t.location:'')+'</div>'
-        +'<span class="strip-deadline '+dc+'">'+fmtDate(t.deadline)+' &middot; '+dl+'</span>'
-        +'</div>';
+      var days=daysUntil(t.deadline);
+      var dl=days<=0?'Deadline passed':days===1?'1 day left':days+' days left';
+      var dc=days<=0?'urgent':days<=25?'soon':'ok';
+      var slug=encodeURIComponent(t.slug||t.title);
+      var url='/tenders/'+slug+'.html';
+      var html='<div class="strip-card '+dc+'" onclick="window.location=this.dataset.url" data-url="'+url+'">';
+      html+='<span class="strip-sector '+sTag(t.sector)+'">'+sLabel(t.sector)+'</span>';
+      html+='<h4>'+t.title+'</h4>';
+      html+='<div class="strip-authority">'+t.contracting_authority+(t.location?' &middot; '+t.location:'')+'</div>';
+      html+='<span class="strip-deadline '+dc+'">'+fmtDate(t.deadline)+' &middot; '+dl+'</span>';
+      html+='</div>';
+      return html;
     }).join('');
   }catch(e){
     grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px"><a href="/tenders.html" style="color:var(--teal-mid);font-weight:700;font-size:14px">View all live tenders</a></div>';
@@ -719,8 +727,8 @@ var searchIndex=[
   {page:'home',title:'Home',text:'bid writing management review training public sector recruitment IT consultancy precision proven results',external:false},
   {page:'services.html',title:'Services',text:'bid writing management consultancy review training full service',external:true},
   {page:'sectors.html',title:'Sectors',text:'recruitment staffing NHS local government IT consultancy G-Cloud digital outcomes utilities construction events',external:true},
-  {page:'about',title:'About Us',text:'about hawkeye Philip Pitt James Pitt founder team timeline values',external:false},
-  {page:'contact',title:'Free Consultation',text:'contact consultation callback phone email get in touch',external:false},
+  {page:'about.html',title:'About Us',text:'about hawkeye Philip Pitt James Pitt founder team timeline values',external:true},
+  {page:'contact.html',title:'Free Consultation',text:'contact consultation callback phone email get in touch',external:true},
 ];
 function doSearch(q){
   var box=document.getElementById('search-results');
