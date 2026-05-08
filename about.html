@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Meet the Hawkeye Solutions team. Over three decades of combined expertise in public sector bid writing, recruitment frameworks and IT consultancy. Based in the UK.">
+<title>About Us | Hawkeye Solutions – Precision Bids. Proven Results.</title>
+<link rel="canonical" href="https://hawkeye-solutions.co.uk/about.html">
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RKL8KRV0S"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-5RKL8KRV0S');</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee}
+body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
+a{text-decoration:none;color:inherit}
+nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-brand{color:var(--white);font-size:18px;font-weight:700}
+.nav-links{display:flex;gap:28px}
+.nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;transition:color 0.2s}
+.nav-links a:hover{color:var(--white)}
+.nav-links a.active{color:var(--white);font-weight:700}
+.nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important}
+.hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
+.hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:transform 0.25s,opacity 0.25s}
+.hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+.mobile-menu{display:none;position:absolute;top:68px;left:0;right:0;background:var(--steel);z-index:99;flex-direction:column;border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:14px 5%;border-bottom:1px solid rgba(255,255,255,0.07);transition:background 0.15s,color 0.15s}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu a:hover{background:rgba(255,255,255,0.07);color:var(--white)}
+.mobile-menu .mob-cta{background:var(--teal-mid);color:var(--white);margin:12px 5%;border-radius:6px;text-align:center;border-bottom:none!important;padding:12px 5%}
+.mobile-menu .mob-cta:hover{background:var(--teal)}
+section{padding:70px 5%}
+.section-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal-mid);margin-bottom:10px}
+.section-title{font-size:34px;font-weight:800;color:var(--steel);margin-bottom:14px;line-height:1.2}
+.section-desc{font-size:16px;color:var(--text-muted);line-height:1.75}
+.section-header{margin-bottom:44px}
+
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.team-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:36px 32px;text-align:center;box-shadow:0 2px 12px rgba(26,107,124,0.06);transition:box-shadow 0.2s,border-color 0.2s}
+.team-card:hover{box-shadow:0 6px 28px rgba(26,107,124,0.13);border-color:var(--teal-mid)}
+.team-photo{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid var(--teal-light);margin:0 auto 20px;display:block;background:var(--teal-light)}
+.team-name{font-size:22px;font-weight:800;color:var(--steel);margin-bottom:4px}
+.team-title{font-size:13px;font-weight:700;color:var(--teal-mid);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:16px}
+.team-bio{font-size:14px;color:var(--text-muted);line-height:1.8;text-align:left}
+
+/* TIMELINE — proper alternating left/right */
+.timeline-section{background:var(--off-white);padding:70px 5%}
+.timeline{position:relative;max-width:900px;margin:0 auto}
+.timeline::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;background:var(--teal-mid);transform:translateX(-50%);border-radius:2px}
+.tl-entry{display:grid;grid-template-columns:1fr 88px 1fr;align-items:flex-start;margin-bottom:40px;position:relative}
+.tl-content{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
+.tl-content-left{grid-column:1;text-align:right}
+.tl-content-right{grid-column:3;text-align:left}
+.tl-spacer-left{grid-column:1}
+.tl-spacer-right{grid-column:3}
+.tl-year-wrap{grid-column:2;display:flex;justify-content:center;align-items:flex-start;padding-top:14px;position:relative;z-index:1}
+.tl-year{width:62px;height:62px;background:var(--teal-dark);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;text-align:center;line-height:1.2;border:3px solid var(--white);box-shadow:0 0 0 3px var(--teal-mid)}
+.tl-milestone{font-size:14px;color:var(--text-muted);line-height:1.7}
+.tl-milestone strong{display:block;font-size:15px;color:var(--steel);font-weight:700;margin-bottom:4px}
+
+/* CLIENT LOGOS */
+.clients-section{background:var(--white);padding:60px 5%}
+.clients-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}
+.client-logo-box{background:var(--off-white);border:1px solid var(--border);border-radius:10px;padding:20px 16px;display:flex;align-items:center;justify-content:center;min-height:80px;transition:box-shadow 0.2s,border-color 0.2s}
+.client-logo-box:hover{box-shadow:0 4px 16px rgba(26,107,124,0.08);border-color:var(--teal-mid)}
+.client-logo-box img{max-height:44px;max-width:100%;object-fit:contain;filter:grayscale(100%);opacity:0.65;transition:filter 0.2s,opacity 0.2s}
+.client-logo-box:hover img{filter:grayscale(0%);opacity:1}
+.client-logo-box span{font-size:12px;font-weight:700;color:var(--text-muted);text-align:center;line-height:1.4}
+
+/* VALUES */
+.about-values{background:var(--steel);padding:70px 5%}
+.values-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:800px}
+.value-item{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:24px}
+.value-dot{width:10px;height:10px;background:var(--teal-mid);border-radius:50%;margin-top:6px;flex-shrink:0}
+.value-item strong{font-size:15px;color:var(--white);display:block;margin-bottom:5px}
+.value-item p{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7}
+
+/* CTA BANNER */
+.cta-banner{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));padding:70px 5%;text-align:center}
+.cta-banner h2{font-size:36px;font-weight:800;color:var(--white);margin-bottom:14px}
+.cta-banner p{font-size:17px;color:rgba(255,255,255,0.8);margin-bottom:32px}
+.btn-primary{background:var(--white);color:var(--teal-dark);padding:13px 28px;border-radius:7px;font-weight:700;font-size:15px;display:inline-block;transition:background 0.2s}
+.btn-primary:hover{background:#e8f4f7}
+
+footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:36px}
+.footer-col h4{color:var(--white);font-size:14px;font-weight:700;margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:8px;transition:color 0.2s}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;font-size:12px;display:flex;justify-content:space-between}
+
+@media(max-width:768px){
+  nav .nav-links{display:none}
+  .hamburger{display:flex}
+  .team-grid{grid-template-columns:1fr}
+  .clients-grid{grid-template-columns:repeat(2,1fr)}
+  .values-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  /* Timeline collapses to single column on mobile */
+  .timeline::before{left:30px;transform:none}
+  .tl-entry{grid-template-columns:60px 1fr;gap:0}
+  .tl-year-wrap{grid-column:1;grid-row:1;padding-top:10px}
+  .tl-year{width:52px;height:52px;font-size:11px}
+  .tl-content-left,.tl-content-right{grid-column:2;grid-row:1;text-align:left}
+  .tl-spacer-left,.tl-spacer-right{display:none}
+}
+</style>
+</head>
+<body>
+
+<div style="position:relative">
+<nav>
+  <a href="/index.html" class="nav-logo">
+    <img src="/logo.png" alt="Hawkeye Solutions" height="44" style="display:block">
+    <span class="nav-brand">Hawkeye Solutions</span>
+  </a>
+  <div class="nav-links">
+    <a href="/index.html">Home</a>
+    <a href="/services.html">Services</a>
+    <a href="/sectors.html">Sectors</a>
+    <a href="/tenders.html">Tenders</a>
+    <a href="/blog.html">Blog</a>
+    <a href="/about.html" class="active">About Us</a>
+    <a href="/contact.html" class="nav-cta">Free Consultation</a>
+  </div>
+  <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/index.html">Home</a>
+  <a href="/services.html">Services</a>
+  <a href="/sectors.html">Sectors</a>
+  <a href="/tenders.html">Tenders</a>
+  <a href="/blog.html">Blog</a>
+  <a href="/about.html">About Us</a>
+  <a href="/contact.html" class="mob-cta">Free Consultation</a>
+</div>
+</div>
+
+<!-- HERO -->
+<div style="background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 60%,var(--teal) 100%);padding:80px 5% 70px">
+  <div class="section-label" style="color:#7dd4e8">About Us</div>
+  <h1 style="font-size:42px;font-weight:800;color:var(--white);margin-bottom:12px;line-height:1.2">Meet the Team Behind Hawkeye</h1>
+  <p style="font-size:18px;color:rgba(255,255,255,0.75);max-width:620px;line-height:1.65">Over three decades of combined expertise in public sector bid writing, recruitment frameworks and IT consultancy.</p>
+</div>
+
+<!-- MEET THE TEAM -->
+<section style="background:var(--off-white)">
+  <div class="section-header" style="text-align:center;max-width:600px;margin:0 auto 44px">
+    <div class="section-label">The people behind your success</div>
+    <h2 class="section-title">Meet the Team</h2>
+  </div>
+  <div class="team-grid">
+    <div class="team-card">
+      <img src="/philip.jpg" alt="Philip Pitt — Founder and Managing Director, Hawkeye Solutions" class="team-photo">
+      <div class="team-name">Philip Pitt</div>
+      <div class="team-title">Founder and Managing Director</div>
+      <p class="team-bio">Philip has over 24 years of recruitment experience working across large, small and niche agencies, delivering recruitment services and IT consultancy to the public and private sector including Government, NHS, IT, utilities and financial services. For the last 14 years he has provided specialist bid, proposal and tender writing services across all major frameworks including managed services, temporary and permanent recruitment and executive search. Business wins include multiple frameworks run by Crown Commercial Service, Workforce Alliance, HTE, Local Authorities, utilities, charities and private sector companies.</p>
+    </div>
+    <div class="team-card">
+      <img src="/james.jpg" alt="James Pitt — Senior Director Business Development, Hawkeye Solutions" class="team-photo">
+      <div class="team-name">James Pitt</div>
+      <div class="team-title">Senior Director, Business Development</div>
+      <p class="team-bio">James brings a background in finance and a sharp commercial instinct to Hawkeye Solutions, having transitioned into business development and bid management to help drive the company's growth. Since joining the team James has played a pivotal role in securing significant client relationships, with particular success across G-Cloud and Digital Outcomes and Specialists frameworks. Working alongside his father Philip, James has helped expand Hawkeye's reach across the utilities sector and beyond, building lasting partnerships with organisations navigating the complexities of public sector procurement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE — alternating left/right -->
+<div class="timeline-section">
+  <div class="section-header" style="text-align:center;max-width:600px;margin:0 auto 52px">
+    <div class="section-label">Our journey</div>
+    <h2 class="section-title">Company Timeline</h2>
+    <p class="section-desc" style="margin:0 auto">From a focused IT recruitment specialist to a full-service public sector bid consultancy.</p>
+  </div>
+  <div class="timeline">
+
+    <!-- LEFT: 2011 -->
+    <div class="tl-entry">
+      <div class="tl-content tl-content-left">
+        <div class="tl-milestone"><strong>Company founded</strong>Established with a focused specialism in IT recruitment tenders, laying the foundation for public sector success.</div>
+      </div>
+      <div class="tl-year-wrap"><div class="tl-year">2011</div></div>
+      <div class="tl-spacer-right"></div>
+    </div>
+
+    <!-- RIGHT: 2013 -->
+    <div class="tl-entry">
+      <div class="tl-spacer-left"></div>
+      <div class="tl-year-wrap"><div class="tl-year">2013</div></div>
+      <div class="tl-content tl-content-right">
+        <div class="tl-milestone"><strong>IT Consultancy &amp; first G-Cloud win</strong>Expanded into IT Consultancy frameworks and secured the first G-Cloud win at G-Cloud 3.</div>
+      </div>
+    </div>
+
+    <!-- LEFT: 2016 -->
+    <div class="tl-entry">
+      <div class="tl-content tl-content-left">
+        <div class="tl-milestone"><strong>First NHS win</strong>Secured the first win at an NHS Trust for IT Consultancy services, opening a major new sector.</div>
+      </div>
+      <div class="tl-year-wrap"><div class="tl-year">2016</div></div>
+      <div class="tl-spacer-right"></div>
+    </div>
+
+    <!-- RIGHT: 2019 -->
+    <div class="tl-entry">
+      <div class="tl-spacer-left"></div>
+      <div class="tl-year-wrap"><div class="tl-year">2019</div></div>
+      <div class="tl-content tl-content-right">
+        <div class="tl-milestone"><strong>Thames Tideway win</strong>High-profile recruitment tender win for Thames Tideway, one of the UK's largest infrastructure projects.</div>
+      </div>
+    </div>
+
+    <!-- LEFT: 2020 -->
+    <div class="tl-entry">
+      <div class="tl-content tl-content-left">
+        <div class="tl-milestone"><strong>NHS staffing frameworks</strong>A series of NHS staffing framework wins, cementing Hawkeye's position in the healthcare recruitment sector.</div>
+      </div>
+      <div class="tl-year-wrap"><div class="tl-year">2020</div></div>
+      <div class="tl-spacer-right"></div>
+    </div>
+
+    <!-- RIGHT: 2020-21 -->
+    <div class="tl-entry">
+      <div class="tl-spacer-left"></div>
+      <div class="tl-year-wrap"><div class="tl-year" style="font-size:10px">2020&ndash;21</div></div>
+      <div class="tl-content tl-content-right">
+        <div class="tl-milestone"><strong>James joins &amp; international wins</strong>James joined the team in a business development role, and Hawkeye secured its first international recruitment tender wins.</div>
+      </div>
+    </div>
+
+    <!-- LEFT: 2022 -->
+    <div class="tl-entry">
+      <div class="tl-content tl-content-left">
+        <div class="tl-milestone"><strong>Utilities sector expansion</strong>Formally expanded to encompass utilities sector tenders, broadening the client base significantly.</div>
+      </div>
+      <div class="tl-year-wrap"><div class="tl-year">2022</div></div>
+      <div class="tl-spacer-right"></div>
+    </div>
+
+    <!-- RIGHT: 2024 -->
+    <div class="tl-entry">
+      <div class="tl-spacer-left"></div>
+      <div class="tl-year-wrap"><div class="tl-year">2024</div></div>
+      <div class="tl-content tl-content-right">
+        <div class="tl-milestone"><strong>Company growth</strong>Continued growth saw new staff engaged to meet increasing client demand across all service lines.</div>
+      </div>
+    </div>
+
+    <!-- LEFT: 2026 -->
+    <div class="tl-entry">
+      <div class="tl-content tl-content-left">
+        <div class="tl-milestone"><strong>Continuing to grow</strong>Building on strong foundations, Hawkeye Solutions continues to expand its reach and client partnerships.</div>
+      </div>
+      <div class="tl-year-wrap"><div class="tl-year">2026</div></div>
+      <div class="tl-spacer-right"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CLIENT LOGOS -->
+<div class="clients-section">
+  <div style="text-align:center;max-width:640px;margin:0 auto">
+    <div class="section-label">Trusted by</div>
+    <h2 class="section-title">Organisations We Have Worked With</h2>
+    <p class="section-desc" style="margin:0 auto">From local councils and NHS trusts to national energy companies and global consultancies, we have helped organisations across the UK win the contracts that matter.</p>
+  </div>
+  <div class="clients-grid">
+    <!-- Replace <span> with <img src="/logos/filename.png" alt="Name"> when logos are ready -->
+    <div class="client-logo-box"><span>Hampshire County Council</span></div>
+    <div class="client-logo-box"><span>NHS</span></div>
+    <div class="client-logo-box"><span>E.ON UK</span></div>
+    <div class="client-logo-box"><span>EDF Energy</span></div>
+    <div class="client-logo-box"><span>ScottishPower</span></div>
+    <div class="client-logo-box"><span>Leeds City Council</span></div>
+    <div class="client-logo-box"><span>Liverpool City Council</span></div>
+    <div class="client-logo-box"><span>Manchester City Council</span></div>
+    <div class="client-logo-box"><span>North Tyneside Borough Council</span></div>
+    <div class="client-logo-box"><span>Newcastle City Council</span></div>
+    <div class="client-logo-box"><span>Axis Group</span></div>
+    <div class="client-logo-box"><span>Capgemini Invent</span></div>
+  </div>
+</div>
+
+<!-- VALUES -->
+<div class="about-values">
+  <div style="padding:0 5%">
+    <div class="section-header" style="margin-bottom:36px">
+      <div class="section-label" style="color:#7dd4e8">What drives us</div>
+      <h2 class="section-title" style="color:var(--white)">Our Values</h2>
+      <p class="section-desc" style="color:rgba(255,255,255,0.7)">The principles that guide everything we do for our clients.</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-item"><div class="value-dot"></div><div><strong>Precision</strong><p>Every response is crafted with care, evidence, and a sharp eye for what the evaluator needs to see.</p></div></div>
+      <div class="value-item"><div class="value-dot"></div><div><strong>Partnership</strong><p>We work as part of your team, not as an outsider. Your success is our success.</p></div></div>
+      <div class="value-item"><div class="value-dot"></div><div><strong>Transparency</strong><p>Fixed fees, clear timelines, and honest advice, always.</p></div></div>
+      <div class="value-item"><div class="value-dot"></div><div><strong>Results</strong><p>We are judged by your win rate. We take that responsibility seriously.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-banner">
+  <h2>Work with a team that knows how to win</h2>
+  <p>Talk to us today about your next public sector opportunity.</p>
+  <a href="/contact.html" class="btn-primary">Get a Free Consultation</a>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div><p style="color:rgba(255,255,255,0.9);font-size:16px;font-weight:700;margin-bottom:8px">Hawkeye Solutions</p><p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.6)">Precision Bids. Proven Results.<br>Specialist bid writing for public sector recruitment and IT consultancy contracts.</p></div>
+    <div class="footer-col"><h4>Services</h4><a href="/bid-writing.html">Bid Writing</a><a href="/bid-management.html">Bid Management</a><a href="/bid-consultancy.html">Bid Consultancy &amp; Review</a><a href="/bid-training.html">Bid Writing Training</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="/about.html">About Us</a><a href="/sectors.html">Sectors</a><a href="/tenders.html">Tenders</a><a href="/contact.html">Contact</a></div>
+    <div class="footer-col"><h4>Sectors</h4><a href="/sectors.html#recruitment">Recruitment and Staffing</a><a href="/sectors.html#it">IT Consultancy</a><a href="/sectors.html#councils">Local Government</a></div>
+  </div>
+  <div class="footer-bottom"><span>&copy; 2025 Hawkeye Solutions. All rights reserved.</span><span>Privacy Policy &middot; Terms of Use</span></div>
+</footer>
+
+<script>
+function toggleMenu(){
+  var btn=document.getElementById('hamburger-btn'),menu=document.getElementById('mobile-menu'),open=menu.classList.contains('open');
+  if(open){menu.classList.remove('open');btn.classList.remove('open');btn.setAttribute('aria-expanded','false');}
+  else{menu.classList.add('open');btn.classList.add('open');btn.setAttribute('aria-expanded','true');}
+}
+if(window.netlifyIdentity){window.netlifyIdentity.on('init',function(user){if(!user){window.netlifyIdentity.on('login',function(){document.location.href='/admin/';});}});}
+</script>
+</body>
+</html>
