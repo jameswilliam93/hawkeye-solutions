@@ -305,8 +305,8 @@ footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
     <a href="/sectors.html">Sectors</a>
     <a href="/tenders.html">Tenders</a>
     <a href="/blog.html">Blog</a>
-    <a href="/index.html#about">About Us</a>
-    <a href="/index.html#contact" class="nav-cta">Free Consultation</a>
+    <a href="/about.html">About Us</a>
+    <a href="/contact.html" class="nav-cta">Free Consultation</a>
   </div>
   <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMenu()">
     <span></span><span></span><span></span>
@@ -318,8 +318,8 @@ footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
   <a href="/sectors.html">Sectors</a>
   <a href="/tenders.html">Tenders</a>
   <a href="/blog.html">Blog</a>
-  <a href="/index.html#about">About Us</a>
-  <a href="/index.html#contact" class="mob-cta">Free Consultation</a>
+  <a href="/about.html">About Us</a>
+  <a href="/contact.html" class="mob-cta">Free Consultation</a>
 </div>
 </div>
 
@@ -369,7 +369,7 @@ footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
     <div class="highlight-block">
       <h2>Need Help Winning This Bid?</h2>
       <p>Hawkeye Solutions specialises in bid writing for ${escHtml(sectorLabel(t.sector))} tenders. We can assess your fit for this opportunity and build a winning submission. Our initial consultation is completely free.</p>
-      <a href="/index.html#contact" class="btn-primary" style="max-width:280px;display:inline-block;width:auto;padding:12px 24px">Book Free Consultation</a>
+      <a href="/contact.html" class="btn-primary" style="max-width:280px;display:inline-block;width:auto;padding:12px 24px">Book Free Consultation</a>
     </div>
   </div>
 
