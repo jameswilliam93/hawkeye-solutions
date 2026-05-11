@@ -5,7 +5,7 @@ status: live
 date: 26/03/2026
 deadline: 22/05/2026T13:45
 value: £250m
-sector: other
+sector: events
 location: UK
 lots: "Lot 1 – National and Public-Facing Events: end-to-end delivery of
   large-scale, high-profile national events.  Lot 2 – Medium to Large Indoor
