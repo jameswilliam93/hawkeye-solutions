@@ -371,7 +371,16 @@ footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
     <div class="highlight-block">
       <h2>Need Help Winning This Bid?</h2>
       <p>Hawkeye Solutions specialises in bid writing for ${escHtml(sectorLabel(t.sector))} tenders. We can assess your fit for this opportunity and build a winning submission. Our initial consultation is completely free.</p>
-      <a href="/contact.html" class="btn-primary" style="max-width:280px;display:inline-block;width:auto;padding:12px 24px">Book Free Consultation</a>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:4px">
+        <a href="tel:0330 223 8040" class="btn-primary" style="max-width:260px;display:inline-flex;align-items:center;gap:8px;width:auto;padding:12px 20px;text-decoration:none">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          0330 223 8040
+        </a>
+        <a href="mailto:info@hawkeye-solutions.co.uk?subject=Tender%20Enquiry%20-%20${titleEsc}" class="btn-primary" style="max-width:300px;display:inline-flex;align-items:center;gap:8px;width:auto;padding:12px 20px;background:var(--teal-mid);text-decoration:none">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          info@hawkeye-solutions.co.uk
+        </a>
+      </div>
     </div>
   </div>
 
