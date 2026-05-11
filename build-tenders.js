@@ -77,8 +77,10 @@ function daysUntil(dateStr) {
 }
 
 function sectorLabel(s) {
-  return s === 'recruitment' ? 'Recruitment and Staffing'
-       : s === 'it'          ? 'IT and Technology'
+  return s === 'recruitment'  ? 'Recruitment and Staffing'
+       : s === 'it'           ? 'IT and Technology'
+       : s === 'consultancy'  ? 'Consultancy'
+       : s === 'events'       ? 'Events'
        : 'Other';
 }
 
