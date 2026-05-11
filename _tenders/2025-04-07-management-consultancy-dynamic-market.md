@@ -4,7 +4,7 @@ reference: PRO004901
 status: live
 date: 04/08/2025
 deadline: 04/08/2030T12:00
-sector: other
+sector: consultancy
 location: UK - North West
 lots: Lot 1 People / Temporary Resource             Lot 2 Organisational
   Capacity / Project Teams
