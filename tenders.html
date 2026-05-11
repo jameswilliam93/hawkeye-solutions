@@ -59,6 +59,8 @@
   .sector-tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px}
   .tag-recruitment{background:#e8f4f7;color:var(--teal-dark)}
   .tag-it{background:#eef0fb;color:#3a3faa}
+  .tag-consultancy{background:#eaf7f1;color:#1a7a50}
+  .tag-events{background:#fef6e8;color:#b7670a}
   .tag-other{background:#f3f0fb;color:#5a3faa}
   .tender-card h3{font-size:16px;font-weight:700;color:var(--steel);margin-bottom:6px;line-height:1.4}
   .tender-authority{font-size:13px;color:var(--text-muted);margin-bottom:14px}
@@ -75,6 +77,11 @@
   .loading{text-align:center;padding:80px 20px;color:var(--text-muted)}
   .loading-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--teal-mid);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
   @keyframes spin{to{transform:rotate(360deg)}}
+  .pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:36px;flex-wrap:wrap}
+  .page-btn{padding:8px 16px;border-radius:7px;font-size:14px;font-weight:600;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+  .page-btn:hover{background:var(--teal-light);border-color:var(--teal-mid);color:var(--teal-dark)}
+  .page-btn.active{background:var(--teal-dark);color:var(--white);border-color:var(--teal-dark)}
+  .page-btn:disabled{opacity:0.4;cursor:not-allowed}
   footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px}
   footer .brand{color:rgba(255,255,255,0.9);font-weight:700}
   @media(max-width:768px){.tender-grid{grid-template-columns:1fr}.nav-links{display:none}.hamburger{display:flex}}
@@ -119,11 +126,13 @@
 
 <section>
   <div class="search-bar">
-    <input type="text" id="search-input" placeholder="Search tenders by title, authority or keyword..." oninput="filterTenders()">
+    <input type="text" id="search-input" placeholder="Search tenders..." oninput="filterTenders()" style="max-width:260px;flex:none">
     <div class="filter-btns">
       <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
       <button class="filter-btn" onclick="setFilter('recruitment',this)">Recruitment</button>
-      <button class="filter-btn" onclick="setFilter('it',this)">IT and Technology</button>
+      <button class="filter-btn" onclick="setFilter('it',this)">IT &amp; Technology</button>
+      <button class="filter-btn" onclick="setFilter('consultancy',this)">Consultancy</button>
+      <button class="filter-btn" onclick="setFilter('events',this)">Events</button>
       <button class="filter-btn" onclick="setFilter('other',this)">Other</button>
     </div>
   </div>
@@ -131,6 +140,7 @@
   <div class="tender-grid" id="tender-grid">
     <div class="loading"><div class="loading-spinner"></div>Loading tenders...</div>
   </div>
+  <div class="pagination" id="pagination"></div>
   <div style="margin-top:48px;background:var(--teal-light);border-radius:12px;padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
     <div>
       <p style="font-size:16px;font-weight:700;color:var(--steel);margin-bottom:6px">Do not see your opportunity listed?</p>
@@ -162,6 +172,9 @@ function closeMobileMenu(){
 }
 var allTenders=[];
 var currentFilter='all';
+var currentPage=1;
+var PAGE_SIZE=30;
+
 function sortTenders(list){
   var today=new Date();today.setHours(0,0,0,0);
   var live=[],expired=[];
@@ -170,39 +183,65 @@ function sortTenders(list){
   expired.sort(function(a,b){return new Date(b.deadline)-new Date(a.deadline);});
   return live.concat(expired);
 }
+
 async function loadTenders(){
   try{
-    const r=await fetch('/tenders-data.json?v='+Date.now());
+    var r=await fetch('/tenders-data.json?v='+Date.now());
     if(!r.ok)throw new Error('Failed to load');
-    const data=await r.json();
-    allTenders=sortTenders(data.filter(t=>t.status==='live'));
-    renderTenders(allTenders);
+    var data=await r.json();
+    allTenders=sortTenders(data.filter(function(t){return t.status==='live';}));
+    applyFiltersAndRender();
   }catch(e){
     document.getElementById('tender-grid').innerHTML='<div class="no-results">Tenders loading shortly. Check back in a moment.</div>';
   }
 }
+
 function daysUntil(dateStr){
   if(!dateStr)return 999;
-  const d=new Date(dateStr),n=new Date();n.setHours(0,0,0,0);
+  var d=new Date(dateStr),n=new Date();n.setHours(0,0,0,0);
   return Math.ceil((d-n)/86400000);
 }
+
 function formatDate(d){
   if(!d)return'TBC';
   return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 }
-function sectorLabel(s){return s==='recruitment'?'Recruitment':s==='it'?'IT and Technology':'Other';}
-function sectorTagClass(s){return s==='recruitment'?'tag-recruitment':s==='it'?'tag-it':'tag-other';}
+
+function sectorLabel(s){
+  var map={'recruitment':'Recruitment','it':'IT and Technology','consultancy':'Consultancy','events':'Events','other':'Other'};
+  return map[s]||(s?s.charAt(0).toUpperCase()+s.slice(1):'Other');
+}
+
+function sectorTagClass(s){
+  var map={'recruitment':'tag-recruitment','it':'tag-it','consultancy':'tag-consultancy','events':'tag-events','other':'tag-other'};
+  return map[s]||'tag-other';
+}
+
 function deadlineClass(days){return days<=0?'deadline-urgent':days<=25?'deadline-soon':'deadline-ok';}
 function cardUrgency(days){return days<=0?' urgent':days<=25?' soon':'';}
-function renderTenders(list){
-  const grid=document.getElementById('tender-grid');
-  const countEl=document.getElementById('tender-count');
-  countEl.textContent='Showing '+list.length+' opportunit'+(list.length===1?'y':'ies');
-  if(!list.length){grid.innerHTML='<div class="no-results">No tenders found matching your search.</div>';return;}
-  grid.innerHTML=list.map(t=>{
-    const days=daysUntil(t.deadline);
-    const daysLabel=days<=0?'Deadline passed':days===1?'1 day remaining':days+' days remaining';
-    const slug=encodeURIComponent(t.slug||t.title);
+
+function renderPage(filteredList, page){
+  var grid=document.getElementById('tender-grid');
+  var countEl=document.getElementById('tender-count');
+  var paginationEl=document.getElementById('pagination');
+  var totalPages=Math.ceil(filteredList.length/PAGE_SIZE);
+  var start=(page-1)*PAGE_SIZE;
+  var pageItems=filteredList.slice(start,start+PAGE_SIZE);
+
+  var showing=filteredList.length===0?'No opportunities found':
+    'Showing '+(start+1)+'–'+Math.min(start+PAGE_SIZE,filteredList.length)+' of '+filteredList.length+' opportunit'+(filteredList.length===1?'y':'ies');
+  countEl.textContent=showing;
+
+  if(!pageItems.length){
+    grid.innerHTML='<div class="no-results">No tenders found matching your search.</div>';
+    paginationEl.innerHTML='';
+    return;
+  }
+
+  grid.innerHTML=pageItems.map(function(t){
+    var days=daysUntil(t.deadline);
+    var daysLabel=days<=0?'Deadline passed':days===1?'1 day remaining':days+' days remaining';
+    var slug=encodeURIComponent(t.slug||t.title);
     return '<div class="tender-card'+cardUrgency(days)+'" data-url="/tenders/'+slug+'.html" onclick="window.location=this.dataset.url">'+
       '<span class="sector-tag '+sectorTagClass(t.sector)+'">'+sectorLabel(t.sector)+'</span>'+
       '<h3>'+(t.title||'')+'</h3>'+
@@ -214,20 +253,57 @@ function renderTenders(list){
       '<span class="tender-link">View full details</span>'+
     '</div>';
   }).join('');
+
+  // Render pagination controls
+  if(totalPages<=1){paginationEl.innerHTML='';return;}
+  var btns='';
+  btns+='<button class="page-btn"'+(page===1?' disabled':'')+' onclick="goToPage('+page+'-1)">&#8592; Prev</button>';
+  for(var i=1;i<=totalPages;i++){
+    if(i===1||i===totalPages||Math.abs(i-page)<=1){
+      btns+='<button class="page-btn'+(i===page?' active':'')+'" onclick="goToPage('+i+')">'+i+'</button>';
+    }else if(Math.abs(i-page)===2){
+      btns+='<span style="padding:8px 4px;color:var(--text-muted)">…</span>';
+    }
+  }
+  btns+='<button class="page-btn"'+(page===totalPages?' disabled':'')+' onclick="goToPage('+page+'+1)">Next &#8594;</button>';
+  paginationEl.innerHTML=btns;
 }
-function filterTenders(){
-  const q=document.getElementById('search-input').value.toLowerCase().trim();
-  let list=allTenders;
-  if(currentFilter!=='all')list=list.filter(t=>t.sector===currentFilter);
-  if(q)list=list.filter(t=>(t.title||'').toLowerCase().includes(q)||(t.contracting_authority||'').toLowerCase().includes(q)||(t.description||'').toLowerCase().includes(q)||(t.location||'').toLowerCase().includes(q));
-  renderTenders(sortTenders(list));
+
+function getFilteredList(){
+  var q=document.getElementById('search-input').value.toLowerCase().trim();
+  var list=allTenders;
+  if(currentFilter!=='all')list=list.filter(function(t){return t.sector===currentFilter;});
+  if(q)list=list.filter(function(t){
+    return (t.title||'').toLowerCase().includes(q)||
+           (t.contracting_authority||'').toLowerCase().includes(q)||
+           (t.description||'').toLowerCase().includes(q)||
+           (t.location||'').toLowerCase().includes(q);
+  });
+  return sortTenders(list);
 }
+
+function applyFiltersAndRender(){
+  currentPage=1;
+  renderPage(getFilteredList(),currentPage);
+}
+
+function goToPage(p){
+  var filtered=getFilteredList();
+  var totalPages=Math.ceil(filtered.length/PAGE_SIZE);
+  currentPage=Math.max(1,Math.min(p,totalPages));
+  renderPage(filtered,currentPage);
+  document.querySelector('section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function filterTenders(){applyFiltersAndRender();}
+
 function setFilter(f,btn){
   currentFilter=f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  filterTenders();
+  applyFiltersAndRender();
 }
+
 loadTenders();
 </script>
 </body>
