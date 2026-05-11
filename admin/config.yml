@@ -55,6 +55,8 @@ collections:
         options:
           - { label: "Recruitment and Staffing", value: "recruitment" }
           - { label: "IT and Technology", value: "it" }
+          - { label: "Consultancy", value: "consultancy" }
+          - { label: "Events", value: "events" }
           - { label: "Other", value: "other" }
       - label: "Location"
         name: "location"
@@ -141,10 +143,10 @@ collections:
         name: "category"
         widget: "select"
         options:
-          - { label: "Bid Writing", value: "Bid Writing" }
-          - { label: "Procurement Basics", value: "Procurement Basics" }
-          - { label: "Sector Guides", value: "Sector Guides" }
-          - { label: "Common Mistakes", value: "Common Mistakes" }
+          - { label: "Bid Writing", value: "bid-writing" }
+          - { label: "Procurement Basics", value: "procurement" }
+          - { label: "Sector Guides", value: "sector" }
+          - { label: "Common Mistakes", value: "mistakes" }
       - label: "Status"
         name: "status"
         widget: "select"
