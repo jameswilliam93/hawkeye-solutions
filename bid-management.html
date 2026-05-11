@@ -12,13 +12,12 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RKL8KRV0S"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
+  gtag('config', 'G-5RKL8KRV0S');
 </script>
 <script type="application/ld+json">
 {
@@ -62,9 +61,6 @@
   .mobile-menu a:hover{background:rgba(255,255,255,0.07);color:var(--white)}
   .mobile-menu .mob-cta{background:var(--teal-mid);color:var(--white);margin:12px 5%;border-radius:6px;text-align:center;border-bottom:none!important;padding:12px 5%}
   .mobile-menu .mob-cta:hover{background:var(--teal)}
-  .mobile-menu .mob-admin{color:rgba(255,255,255,0.4)!important;font-size:13px!important}
-
-  /* HERO */
   .hero{background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 60%,var(--teal) 100%);padding:90px 5% 80px;display:flex;align-items:center;justify-content:space-between;gap:40px;min-height:480px}
   .hero-text{max-width:620px}
   .hero h1{font-size:46px;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:16px}
@@ -76,8 +72,6 @@
   .btn-secondary:hover{border-color:var(--white);background:rgba(255,255,255,0.1)}
   .hero-trust{font-size:13px;color:rgba(255,255,255,0.55);letter-spacing:0.3px}
   .hero-logo-wrap{flex-shrink:0}
-
-  /* SECTIONS */
   section{padding:70px 5%}
   .section-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal-mid);margin-bottom:10px}
   .section-title{font-size:34px;font-weight:800;color:var(--steel);margin-bottom:14px;line-height:1.2}
@@ -85,16 +79,12 @@
   .section-header{margin-bottom:44px}
   .bg-off{background:var(--off-white)}
   .bg-steel{background:var(--steel)}
-
-  /* WHAT IS BID MGMT */
   .what-is-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
   .what-is-body{font-size:15px;color:var(--text-muted);line-height:1.8}
   .what-is-body p{margin-bottom:16px}
   .what-is-body p:last-child{margin-bottom:0}
   .what-is-highlight{background:var(--teal-light);border-left:4px solid var(--teal-mid);border-radius:0 10px 10px 0;padding:24px 28px}
   .what-is-highlight p{font-size:15px;color:var(--teal-dark);line-height:1.75;font-weight:500}
-
-  /* FEATURE CARDS */
   .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
   .feature-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;transition:box-shadow 0.2s,border-color 0.2s}
   .feature-card:hover{box-shadow:0 4px 20px rgba(26,107,124,0.1);border-color:var(--teal-mid)}
@@ -102,14 +92,10 @@
   .feature-icon svg{width:24px;height:24px;stroke:var(--teal-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .feature-card h3{font-size:16px;font-weight:700;color:var(--steel);margin-bottom:10px}
   .feature-card p{font-size:14px;color:var(--text-muted);line-height:1.7}
-
-  /* SCENARIO BLOCKS */
   .scenarios-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
   .scenario-block{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 30px;border-left:4px solid var(--teal-mid)}
   .scenario-block h3{font-size:16px;font-weight:700;color:var(--steel);margin-bottom:10px}
   .scenario-block p{font-size:14px;color:var(--text-muted);line-height:1.7}
-
-  /* SECTOR COLUMNS */
   .sector-cols{display:grid;grid-template-columns:1fr 1fr;gap:40px}
   .sector-col h3{font-size:20px;font-weight:700;color:var(--steel);margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--teal-mid)}
   .sector-col p{font-size:14px;color:var(--text-muted);line-height:1.75;margin-bottom:16px}
@@ -118,16 +104,12 @@
   .sector-col ul li:last-child{border-bottom:none}
   .sector-col ul li::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:8px;height:8px;background:var(--teal-mid);border-radius:50%}
   .sector-col .frameworks-label{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal-mid);margin-bottom:10px}
-
-  /* HOW WE WORK */
   .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;position:relative}
   .steps-grid::before{content:'';position:absolute;top:28px;left:calc(16.67% + 14px);right:calc(16.67% + 14px);height:2px;background:var(--border);z-index:0}
   .step-item{text-align:center;padding:0 10px;position:relative;z-index:1}
   .step-num{width:56px;height:56px;background:var(--teal-dark);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin:0 auto 18px}
   .step-item h3{font-size:17px;font-weight:700;color:var(--steel);margin-bottom:10px}
   .step-item p{font-size:14px;color:var(--text-muted);line-height:1.7}
-
-  /* COMPARISON */
   .compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:36px}
   .compare-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:30px;position:relative}
   .compare-card.highlight{border-color:var(--teal-mid);box-shadow:0 4px 20px rgba(26,107,124,0.12)}
@@ -137,15 +119,11 @@
   .compare-link{display:inline-block;margin-top:16px;font-size:13px;font-weight:600;color:var(--teal-mid)}
   .compare-cta-wrap{text-align:center;padding:28px;background:var(--teal-light);border-radius:12px}
   .compare-cta-wrap p{font-size:15px;color:var(--text-muted);margin-bottom:16px}
-
-  /* FAQ */
   .faq-list{max-width:800px}
   .faq-item{border-bottom:1px solid var(--border);padding:22px 0}
   .faq-item:first-child{border-top:1px solid var(--border)}
   .faq-q{font-size:16px;font-weight:700;color:var(--steel);margin-bottom:10px}
   .faq-a{font-size:14px;color:var(--text-muted);line-height:1.75}
-
-  /* FINAL CTA */
   .final-cta{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));padding:70px 5%}
   .final-cta h2{font-size:36px;font-weight:800;color:var(--white);margin-bottom:12px}
   .final-cta .cta-sub{font-size:17px;color:rgba(255,255,255,0.8);margin-bottom:44px;max-width:620px}
@@ -157,15 +135,12 @@
   .btn-white:hover{background:#e8f4f7}
   .btn-outline-white{border:2px solid rgba(255,255,255,0.6);color:var(--white);padding:11px 24px;border-radius:7px;font-weight:600;font-size:14px;display:inline-block;transition:border-color 0.2s,background 0.2s}
   .btn-outline-white:hover{border-color:var(--white);background:rgba(255,255,255,0.1)}
-
-  /* FOOTER */
   footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
   .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:36px}
   .footer-col h4{color:var(--white);font-size:14px;font-weight:700;margin-bottom:14px}
   .footer-col a{display:block;font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:8px;transition:color 0.2s}
   .footer-col a:hover{color:var(--white)}
   .footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;font-size:12px;display:flex;justify-content:space-between}
-
   @media(max-width:768px){
     .hero{flex-direction:column;padding:60px 5%}
     .hero h1{font-size:34px}
@@ -185,31 +160,31 @@
 
 <div style="position:relative">
 <nav>
-  <a href="/" class="nav-logo">
+  <a href="/index.html" class="nav-logo">
     <img src="/logo.png" alt="Hawkeye Solutions" height="44" style="display:block">
     <span class="nav-brand">Hawkeye Solutions</span>
   </a>
   <div class="nav-links">
-    <a href="/">Home</a>
-    <a href="/#services">Services</a>
-    <a href="/#sectors">Sectors</a>
+    <a href="/index.html">Home</a>
+    <a href="/services.html">Services</a>
+    <a href="/sectors.html">Sectors</a>
     <a href="/tenders.html">Tenders</a>
     <a href="/blog.html">Blog</a>
-    <a href="/#about">About Us</a>
-    <a href="/#contact" class="nav-cta">Free Consultation</a>
+    <a href="/about.html">About Us</a>
+    <a href="/contact.html" class="nav-cta">Free Consultation</a>
   </div>
   <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMenu()">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
-  <a href="/">Home</a>
-  <a href="/#services">Services</a>
-  <a href="/#sectors">Sectors</a>
+  <a href="/index.html">Home</a>
+  <a href="/services.html">Services</a>
+  <a href="/sectors.html">Sectors</a>
   <a href="/tenders.html">Tenders</a>
   <a href="/blog.html">Blog</a>
-  <a href="/#about">About Us</a>
-  <a href="/#contact" class="mob-cta">Free Consultation</a>
+  <a href="/about.html">About Us</a>
+  <a href="/contact.html" class="mob-cta">Free Consultation</a>
 </div>
 </div>
 
@@ -219,7 +194,7 @@
     <h1>Bid Management Services UK</h1>
     <p class="hero-sub">We manage your entire bid pipeline from opportunity identification through to submission. You focus on delivering great work: we make sure you never miss a contract.</p>
     <div class="hero-btns">
-      <a href="/#contact" class="btn-primary">Get a Free Consultation</a>
+      <a href="/contact.html" class="btn-primary">Get a Free Consultation</a>
       <a href="/tenders.html" class="btn-secondary">View Live Tenders</a>
     </div>
     <p class="hero-trust">Supporting recruitment agencies and IT consultancies across the UK</p>
@@ -259,44 +234,32 @@
   </div>
   <div class="features-grid">
     <div class="feature-card">
-      <div class="feature-icon">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </div>
+      <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
       <h3>Opportunity Identification</h3>
       <p>We monitor live tender portals, frameworks and procurement notices daily across your target sectors. You hear about the right opportunities first: before your competitors do.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">
-        <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-      </div>
+      <div class="feature-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
       <h3>Bid and No-Bid Assessment</h3>
       <p>Not every tender is worth chasing. We assess each opportunity against your win probability, resource requirements and strategic fit: saving you time and money on bids you are unlikely to win.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">
-        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-      </div>
+      <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
       <h3>Stakeholder Coordination</h3>
       <p>We manage the people side of bidding: scheduling interviews, chasing information, coordinating reviewers and keeping everyone aligned to the deadline. No more bottlenecks.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      </div>
+      <div class="feature-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
       <h3>Deadline and Compliance Tracking</h3>
       <p>Every requirement, every attachment, every portal deadline tracked in one place. We make sure nothing is missed and submissions are always complete and on time.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">
-        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      </div>
+      <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
       <h3>Quality Assurance and Review</h3>
       <p>Before anything is submitted, every response is reviewed against the scoring criteria, the specification and best practice bid writing standards. We catch problems before the buyer does.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      </div>
+      <div class="feature-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
       <h3>Post-Submission Debrief Support</h3>
       <p>Win or lose, we help you get feedback, understand where you scored and use that intelligence to improve future bids. Every submission makes the next one stronger.</p>
     </div>
@@ -412,7 +375,7 @@
   </div>
   <div class="compare-cta-wrap">
     <p>Not sure what you need? Book a free call and we will give you an honest recommendation.</p>
-    <a href="/#contact" class="btn-primary" style="background:var(--teal-dark);color:var(--white)">Book Free Consultation</a>
+    <a href="/contact.html" class="btn-primary" style="background:var(--teal-dark);color:var(--white)">Book Free Consultation</a>
   </div>
 </section>
 
@@ -458,7 +421,7 @@
     <div class="final-cta-card">
       <h3>Talk to us about your pipeline</h3>
       <p>Book a free 30-minute call with one of our bid specialists. We will review your current approach and tell you exactly where we can add value.</p>
-      <a href="/#contact" class="btn-white">Book Free Consultation</a>
+      <a href="/contact.html" class="btn-white">Book Free Consultation</a>
     </div>
     <div class="final-cta-card">
       <h3>See live tender opportunities</h3>
@@ -478,26 +441,26 @@
       <h4>Services</h4>
       <a href="/bid-writing.html">Bid Writing</a>
       <a href="/bid-management.html">Bid Management</a>
-      <a href="/#services">Bid Review</a>
-      <a href="/#services">Training</a>
+      <a href="/bid-consultancy.html">Bid Review</a>
+      <a href="/bid-training.html">Training</a>
     </div>
     <div class="footer-col">
       <h4>Company</h4>
-      <a href="/#about">About Us</a>
-      <a href="/#sectors">Sectors</a>
+      <a href="/about.html">About Us</a>
+      <a href="/sectors.html">Sectors</a>
       <a href="/tenders.html">Tenders</a>
-      <a href="/#contact">Contact</a>
+      <a href="/contact.html">Contact</a>
     </div>
     <div class="footer-col">
       <h4>Sectors</h4>
-      <a href="/#sectors">Recruitment and Staffing</a>
-      <a href="/#sectors">IT Consultancy</a>
-      <a href="/#sectors">Public Sector</a>
+      <a href="/sectors.html">Recruitment and Staffing</a>
+      <a href="/sectors.html">IT Consultancy</a>
+      <a href="/sectors.html">Public Sector</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2025 Hawkeye Solutions. All rights reserved.</span>
-    <span>Privacy Policy · Terms of Use</span>
+    <span>&copy; 2025 Hawkeye Solutions. All rights reserved.</span>
+    <span>Privacy Policy &middot; Terms of Use</span>
   </div>
 </footer>
 
@@ -509,20 +472,11 @@ function toggleMenu(){
   if(open){menu.classList.remove('open');btn.classList.remove('open');btn.setAttribute('aria-expanded','false');}
   else{menu.classList.add('open');btn.classList.add('open');btn.setAttribute('aria-expanded','true');}
 }
-</script>
-
-<!-- Netlify Identity redirect -->
-<script>
 if(window.netlifyIdentity){
   window.netlifyIdentity.on('init',function(user){
-    if(!user){
-      window.netlifyIdentity.on('login',function(){
-        document.location.href='/admin/';
-      });
-    }
+    if(!user){window.netlifyIdentity.on('login',function(){document.location.href='/admin/';});}
   });
 }
 </script>
-
 </body>
 </html>
