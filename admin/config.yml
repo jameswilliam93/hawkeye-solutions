@@ -54,7 +54,7 @@ collections:
         widget: "select"
         options:
           - { label: "Recruitment and Staffing", value: "recruitment" }
-          - { label: "IT and Technology", value: "it" }
+          - { label: "IT Consultancy", value: "it" }
           - { label: "Consultancy", value: "consultancy" }
           - { label: "Events", value: "events" }
           - { label: "Other", value: "other" }
