@@ -18,7 +18,7 @@
 body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
 a{text-decoration:none;color:inherit}
 
-/* ── Nav (matches site) ───────────────────────────────── */
+/* ── Nav ───────────────────────────────────────────────── */
 nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:12px}
 .nav-brand{color:var(--white);font-size:18px;font-weight:700}
@@ -78,7 +78,7 @@ select.filter:hover{border-color:var(--teal-mid)}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
 
 /* ── Card ─────────────────────────────────────────────── */
-.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;transition:box-shadow .2s,border-color .2s;animation:fadeUp .22s ease both}
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;transition:box-shadow .2s,border-color .2s;animation:fadeUp .22s ease both;cursor:pointer}
 .card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--teal-mid)}
 .card.urgent::before{background:var(--urgent)}
 .card.warning::before{background:#e8920a}
@@ -132,6 +132,52 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
 .footer-col a:hover{color:var(--white)}
 .footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:18px;font-size:12px;display:flex;justify-content:space-between}
 
+/* ── Detail drawer ────────────────────────────────────── */
+.drawer-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200}
+.drawer-backdrop.open{display:block}
+.detail-drawer{position:fixed;top:0;right:0;width:min(580px,100vw);height:100vh;background:var(--off-white);z-index:201;box-shadow:-4px 0 32px rgba(0,0,0,0.2);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);overflow:hidden}
+.detail-drawer.open{transform:translateX(0)}
+#drawer-content{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.drawer-header{background:linear-gradient(135deg,var(--steel),var(--teal-dark));color:var(--white);padding:24px 56px 20px 24px;flex-shrink:0;position:relative}
+.drawer-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.15);border:none;color:var(--white);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.drawer-close:hover{background:rgba(255,255,255,0.28)}
+.drawer-h-badges{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.drawer-h-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;background:rgba(125,212,100,0.2);color:#7dd464}
+.drawer-h-sector{background:rgba(232,244,247,0.2);color:#a0d8e8}
+.drawer-h-title{font-size:17px;font-weight:800;line-height:1.3;margin-bottom:6px}
+.drawer-h-buyer{font-size:13px;opacity:.8}
+.drawer-h-ref{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:12px;font-weight:700;padding:4px 12px;border-radius:6px;margin-top:12px;font-family:monospace;letter-spacing:.4px}
+.drawer-body{flex:1;overflow-y:auto;padding:20px 20px 8px}
+.drawer-block{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px}
+.drawer-block h3{font-size:15px;font-weight:700;color:var(--steel);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.drawer-block p{font-size:14px;color:var(--text-muted);line-height:1.85}
+.drawer-row{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.drawer-row:last-child{border-bottom:none}
+.drawer-label{font-weight:600;color:var(--steel);width:150px;flex-shrink:0}
+.drawer-value{color:var(--text-muted);flex:1;line-height:1.5;word-break:break-word}
+.drawer-deadline{border-radius:10px;padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;gap:18px}
+.drawer-deadline.urgent{border:1px solid #f0a0a0;background:#fdf0ee}
+.drawer-deadline.warning{border:1px solid #f0c070;background:#fef6e8}
+.drawer-deadline.safe{border:1px solid #a3dcc0;background:#e8f7f0}
+.drawer-deadline.open{border:1px solid var(--border);background:var(--off-white)}
+.drawer-dl-days{font-size:32px;font-weight:800;line-height:1}
+.drawer-dl-days.urgent{color:var(--urgent)}
+.drawer-dl-days.warning{color:var(--warning)}
+.drawer-dl-days.safe{color:var(--safe)}
+.drawer-dl-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+.drawer-dl-label{font-size:12px;color:var(--text-muted);margin-bottom:3px}
+.drawer-dl-date{font-size:14px;font-weight:700;color:var(--steel)}
+.drawer-highlight{background:var(--teal-light);border:1px solid var(--teal-mid);border-radius:12px;padding:20px;margin-bottom:14px}
+.drawer-highlight h3{font-size:15px;font-weight:700;color:var(--teal-dark);margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(26,107,124,0.2)}
+.drawer-highlight p{font-size:13px;color:var(--teal-dark);line-height:1.75;margin-bottom:14px}
+.drawer-lot{background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px}
+.drawer-lot-title{font-size:13px;font-weight:700;color:var(--steel);margin-bottom:3px}
+.drawer-lot-val{font-size:13px;font-weight:800;color:var(--teal-dark);margin-bottom:4px}
+.drawer-doc{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border:1px solid var(--border);border-radius:7px;margin-bottom:6px;font-size:13px;color:var(--teal-dark);background:var(--white);transition:background .15s;word-break:break-word}
+.drawer-doc:hover{background:var(--teal-light);border-color:var(--teal-mid)}
+.drawer-doc svg{flex-shrink:0;margin-top:2px}
+.drawer-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;background:var(--white)}
+
 /* ── Responsive ───────────────────────────────────────── */
 @media(max-width:768px){
   nav .nav-links{display:none}
@@ -144,6 +190,8 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
   .footer-grid{grid-template-columns:1fr 1fr}
   .footer-bottom{flex-direction:column;gap:8px}
   .results-bar{flex-direction:column;align-items:flex-start;gap:8px}
+  .drawer-body{padding:14px 16px}
+  .drawer-footer{padding:12px 16px}
 }
 @media(max-width:480px){
   .footer-grid{grid-template-columns:1fr}
@@ -232,7 +280,15 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
 <!-- RESULTS BAR -->
 <div class="results-bar">
   <div class="results-count" id="results-count">Loading tenders…</div>
-  <div class="live-pill"><span class="live-dot"></span>Updated daily</div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <select class="filter" id="sort-by" style="min-width:175px;flex:none">
+      <option value="recent">Sort: Most recent</option>
+      <option value="oldest">Sort: Oldest first</option>
+      <option value="value-high">Sort: Highest value</option>
+      <option value="value-low">Sort: Lowest value</option>
+    </select>
+    <div class="live-pill"><span class="live-dot"></span>Updated daily</div>
+  </div>
 </div>
 
 <!-- CARDS -->
@@ -242,6 +298,12 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
 
 <div class="load-more-wrap" id="load-more-wrap" style="display:none">
   <button class="btn-load-more" id="btn-load-more">Load more tenders</button>
+</div>
+
+<!-- DETAIL DRAWER -->
+<div id="drawer-backdrop" class="drawer-backdrop"></div>
+<div id="detail-drawer" class="detail-drawer">
+  <div id="drawer-content"></div>
 </div>
 
 <!-- CTA -->
@@ -320,9 +382,14 @@ const NUTS = {
   UKM6:'Highlands and Islands',UKN0:'Northern Ireland',
 };
 
-// CPV code → sector (mirrors pipeline logic, fixes existing data client-side)
-const CPV_SPECIFIC = { '7995':'Events & Conferences', '796':'Recruitment & Staffing' };
-const CPV_GENERAL  = {
+const CPV_SPECIFIC = {
+  '7995':'Events & Conferences',
+  '796': 'Recruitment & Staffing',
+  '721': 'IT Consultancy',
+  '722': 'IT Consultancy',
+  '831': 'Management Consultancy',
+};
+const CPV_GENERAL = {
   '03':'Agriculture & Forestry','09':'Energy','14':'Mining','15':'Food & Beverages',
   '22':'Print & Publishing','24':'Chemicals','30':'IT Hardware','31':'Electronics',
   '32':'Communications','33':'Medical Supplies','34':'Vehicles & Transport',
@@ -332,9 +399,10 @@ const CPV_GENERAL  = {
   '55':'Hospitality','60':'Transport Services','63':'Logistics','65':'Utilities',
   '66':'Financial Services','71':'Architecture & Engineering','72':'IT Services',
   '73':'Research & Development','75':'Public Administration','79':'Business Services',
-  '80':'Education & Training','85':'Health & Social Care','90':'Environmental Services',
-  '92':'Recreation & Culture','98':'Other Services',
+  '80':'Education & Training','83':'Management Consultancy','85':'Health & Social Care',
+  '90':'Environmental Services','92':'Recreation & Culture','98':'Other Services',
 };
+
 function cpvToSector(code) {
   if (!code) return null;
   const d = code.split('-')[0].trim();
@@ -349,19 +417,30 @@ function normaliseRegion(r) {
   if (!r) return r;
   const u = r.trim().toUpperCase();
   if (NUTS[u]) return NUTS[u];
-  // try 4-char then 3-char prefix
   if (u.length > 4 && NUTS[u.slice(0,4)]) return NUTS[u.slice(0,4)];
   if (u.length > 3 && NUTS[u.slice(0,3)]) return NUTS[u.slice(0,3)];
   return r.trim();
 }
 
-let allTenders = [], filtered = [], shown = 0;
+let allTenders = [], filtered = [], shown = 0, tenderMap = {};
+
+function fixUrl(url) {
+  if (url && /find-tender\.service\.gov\.uk\/Notice\/\d+-\d{4}/.test(url)) return url;
+  return null;
+}
 
 function formatValue(amount) {
   if (amount == null || amount === '') return null;
   if (amount >= 1_000_000) { const m = amount/1_000_000; return `£${m%1===0?m.toFixed(0):m.toFixed(1)}m`; }
   if (amount >= 1_000) return `£${(amount/1_000).toFixed(0)}k`;
   return `£${Number(amount).toLocaleString('en-GB')}`;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return d.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
 }
 
 function deadlineInfo(dateStr) {
@@ -380,26 +459,198 @@ function esc(s) {
   return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── Drawer ──────────────────────────────────────────────────────────────────────
+
+function procedureLabel(type) {
+  const map = {open:'Open Procedure',selective:'Restricted Procedure',limited:'Negotiated Procedure',direct:'Direct Award'};
+  return map[type] || type || '';
+}
+
+function awardLabel(criteria) {
+  const map = {
+    mostEconomicallyAdvantageousTender:'Most Economically Advantageous (MEAT)',
+    lowestCost:'Lowest Cost', priceOnly:'Price Only',
+    costOnly:'Cost Only', qualityOnly:'Quality Only',
+  };
+  return map[criteria] || criteria || '';
+}
+
+function drawerRow(label, valueHTML) {
+  if (!valueHTML) return '';
+  return `<div class="drawer-row"><span class="drawer-label">${esc(label)}</span><span class="drawer-value">${valueHTML}</span></div>`;
+}
+
+function openDrawer(id) {
+  const t = tenderMap[id];
+  if (!t) return;
+
+  const url       = fixUrl(t.url);
+  const noticeUrl = url || ('https://www.find-tender.service.gov.uk/Search/Results?keyword=' + encodeURIComponent(t.title));
+  const val       = formatValue(t.value);
+  const dl        = deadlineInfo(t.deadline);
+
+  // ── Header
+  const sector = t.sector && t.sector !== 'Uncategorised' ? t.sector : '';
+  let html = `
+    <div class="drawer-header">
+      <button class="drawer-close" onclick="closeDrawer()" aria-label="Close">&#10005;</button>
+      <div class="drawer-h-badges">
+        <span class="drawer-h-badge">Live</span>
+        ${sector ? `<span class="drawer-h-badge drawer-h-sector">${esc(sector)}</span>` : ''}
+      </div>
+      <div class="drawer-h-title">${esc(t.title)}</div>
+      <div class="drawer-h-buyer">${esc(t.buyer)}${t.region && t.region !== 'UK' ? ` &nbsp;&middot;&nbsp; ${esc(t.region)}` : ''}</div>
+    </div>
+    <div class="drawer-body">
+  `;
+
+  // ── Deadline widget (mirrors the deadline-card on the existing tender page)
+  const dlCls = dl.card || 'open';
+  const daysNum = t.deadline ? Math.ceil((new Date(t.deadline) - Date.now()) / 86_400_000) : null;
+  html += `<div class="drawer-deadline ${dlCls}">
+    <div>
+      <div class="drawer-dl-days ${dlCls}">${daysNum !== null && daysNum >= 0 ? daysNum : '—'}</div>
+      <div class="drawer-dl-sub">${daysNum === 1 ? 'day remaining' : 'days remaining'}</div>
+    </div>
+    <div>
+      <div class="drawer-dl-label">Submission deadline</div>
+      <div class="drawer-dl-date">${t.deadline ? esc(formatDate(t.deadline)) : 'Not specified'}</div>
+      ${val ? `<div style="margin-top:6px;font-size:13px;color:var(--text-muted)">Estimated value: <strong style="color:var(--steel);font-size:15px">${esc(val)}</strong></div>` : ''}
+    </div>
+  </div>`;
+
+  // ── About This Tender (description)
+  const desc = t.fullDescription || t.description || '';
+  if (desc) {
+    html += `<div class="drawer-block">
+      <h3>About This Tender</h3>
+      <p>${esc(desc)}</p>
+    </div>`;
+  }
+
+  // ── Tender Details (label/value rows)
+  const proc  = t.procedureDesc || procedureLabel(t.procedureType || '');
+  const award = t.awardCriteriaDesc || awardLabel(t.awardCriteria || '');
+  html += `<div class="drawer-block"><h3>Tender Details</h3>`;
+  if (t.sector && t.sector !== 'Uncategorised') html += drawerRow('Sector',            esc(t.sector));
+  if (t.region && t.region !== 'UK')            html += drawerRow('Location',          esc(t.region));
+  if (val)                                       html += drawerRow('Estimated Value',   esc(val));
+  html +=                                                drawerRow('Contracting Authority', esc(t.buyer));
+  if (t.published)                               html += drawerRow('Published',         esc(formatDate(t.published)));
+  if (t.deadline)                                html += drawerRow('Submission Deadline', esc(formatDate(t.deadline)));
+  if (proc)                                      html += drawerRow('Procedure',         esc(proc));
+  if (award)                                     html += drawerRow('Award Criteria',    esc(award));
+  if (t.contractStart || t.contractEnd) {
+    if (t.contractStart) html += drawerRow('Contract Start', esc(formatDate(t.contractStart)));
+    if (t.contractEnd)   html += drawerRow('Contract End',   esc(formatDate(t.contractEnd)));
+  }
+  if (t.cpvCode) html += drawerRow('CPV Code', esc(t.cpvCode));
+  html += `</div>`;
+
+  // ── Lots
+  if (t.lots && t.lots.length) {
+    html += `<div class="drawer-block"><h3>Lots (${t.lots.length})</h3>`;
+    t.lots.forEach(lot => {
+      const lv = lot.value ? formatValue(lot.value) : null;
+      html += `<div class="drawer-lot">
+        <div class="drawer-lot-title">${esc(lot.id ? `Lot ${lot.id}: ` : '')}${esc(lot.title || 'Untitled lot')}</div>
+        ${lv ? `<div class="drawer-lot-val">${esc(lv)}</div>` : ''}
+        ${lot.description ? `<p style="font-size:12px;color:var(--text-muted);line-height:1.65;margin-top:4px">${esc(lot.description)}</p>` : ''}
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // ── Documents
+  const publicDocs = (t.documents || []).filter(d => d.url && d.url.startsWith('http'));
+  if (publicDocs.length) {
+    html += `<div class="drawer-block"><h3>Documents</h3>`;
+    publicDocs.slice(0, 12).forEach(doc => {
+      html += `<a href="${esc(doc.url)}" target="_blank" rel="noopener noreferrer" class="drawer-doc">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        ${esc(doc.title || doc.type || 'View document')}
+      </a>`;
+    });
+    html += `</div>`;
+  }
+
+  // ── Buyer contact
+  const bc = t.buyerContact || {};
+  const ba = t.buyerAddress || {};
+  const hasContact = bc.name || bc.email || bc.telephone;
+  const hasAddress = ba.street || ba.locality || ba.postcode;
+  if (hasContact || hasAddress) {
+    html += `<div class="drawer-block"><h3>Buyer Contact</h3>`;
+    if (bc.name)      html += drawerRow('Contact Name', esc(bc.name));
+    if (bc.email)     html += drawerRow('Email', `<a href="mailto:${esc(bc.email)}" style="color:var(--teal)">${esc(bc.email)}</a>`);
+    if (bc.telephone) html += drawerRow('Telephone', esc(bc.telephone));
+    if (hasAddress) {
+      const addrStr = [ba.street, ba.locality, ba.postcode].filter(Boolean).join(', ');
+      if (addrStr) html += drawerRow('Address', esc(addrStr));
+    }
+    html += `</div>`;
+  }
+
+  // ── Need help CTA (mirrors the highlight-block on the existing page)
+  html += `<div class="drawer-highlight">
+    <h3>Need Help Winning This Bid?</h3>
+    <p>Hawkeye Solutions specialises in bid writing${sector ? ` for ${esc(sector)} tenders` : ''}. We can assess your fit for this opportunity and build a winning submission. Our initial consultation is completely free.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      <a href="tel:03302238040" class="btn btn-primary" style="flex:none;width:auto;padding:10px 18px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:7px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        0330 223 8040
+      </a>
+      <a href="${esc(CONTACT_URL)}" class="btn btn-secondary" style="flex:none;width:auto;padding:10px 18px;font-size:13px;text-decoration:none">Free Consultation</a>
+    </div>
+  </div>
+
+  </div>`; // end drawer-body
+
+  html += `<div class="drawer-footer">
+    <a href="${esc(noticeUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="flex:1">${url ? 'View on Find a Tender' : 'Search on Find a Tender'}</a>
+    <a href="${esc(CONTACT_URL)}" class="btn btn-secondary" style="flex:1">Enquire About This Bid</a>
+  </div>`;
+
+  document.getElementById('drawer-content').innerHTML = html;
+  document.getElementById('detail-drawer').classList.add('open');
+  document.getElementById('drawer-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDrawer() {
+  document.getElementById('detail-drawer').classList.remove('open');
+  document.getElementById('drawer-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+// ── Cards ───────────────────────────────────────────────────────────────────────
+
 function buildCard(t) {
-  const val = formatValue(t.value);
-  const dl  = deadlineInfo(t.deadline);
-  const url = t.url || '#';
+  const val       = formatValue(t.value);
+  const dl        = deadlineInfo(t.deadline);
+  const url       = fixUrl(t.url);
+  const noticeUrl = url || ('https://www.find-tender.service.gov.uk/Search/Results?keyword=' + encodeURIComponent(t.title));
+  const btnLabel  = url ? 'View tender' : 'Search on Find a Tender';
+  const tid       = esc(t.id);
   return `
-  <div class="card ${esc(dl.card)}">
+  <div class="card ${esc(dl.card)}" onclick="openDrawer('${tid}')">
     <div class="card-top">
       <div class="card-title">${esc(t.title)}</div>
       ${val ? `<div class="card-value">${esc(val)}</div>` : ''}
     </div>
     <div class="card-buyer">${esc(t.buyer)}</div>
     <div class="card-meta">
-      <span class="tag tag-deadline ${esc(dl.cls)}">⏱ ${esc(dl.label)}</span>
+      <span class="tag tag-deadline ${esc(dl.cls)}">&#9201; ${esc(dl.label)}</span>
       ${t.sector && t.sector!=='Uncategorised' ? `<span class="tag tag-sector">${esc(t.sector)}</span>` : ''}
-      ${t.region && t.region!=='UK' ? `<span class="tag tag-region">📍 ${esc(t.region)}</span>` : ''}
+      ${t.region && t.region!=='UK' ? `<span class="tag tag-region">${esc(t.region)}</span>` : ''}
     </div>
     <div class="card-description">${esc(t.description||'No description available.')}</div>
-    <div class="card-actions">
-      <a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">View tender</a>
-      <a href="${esc(CONTACT_URL)}" class="btn btn-secondary">Need help with this bid?</a>
+    <div class="card-actions" onclick="event.stopPropagation()">
+      <button class="btn btn-secondary" onclick="openDrawer('${tid}')">Full details</button>
+      <a href="${esc(noticeUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">${btnLabel}</a>
     </div>
   </div>`;
 }
@@ -417,9 +668,6 @@ function renderPage(reset) {
     return;
   }
   grid.insertAdjacentHTML('beforeend', filtered.slice(shown, shown+PAGE_SIZE).map(buildCard).join(''));
-  shown += Math.min(PAGE_SIZE, filtered.length - shown + PAGE_SIZE);
-  shown = Math.min(shown, filtered.length + PAGE_SIZE);
-  // recalc shown properly
   shown = grid.querySelectorAll('.card').length;
   const remaining = filtered.length - shown;
   if (remaining > 0) {
@@ -442,6 +690,7 @@ function applyFilters() {
   const region   = document.getElementById('filter-region').value;
   const minVal   = parseFloat(document.getElementById('filter-value').value) || 0;
   const deadDays = parseFloat(document.getElementById('filter-deadline').value) || 0;
+  const sortBy   = document.getElementById('sort-by').value;
   const now      = Date.now();
 
   filtered = allTenders.filter(t => {
@@ -459,6 +708,14 @@ function applyFilters() {
     }
     return true;
   });
+
+  filtered.sort((a, b) => {
+    if (sortBy === 'value-high') return (b.value || 0) - (a.value || 0);
+    if (sortBy === 'value-low')  return (a.value || 0) - (b.value || 0);
+    if (sortBy === 'oldest')     return (a.published || '').localeCompare(b.published || '');
+    return (b.published || '').localeCompare(a.published || '');
+  });
+
   updateCount();
   renderPage(true);
 }
@@ -484,7 +741,7 @@ document.getElementById('search-clear').addEventListener('click', () => {
   document.getElementById('search-clear').classList.remove('visible');
   applyFilters(); s.focus();
 });
-['filter-sector','filter-region','filter-value','filter-deadline'].forEach(id => {
+['filter-sector','filter-region','filter-value','filter-deadline','sort-by'].forEach(id => {
   document.getElementById(id).addEventListener('change', applyFilters);
 });
 document.getElementById('btn-clear').addEventListener('click', () => {
@@ -505,12 +762,16 @@ function toggleMenu() {
 fetch('uk-tenders.json')
   .then(r => { if(!r.ok) throw new Error(r.statusText); return r.json(); })
   .then(data => {
-    // Fix region codes and reclassify sectors from CPV codes on existing data
-    allTenders = data.map(t => ({
-      ...t,
-      region: normaliseRegion(t.region) || 'UK',
-      sector: cpvToSector(t.cpvCode) || t.sector || 'Uncategorised',
-    }));
+    const now = Date.now();
+    allTenders = data
+      .filter(t => !t.deadline || new Date(t.deadline) > now)
+      .map(t => ({
+        ...t,
+        region: normaliseRegion(t.region) || 'UK',
+        sector: cpvToSector(t.cpvCode) || t.sector || 'Uncategorised',
+      }));
+    tenderMap = {};
+    allTenders.forEach(t => { tenderMap[t.id] = t; });
     populateDropdowns(); applyFilters();
   })
   .catch(() => {
