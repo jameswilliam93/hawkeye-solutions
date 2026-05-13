@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Search live UK public sector tenders by sector, region and deadline. Updated daily from Find a Tender — Hawkeye Solutions.">
+<title>UK Tender Search – Find Live Public Sector Contracts | Hawkeye Solutions</title>
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+<link rel="shortcut icon" href="/favicon.ico">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;
+  --steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;
+  --text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee;
+  --urgent:#c0392b;--warning:#b7670a;--safe:#1a7a50;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
+a{text-decoration:none;color:inherit}
+
+/* ── Nav (matches site) ───────────────────────────────── */
+nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-brand{color:var(--white);font-size:18px;font-weight:700}
+.nav-links{display:flex;gap:28px}
+.nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-links a.active{color:var(--white);border-bottom:2px solid var(--teal-mid);padding-bottom:2px}
+.nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important}
+.hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
+.hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:transform .25s,opacity .25s}
+.hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+.mobile-menu{display:none;position:absolute;top:68px;left:0;right:0;background:var(--steel);z-index:99;flex-direction:column;border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:14px 5%;border-bottom:1px solid rgba(255,255,255,0.07)}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu a:hover{background:rgba(255,255,255,0.07);color:var(--white)}
+.mobile-menu .mob-cta{background:var(--teal-mid);color:var(--white);margin:12px 5%;border-radius:6px;text-align:center;border-bottom:none!important;padding:12px 5%}
+
+/* ── Hero ─────────────────────────────────────────────── */
+.hero{background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 60%,var(--teal) 100%);padding:60px 5% 52px;text-align:center}
+.hero-badge{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:13px;padding:5px 16px;border-radius:20px;margin-bottom:18px;letter-spacing:.5px}
+.hero h1{font-size:clamp(28px,4vw,42px);font-weight:800;color:var(--white);line-height:1.2;margin-bottom:10px}
+.hero h1 span{color:#7dd4e8}
+.hero p{font-size:16px;color:rgba(255,255,255,0.75);margin-bottom:32px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.7}
+
+/* ── Search bar ───────────────────────────────────────── */
+.search-wrap{max-width:680px;margin:0 auto;position:relative}
+.search-wrap svg{position:absolute;left:20px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted)}
+#search{width:100%;padding:17px 52px 17px 52px;border:none;border-radius:50px;font-size:16px;color:var(--text);font-family:inherit;outline:none;background:var(--white);box-shadow:0 4px 28px rgba(0,0,0,0.2)}
+#search::placeholder{color:var(--text-muted)}
+#search:focus{box-shadow:0 4px 28px rgba(0,0,0,0.2),0 0 0 3px rgba(42,143,163,0.35)}
+.search-clear{position:absolute;right:18px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.07);border:none;cursor:pointer;color:var(--text-muted);padding:5px;border-radius:50%;display:none;align-items:center;justify-content:center;transition:background .15s}
+.search-clear.visible{display:flex}
+.search-clear:hover{background:rgba(0,0,0,0.13);color:var(--text)}
+
+/* ── Filters ──────────────────────────────────────────── */
+.filters-bar{background:var(--white);border-bottom:1px solid var(--border);padding:16px 5%;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.filter-group{flex:1;min-width:150px}
+select.filter{width:100%;padding:9px 32px 9px 12px;border:1px solid var(--border);border-radius:7px;color:var(--text);font-size:13.5px;font-family:inherit;appearance:none;cursor:pointer;outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%234a6572' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;transition:border-color .18s}
+select.filter:focus{border-color:var(--teal-mid);box-shadow:0 0 0 3px rgba(42,143,163,0.12)}
+select.filter:hover{border-color:var(--teal-mid)}
+.btn-clear{padding:9px 16px;background:none;border:1px solid var(--border);border-radius:7px;color:var(--text-muted);font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap;transition:border-color .18s,color .18s}
+.btn-clear:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
+
+/* ── Results bar ──────────────────────────────────────── */
+.results-bar{padding:18px 5%;display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto}
+.results-count{font-size:14px;color:var(--text-muted)}
+.results-count strong{color:var(--steel);font-weight:700}
+.live-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--teal-mid);background:var(--teal-light);border:1px solid var(--border);border-radius:20px;padding:4px 12px}
+.live-dot{width:7px;height:7px;background:var(--teal-mid);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── Cards grid ───────────────────────────────────────── */
+.cards-wrap{padding:0 5% 60px;max-width:1400px;margin:0 auto}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+
+/* ── Card ─────────────────────────────────────────────── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;transition:box-shadow .2s,border-color .2s;animation:fadeUp .22s ease both}
+.card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--teal-mid)}
+.card.urgent::before{background:var(--urgent)}
+.card.warning::before{background:#e8920a}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.card:hover{box-shadow:0 6px 24px rgba(26,107,124,0.12);border-color:var(--teal-mid)}
+
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.card-title{font-size:15px;font-weight:700;color:var(--steel);line-height:1.4;flex:1}
+.card-value{font-size:15px;font-weight:800;color:var(--teal-dark);white-space:nowrap;flex-shrink:0}
+.card-buyer{font-size:13px;color:var(--text-muted)}
+
+.card-meta{display:flex;flex-wrap:wrap;gap:6px}
+.tag{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;background:var(--teal-light);color:var(--teal-dark)}
+.tag-deadline{font-weight:700}
+.tag-deadline.urgent{background:#fdf0ee;color:var(--urgent)}
+.tag-deadline.warning{background:#fef6e8;color:var(--warning)}
+.tag-deadline.safe{background:#eaf7f1;color:var(--safe)}
+.tag-sector{background:#eef0fb;color:#3a3faa}
+.tag-region{background:var(--off-white);color:var(--text-muted);border:1px solid var(--border)}
+
+.card-description{font-size:13px;color:var(--text-muted);line-height:1.65;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;flex:1}
+
+.card-actions{display:flex;gap:8px;margin-top:4px}
+.btn{flex:1;padding:9px 12px;border-radius:7px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;text-align:center;text-decoration:none;transition:background .18s,border-color .18s;border:none;display:inline-flex;align-items:center;justify-content:center}
+.btn-primary{background:var(--teal-dark);color:var(--white)}
+.btn-primary:hover{background:var(--teal)}
+.btn-secondary{background:transparent;border:1.5px solid var(--teal-mid);color:var(--teal-dark)}
+.btn-secondary:hover{background:var(--teal-light)}
+
+/* ── Empty state ──────────────────────────────────────── */
+.empty-state{grid-column:1/-1;text-align:center;padding:72px 24px;color:var(--text-muted)}
+.empty-state h3{font-size:18px;font-weight:700;color:var(--steel);margin-bottom:8px}
+
+/* ── Load more ────────────────────────────────────────── */
+.load-more-wrap{text-align:center;padding:8px 5% 48px}
+.btn-load-more{padding:13px 40px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;color:var(--text-muted);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:border-color .2s,color .2s,box-shadow .2s}
+.btn-load-more:hover{border-color:var(--teal-mid);color:var(--teal-dark);box-shadow:0 2px 12px rgba(26,107,124,0.1)}
+
+/* ── CTA banner ───────────────────────────────────────── */
+.cta-banner{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));padding:60px 5%;text-align:center}
+.cta-banner h2{font-size:30px;font-weight:800;color:var(--white);margin-bottom:12px}
+.cta-banner p{font-size:16px;color:rgba(255,255,255,0.8);margin-bottom:28px}
+.btn-white{background:var(--white);color:var(--teal-dark);padding:13px 28px;border-radius:7px;font-weight:700;font-size:15px;display:inline-block;transition:background .2s}
+.btn-white:hover{background:var(--teal-light)}
+
+/* ── Footer ───────────────────────────────────────────── */
+footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:28px}
+.footer-col h4{color:var(--white);font-size:14px;font-weight:700;margin-bottom:12px}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:7px;transition:color .2s}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:18px;font-size:12px;display:flex;justify-content:space-between}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media(max-width:768px){
+  nav .nav-links{display:none}
+  .hamburger{display:flex}
+  .filters-bar{top:68px;gap:8px}
+  .filter-group{min-width:calc(50% - 5px)}
+  .btn-clear{flex:0 0 100%;text-align:center}
+  .cards-grid{grid-template-columns:1fr}
+  .card-actions{flex-direction:column}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .footer-bottom{flex-direction:column;gap:8px}
+  .results-bar{flex-direction:column;align-items:flex-start;gap:8px}
+}
+@media(max-width:480px){
+  .footer-grid{grid-template-columns:1fr}
+  .filter-group{min-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div style="position:relative">
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="/logo.png" alt="Hawkeye Solutions" height="44" style="display:block">
+    <span class="nav-brand">Hawkeye Solutions</span>
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/services.html">Services</a>
+    <a href="/sectors.html">Sectors</a>
+    <a href="/tender-search.html" class="active">Tender Search</a>
+    <a href="/blog.html">Blog</a>
+    <a href="/about.html">About Us</a>
+    <a href="/contact.html" class="nav-cta">Free Consultation</a>
+  </div>
+  <button class="hamburger" id="hamburger-btn" aria-label="Open menu" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/">Home</a>
+  <a href="/services.html">Services</a>
+  <a href="/sectors.html">Sectors</a>
+  <a href="/tenders.html">Tenders</a>
+  <a href="/blog.html">Blog</a>
+  <a href="/about.html">About Us</a>
+  <a href="/contact.html" class="mob-cta">Free Consultation</a>
+</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Updated daily · Free to use</div>
+  <h1>Find UK Tenders <span>That Match You</span></h1>
+  <p>Live public sector contracts from Find a Tender — filtered by sector, region and deadline. No logins, no subscriptions.</p>
+  <div class="search-wrap">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" id="search" placeholder="Search by keyword, buyer, sector or region…" autocomplete="off" spellcheck="false">
+    <button class="search-clear" id="search-clear" aria-label="Clear">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filters-bar">
+  <div class="filter-group">
+    <select class="filter" id="filter-sector"><option value="">All sectors</option></select>
+  </div>
+  <div class="filter-group">
+    <select class="filter" id="filter-region"><option value="">All regions</option></select>
+  </div>
+  <div class="filter-group">
+    <select class="filter" id="filter-value">
+      <option value="">Any value</option>
+      <option value="10000">£10k+</option>
+      <option value="50000">£50k+</option>
+      <option value="100000">£100k+</option>
+      <option value="500000">£500k+</option>
+      <option value="1000000">£1m+</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <select class="filter" id="filter-deadline">
+      <option value="">Any deadline</option>
+      <option value="1">Closes today</option>
+      <option value="7">Within 7 days</option>
+      <option value="14">Within 14 days</option>
+      <option value="30">Within 30 days</option>
+      <option value="90">Within 90 days</option>
+    </select>
+  </div>
+  <button class="btn-clear" id="btn-clear">Clear all</button>
+</div>
+
+<!-- RESULTS BAR -->
+<div class="results-bar">
+  <div class="results-count" id="results-count">Loading tenders…</div>
+  <div class="live-pill"><span class="live-dot"></span>Updated daily</div>
+</div>
+
+<!-- CARDS -->
+<div class="cards-wrap">
+  <div class="cards-grid" id="cards-grid"></div>
+</div>
+
+<div class="load-more-wrap" id="load-more-wrap" style="display:none">
+  <button class="btn-load-more" id="btn-load-more">Load more tenders</button>
+</div>
+
+<!-- CTA -->
+<div class="cta-banner">
+  <h2>Found a tender you want to win?</h2>
+  <p>Our bid writing specialists have an 85%+ success rate across public sector contracts.</p>
+  <a href="/contact.html" class="btn-white">Get a Free Consultation</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>Hawkeye Solutions</h4>
+      <p style="font-size:13px;line-height:1.7;margin-bottom:12px">Expert bid writing and tender management for public sector recruitment and IT contracts.</p>
+      <p style="font-size:12px">Tender data sourced from <a href="https://www.find-tender.service.gov.uk" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.55)">Find a Tender (GOV.UK)</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="/bid-writing.html">Bid Writing</a>
+      <a href="/bid-management.html">Bid Management</a>
+      <a href="/bid-consultancy.html">Bid Consultancy</a>
+      <a href="/bid-training.html">Bid Training</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="/about.html">About Us</a>
+      <a href="/sectors.html">Sectors</a>
+      <a href="/tenders.html">Tenders</a>
+      <a href="/blog.html">Blog</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="/contact.html">Free Consultation</a>
+      <a href="/contact.html">Request a Call Back</a>
+      <a href="/contact.html">Upload a Tender</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Hawkeye Solutions. All rights reserved.</span>
+    <span>Precision Bids. Proven Results.</span>
+  </div>
+</footer>
+
+<script>
+const CONTACT_URL = '/contact.html';
+const PAGE_SIZE   = 24;
+
+// NUTS/ITL code → readable region name (fixes raw API codes in existing data)
+const NUTS = {
+  UKC:'North East England',    UKD:'North West England',
+  UKE:'Yorkshire and The Humber', UKF:'East Midlands',
+  UKG:'West Midlands',         UKH:'East of England',
+  UKI:'London',                UKJ:'South East England',
+  UKK:'South West England',    UKL:'Wales',
+  UKM:'Scotland',              UKN:'Northern Ireland',
+  UKC1:'Tees Valley and Durham',  UKC2:'Tyne and Wear',
+  UKD1:'Cumbria',              UKD3:'Greater Manchester',
+  UKD4:'Lancashire',           UKD6:'Cheshire',
+  UKD7:'Merseyside',           UKE1:'East Riding and North Lincolnshire',
+  UKE2:'North Yorkshire',      UKE3:'South Yorkshire',
+  UKE4:'West Yorkshire',       UKF1:'Derbyshire and Nottinghamshire',
+  UKF2:'Leicestershire and Northamptonshire', UKF3:'Lincolnshire',
+  UKG1:'Herefordshire and Worcestershire',    UKG2:'Shropshire and Staffordshire',
+  UKG3:'West Midlands',        UKH1:'East Anglia',
+  UKH2:'Bedfordshire and Hertfordshire',      UKH3:'Essex',
+  UKI3:'Inner London',         UKI4:'Inner London',
+  UKI5:'Outer London',         UKI6:'Outer London',
+  UKI7:'Outer London',         UKJ1:'Berkshire and Oxfordshire',
+  UKJ2:'Surrey and Sussex',    UKJ3:'Hampshire and Isle of Wight',
+  UKJ4:'Kent',                 UKK1:'Gloucestershire and Bristol',
+  UKK2:'Dorset and Somerset',  UKK3:'Cornwall',
+  UKK4:'Devon',                UKL1:'West Wales',
+  UKL2:'East Wales',           UKM2:'Eastern Scotland',
+  UKM3:'South West Scotland',  UKM5:'North East Scotland',
+  UKM6:'Highlands and Islands',UKN0:'Northern Ireland',
+};
+
+// CPV code → sector (mirrors pipeline logic, fixes existing data client-side)
+const CPV_SPECIFIC = { '7995':'Events & Conferences', '796':'Recruitment & Staffing' };
+const CPV_GENERAL  = {
+  '03':'Agriculture & Forestry','09':'Energy','14':'Mining','15':'Food & Beverages',
+  '22':'Print & Publishing','24':'Chemicals','30':'IT Hardware','31':'Electronics',
+  '32':'Communications','33':'Medical Supplies','34':'Vehicles & Transport',
+  '35':'Security Equipment','38':'Laboratory Equipment','39':'Furniture',
+  '42':'Industrial Machinery','44':'Construction Materials','45':'Construction Works',
+  '48':'Software','50':'Maintenance & Repair','51':'Installation Services',
+  '55':'Hospitality','60':'Transport Services','63':'Logistics','65':'Utilities',
+  '66':'Financial Services','71':'Architecture & Engineering','72':'IT Services',
+  '73':'Research & Development','75':'Public Administration','79':'Business Services',
+  '80':'Education & Training','85':'Health & Social Care','90':'Environmental Services',
+  '92':'Recreation & Culture','98':'Other Services',
+};
+function cpvToSector(code) {
+  if (!code) return null;
+  const d = code.split('-')[0].trim();
+  for (const [len, map] of [[4, CPV_SPECIFIC],[3, CPV_SPECIFIC],[2, CPV_GENERAL]]) {
+    const key = d.slice(0, len);
+    if (map[key]) return map[key];
+  }
+  return null;
+}
+
+function normaliseRegion(r) {
+  if (!r) return r;
+  const u = r.trim().toUpperCase();
+  if (NUTS[u]) return NUTS[u];
+  // try 4-char then 3-char prefix
+  if (u.length > 4 && NUTS[u.slice(0,4)]) return NUTS[u.slice(0,4)];
+  if (u.length > 3 && NUTS[u.slice(0,3)]) return NUTS[u.slice(0,3)];
+  return r.trim();
+}
+
+let allTenders = [], filtered = [], shown = 0;
+
+function formatValue(amount) {
+  if (amount == null || amount === '') return null;
+  if (amount >= 1_000_000) { const m = amount/1_000_000; return `£${m%1===0?m.toFixed(0):m.toFixed(1)}m`; }
+  if (amount >= 1_000) return `£${(amount/1_000).toFixed(0)}k`;
+  return `£${Number(amount).toLocaleString('en-GB')}`;
+}
+
+function deadlineInfo(dateStr) {
+  if (!dateStr) return { label:'Open deadline', cls:'' };
+  const days = (new Date(dateStr) - Date.now()) / 86_400_000;
+  if (days < 0)   return { label:'Expired',          cls:'urgent',  card:'urgent'  };
+  if (days < 1)   return { label:'Closes today',     cls:'urgent',  card:'urgent'  };
+  if (days < 2)   return { label:'1 day left',       cls:'urgent',  card:'urgent'  };
+  if (days <= 7)  return { label:`${Math.ceil(days)} days left`, cls:'urgent',  card:'urgent'  };
+  if (days <= 14) return { label:`${Math.ceil(days)} days left`, cls:'warning', card:'warning' };
+  const d = new Date(dateStr);
+  return { label: d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}), cls:'safe', card:'' };
+}
+
+function esc(s) {
+  return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildCard(t) {
+  const val = formatValue(t.value);
+  const dl  = deadlineInfo(t.deadline);
+  const url = t.url || '#';
+  return `
+  <div class="card ${esc(dl.card)}">
+    <div class="card-top">
+      <div class="card-title">${esc(t.title)}</div>
+      ${val ? `<div class="card-value">${esc(val)}</div>` : ''}
+    </div>
+    <div class="card-buyer">${esc(t.buyer)}</div>
+    <div class="card-meta">
+      <span class="tag tag-deadline ${esc(dl.cls)}">⏱ ${esc(dl.label)}</span>
+      ${t.sector && t.sector!=='Uncategorised' ? `<span class="tag tag-sector">${esc(t.sector)}</span>` : ''}
+      ${t.region && t.region!=='UK' ? `<span class="tag tag-region">📍 ${esc(t.region)}</span>` : ''}
+    </div>
+    <div class="card-description">${esc(t.description||'No description available.')}</div>
+    <div class="card-actions">
+      <a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">View tender</a>
+      <a href="${esc(CONTACT_URL)}" class="btn btn-secondary">Need help with this bid?</a>
+    </div>
+  </div>`;
+}
+
+const grid         = document.getElementById('cards-grid');
+const countEl      = document.getElementById('results-count');
+const loadMoreWrap = document.getElementById('load-more-wrap');
+const loadMoreBtn  = document.getElementById('btn-load-more');
+
+function renderPage(reset) {
+  if (reset) { grid.innerHTML = ''; shown = 0; }
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty-state"><h3>No tenders found</h3><p>Try broadening your search or adjusting the filters.</p></div>`;
+    loadMoreWrap.style.display = 'none';
+    return;
+  }
+  grid.insertAdjacentHTML('beforeend', filtered.slice(shown, shown+PAGE_SIZE).map(buildCard).join(''));
+  shown += Math.min(PAGE_SIZE, filtered.length - shown + PAGE_SIZE);
+  shown = Math.min(shown, filtered.length + PAGE_SIZE);
+  // recalc shown properly
+  shown = grid.querySelectorAll('.card').length;
+  const remaining = filtered.length - shown;
+  if (remaining > 0) {
+    loadMoreWrap.style.display = 'block';
+    loadMoreBtn.textContent = `Load more (${remaining} remaining)`;
+  } else {
+    loadMoreWrap.style.display = 'none';
+  }
+}
+
+function updateCount() {
+  const n = filtered.length;
+  countEl.innerHTML = `<strong>${n.toLocaleString()}</strong> tender${n!==1?'s':''} found`;
+}
+
+let debounceTimer;
+function applyFilters() {
+  const query    = document.getElementById('search').value.trim().toLowerCase();
+  const sector   = document.getElementById('filter-sector').value;
+  const region   = document.getElementById('filter-region').value;
+  const minVal   = parseFloat(document.getElementById('filter-value').value) || 0;
+  const deadDays = parseFloat(document.getElementById('filter-deadline').value) || 0;
+  const now      = Date.now();
+
+  filtered = allTenders.filter(t => {
+    if (query) {
+      const hay = `${t.title} ${t.buyer} ${t.description} ${t.sector} ${t.region}`.toLowerCase();
+      if (!query.split(/\s+/).every(w => hay.includes(w))) return false;
+    }
+    if (sector  && t.sector !== sector) return false;
+    if (region  && t.region !== region) return false;
+    if (minVal  && (t.value==null || t.value < minVal)) return false;
+    if (deadDays) {
+      if (!t.deadline) return false;
+      const d = (new Date(t.deadline) - now) / 86_400_000;
+      if (d < 0 || d > deadDays) return false;
+    }
+    return true;
+  });
+  updateCount();
+  renderPage(true);
+}
+
+function debounce() { clearTimeout(debounceTimer); debounceTimer = setTimeout(applyFilters, 150); }
+
+function populateDropdowns() {
+  const sectors = [...new Set(allTenders.map(t=>t.sector).filter(s=>s&&s!=='Uncategorised'))].sort();
+  const regions = [...new Set(allTenders.map(t=>t.region).filter(r=>r&&r!=='UK'))].sort();
+  const sEl = document.getElementById('filter-sector');
+  sectors.forEach(s => sEl.insertAdjacentHTML('beforeend',`<option value="${esc(s)}">${esc(s)}</option>`));
+  const rEl = document.getElementById('filter-region');
+  regions.forEach(r => rEl.insertAdjacentHTML('beforeend',`<option value="${esc(r)}">${esc(r)}</option>`));
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  document.getElementById('search-clear').classList.toggle('visible', e.target.value.length > 0);
+  debounce();
+});
+document.getElementById('search-clear').addEventListener('click', () => {
+  const s = document.getElementById('search');
+  s.value = '';
+  document.getElementById('search-clear').classList.remove('visible');
+  applyFilters(); s.focus();
+});
+['filter-sector','filter-region','filter-value','filter-deadline'].forEach(id => {
+  document.getElementById(id).addEventListener('change', applyFilters);
+});
+document.getElementById('btn-clear').addEventListener('click', () => {
+  document.getElementById('search').value = '';
+  document.getElementById('search-clear').classList.remove('visible');
+  ['filter-sector','filter-region','filter-value','filter-deadline'].forEach(id => document.getElementById(id).value='');
+  applyFilters();
+});
+loadMoreBtn.addEventListener('click', () => renderPage(false));
+
+function toggleMenu() {
+  const btn  = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('mobile-menu');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+
+fetch('uk-tenders.json')
+  .then(r => { if(!r.ok) throw new Error(r.statusText); return r.json(); })
+  .then(data => {
+    // Fix region codes and reclassify sectors from CPV codes on existing data
+    allTenders = data.map(t => ({
+      ...t,
+      region: normaliseRegion(t.region) || 'UK',
+      sector: cpvToSector(t.cpvCode) || t.sector || 'Uncategorised',
+    }));
+    populateDropdowns(); applyFilters();
+  })
+  .catch(() => {
+    document.body.innerHTML = `<div style="background:#0e4a57;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Segoe UI',sans-serif;color:white;padding:24px;text-align:center"><div style="max-width:480px"><h2 style="font-size:22px;margin-bottom:12px">One quick step to preview locally</h2><p style="color:rgba(255,255,255,0.6);margin-bottom:20px;line-height:1.7;font-size:14px">Run this in your terminal from the project folder:</p><code style="display:block;background:rgba(255,255,255,0.08);border-radius:8px;padding:14px 20px;font-size:14px;color:#7dd4e8;font-family:monospace;margin-bottom:14px">python3.14 -m http.server 8080</code><p style="color:rgba(255,255,255,0.4);font-size:13px">Then open <strong style="color:white">http://localhost:8080/tender-search.html</strong></p></div></div>`;
+  });
+</script>
+</body>
+</html>
