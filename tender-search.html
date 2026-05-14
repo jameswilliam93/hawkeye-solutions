@@ -422,6 +422,78 @@ function normaliseRegion(r) {
   return r.trim();
 }
 
+// Broad UK region groupings — granular NUTS name → broad region label
+const REGION_GROUPS = {
+  // North East
+  'North East England':'North East',  'Tees Valley and Durham':'North East',
+  'Tyne and Wear':'North East',
+  // North West
+  'North West England':'North West',  'Cumbria':'North West',
+  'Greater Manchester':'North West',  'Lancashire':'North West',
+  'Cheshire':'North West',            'Merseyside':'North West',
+  // Yorkshire & The Humber
+  'Yorkshire and The Humber':'Yorkshire & The Humber',
+  'East Riding and North Lincolnshire':'Yorkshire & The Humber',
+  'North Yorkshire':'Yorkshire & The Humber',
+  'South Yorkshire':'Yorkshire & The Humber',
+  'West Yorkshire':'Yorkshire & The Humber',
+  // East Midlands
+  'East Midlands':'East Midlands',
+  'Derbyshire and Nottinghamshire':'East Midlands',
+  'Leicestershire and Northamptonshire':'East Midlands',
+  'Lincolnshire':'East Midlands',
+  // West Midlands
+  'West Midlands':'West Midlands',
+  'Herefordshire and Worcestershire':'West Midlands',
+  'Shropshire and Staffordshire':'West Midlands',
+  // East of England
+  'East of England':'East of England',  'East Anglia':'East of England',
+  'Bedfordshire and Hertfordshire':'East of England',  'Essex':'East of England',
+  // London
+  'London':'London',  'Inner London':'London',  'Outer London':'London',
+  // South East
+  'South East England':'South East',
+  'Berkshire and Oxfordshire':'South East',  'Surrey and Sussex':'South East',
+  'Hampshire and Isle of Wight':'South East',  'Kent':'South East',
+  // South West
+  'South West England':'South West',
+  'Gloucestershire and Bristol':'South West',  'Dorset and Somerset':'South West',
+  'Cornwall':'South West',  'Devon':'South West',
+  // Wales
+  'Wales':'Wales',  'West Wales':'Wales',  'East Wales':'Wales',
+  // Scotland
+  'Scotland':'Scotland',  'Eastern Scotland':'Scotland',
+  'South West Scotland':'Scotland',  'North East Scotland':'Scotland',
+  'Highlands and Islands':'Scotland',
+  // Northern Ireland
+  'Northern Ireland':'Northern Ireland',
+};
+
+const BROAD_REGION_ORDER = [
+  'North East','North West','Yorkshire & The Humber',
+  'East Midlands','West Midlands','East of England',
+  'London','South East','South West',
+  'Wales','Scotland','Northern Ireland',
+];
+
+function toBroadRegion(specificRegion) {
+  if (!specificRegion || specificRegion === 'UK') return null;
+  // Direct lookup first
+  if (REGION_GROUPS[specificRegion]) return REGION_GROUPS[specificRegion];
+  // Fallback: partial match for free-text locations the API sometimes returns
+  const r = specificRegion.toLowerCase();
+  if (r.includes('london'))           return 'London';
+  if (r.includes('scotland'))         return 'Scotland';
+  if (r.includes('wales'))            return 'Wales';
+  if (r.includes('northern ireland')) return 'Northern Ireland';
+  if (r.includes('manchester') || r.includes('liverpool') || r.includes('mersey')) return 'North West';
+  if (r.includes('yorkshire') || r.includes('leeds') || r.includes('sheffield'))   return 'Yorkshire & The Humber';
+  if (r.includes('birmingham') || r.includes('midland'))  return 'West Midlands';
+  if (r.includes('bristol') || r.includes('cornwall') || r.includes('devon'))      return 'South West';
+  if (r.includes('kent') || r.includes('surrey') || r.includes('sussex') || r.includes('oxford') || r.includes('hampshire')) return 'South East';
+  return null;
+}
+
 let allTenders = [], filtered = [], shown = 0, tenderMap = {};
 
 function fixUrl(url) {
@@ -533,7 +605,12 @@ function openDrawer(id) {
   const award = t.awardCriteriaDesc || awardLabel(t.awardCriteria || '');
   html += `<div class="drawer-block"><h3>Tender Details</h3>`;
   if (t.sector && t.sector !== 'Uncategorised') html += drawerRow('Sector',            esc(t.sector));
-  if (t.region && t.region !== 'UK')            html += drawerRow('Location',          esc(t.region));
+  if (t.region && t.region !== 'UK') {
+    const locLabel = (t.broadRegion && t.broadRegion !== t.region)
+      ? `${esc(t.broadRegion)} &middot; ${esc(t.region)}`
+      : esc(t.region);
+    html += drawerRow('Location', locLabel);
+  }
   if (val)                                       html += drawerRow('Estimated Value',   esc(val));
   html +=                                                drawerRow('Contracting Authority', esc(t.buyer));
   if (t.published)                               html += drawerRow('Published',         esc(formatDate(t.published)));
@@ -645,7 +722,7 @@ function buildCard(t) {
     <div class="card-meta">
       <span class="tag tag-deadline ${esc(dl.cls)}">&#9201; ${esc(dl.label)}</span>
       ${t.sector && t.sector!=='Uncategorised' ? `<span class="tag tag-sector">${esc(t.sector)}</span>` : ''}
-      ${t.region && t.region!=='UK' ? `<span class="tag tag-region">${esc(t.region)}</span>` : ''}
+      ${t.broadRegion ? `<span class="tag tag-region">${esc(t.broadRegion)}</span>` : (t.region && t.region!=='UK' ? `<span class="tag tag-region">${esc(t.region)}</span>` : '')}
     </div>
     <div class="card-description">${esc(t.description||'No description available.')}</div>
     <div class="card-actions" onclick="event.stopPropagation()">
@@ -699,7 +776,7 @@ function applyFilters() {
       if (!query.split(/\s+/).every(w => hay.includes(w))) return false;
     }
     if (sector  && t.sector !== sector) return false;
-    if (region  && t.region !== region) return false;
+    if (region  && t.broadRegion !== region) return false;
     if (minVal  && (t.value==null || t.value < minVal)) return false;
     if (deadDays) {
       if (!t.deadline) return false;
@@ -724,11 +801,14 @@ function debounce() { clearTimeout(debounceTimer); debounceTimer = setTimeout(ap
 
 function populateDropdowns() {
   const sectors = [...new Set(allTenders.map(t=>t.sector).filter(s=>s&&s!=='Uncategorised'))].sort();
-  const regions = [...new Set(allTenders.map(t=>t.region).filter(r=>r&&r!=='UK'))].sort();
+  const presentBroad = new Set(allTenders.map(t=>t.broadRegion).filter(Boolean));
   const sEl = document.getElementById('filter-sector');
   sectors.forEach(s => sEl.insertAdjacentHTML('beforeend',`<option value="${esc(s)}">${esc(s)}</option>`));
   const rEl = document.getElementById('filter-region');
-  regions.forEach(r => rEl.insertAdjacentHTML('beforeend',`<option value="${esc(r)}">${esc(r)}</option>`));
+  // Show regions in geographic order (North→South), only if data exists for them
+  BROAD_REGION_ORDER.filter(r => presentBroad.has(r)).forEach(r =>
+    rEl.insertAdjacentHTML('beforeend',`<option value="${esc(r)}">${esc(r)}</option>`)
+  );
 }
 
 document.getElementById('search').addEventListener('input', e => {
@@ -765,11 +845,15 @@ fetch('uk-tenders.json')
     const now = Date.now();
     allTenders = data
       .filter(t => !t.deadline || new Date(t.deadline) > now)
-      .map(t => ({
-        ...t,
-        region: normaliseRegion(t.region) || 'UK',
-        sector: cpvToSector(t.cpvCode) || t.sector || 'Uncategorised',
-      }));
+      .map(t => {
+        const region = normaliseRegion(t.region) || 'UK';
+        return {
+          ...t,
+          region,
+          broadRegion: toBroadRegion(region),
+          sector: cpvToSector(t.cpvCode) || t.sector || 'Uncategorised',
+        };
+      });
     tenderMap = {};
     allTenders.forEach(t => { tenderMap[t.id] = t; });
     populateDropdowns(); applyFilters();
