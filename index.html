@@ -13,74 +13,208 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee}
+:root{
+  --teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;
+  --steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --ease-in-out:cubic-bezier(0.77,0,0.175,1);
+}
 body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
 a{text-decoration:none;color:inherit}
+
+/* ── Nav ── */
 nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:12px}
 .nav-brand{color:var(--white);font-size:18px;font-weight:700}
 .nav-links{display:flex;gap:28px}
-.nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;transition:color 0.2s}
-.nav-links a:hover{color:var(--white)}
-.nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important}
+.nav-links a{
+  color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;
+  position:relative;padding-bottom:3px;
+  transition:color 0.16s var(--ease-out);
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;
+  background:rgba(255,255,255,0.75);border-radius:1px;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.22s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){
+  .nav-links a:hover{color:var(--white)}
+  .nav-links a:hover::after{transform:scaleX(1)}
+  .nav-links .nav-cta:hover::after{transform:none}
+}
+.nav-cta{
+  background:var(--teal-mid);color:var(--white)!important;
+  padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important;
+  transition:background 0.18s var(--ease-out),transform 0.12s var(--ease-out)!important;
+}
+.nav-cta::after{display:none!important}
+@media(hover:hover)and(pointer:fine){.nav-cta:hover{background:var(--teal)!important}}
+.nav-cta:active{transform:scale(0.96)!important}
+
 .hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
-.hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:transform 0.25s,opacity 0.25s}
+.hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:transform 0.22s var(--ease-out),opacity 0.22s var(--ease-out)}
 .hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
-.mobile-menu{display:none;position:absolute;top:68px;left:0;right:0;background:var(--steel);z-index:99;flex-direction:column;border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
-.mobile-menu.open{display:flex}
-.mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:14px 5%;border-bottom:1px solid rgba(255,255,255,0.07);transition:background 0.15s,color 0.15s}
+
+.mobile-menu{
+  display:flex;flex-direction:column;
+  position:absolute;top:68px;left:0;right:0;
+  background:var(--steel);z-index:99;
+  border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  max-height:0;overflow:hidden;
+  transition:max-height 0.3s var(--ease-out);
+}
+.mobile-menu.open{max-height:400px}
+.mobile-menu a{
+  color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;
+  padding:14px 5%;border-bottom:1px solid rgba(255,255,255,0.07);
+  transition:background 0.14s var(--ease-out),color 0.14s var(--ease-out);
+}
 .mobile-menu a:last-child{border-bottom:none}
-.mobile-menu a:hover{background:rgba(255,255,255,0.07);color:var(--white)}
-.mobile-menu .mob-cta{background:var(--teal-mid);color:var(--white);margin:12px 5%;border-radius:6px;text-align:center;border-bottom:none!important;padding:12px 5%}
-.mobile-menu .mob-cta:hover{background:var(--teal)}
+@media(hover:hover)and(pointer:fine){.mobile-menu a:hover{background:rgba(255,255,255,0.07);color:var(--white)}}
+.mobile-menu .mob-cta{
+  background:var(--teal-mid);color:var(--white);
+  margin:12px 5%;border-radius:6px;text-align:center;border-bottom:none!important;padding:12px 5%;
+  transition:background 0.18s var(--ease-out),transform 0.12s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.mobile-menu .mob-cta:hover{background:var(--teal)}}
+.mobile-menu .mob-cta:active{transform:scale(0.98)}
+
+/* ── Search ── */
 .search-bar{background:var(--teal-dark);padding:10px 5%;display:flex;align-items:center;gap:12px}
-.search-bar input{flex:1;border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:9px 14px;font-size:14px;color:var(--white);background:rgba(255,255,255,0.1);font-family:inherit}
+.search-bar input{
+  flex:1;border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:9px 14px;
+  font-size:14px;color:var(--white);background:rgba(255,255,255,0.1);font-family:inherit;
+  transition:border-color 0.18s var(--ease-out),background 0.18s var(--ease-out);
+}
 .search-bar input::placeholder{color:rgba(255,255,255,0.5)}
-.search-bar input:focus{outline:none;border-color:rgba(255,255,255,0.5)}
+.search-bar input:focus{outline:none;border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.15)}
 .search-results{position:absolute;top:116px;left:5%;right:5%;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:200;max-height:320px;overflow-y:auto;display:none}
-.search-result-item{padding:14px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s}
+.search-result-item{padding:14px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.14s var(--ease-out)}
 .search-result-item:last-child{border-bottom:none}
-.search-result-item:hover{background:var(--teal-light)}
+@media(hover:hover)and(pointer:fine){.search-result-item:hover{background:var(--teal-light)}}
 .sri-page{font-size:11px;font-weight:700;color:var(--teal-mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
 .sri-title{font-size:14px;font-weight:600;color:var(--steel)}
 .search-no-results{padding:18px;font-size:14px;color:var(--text-muted);text-align:center}
+
+/* ── Hero ── */
 .hero{background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 60%,var(--teal) 100%);padding:90px 5% 80px;display:flex;align-items:center;justify-content:space-between;gap:40px;min-height:520px}
 .hero-text{max-width:580px}
-.hero-badge{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:13px;padding:5px 14px;border-radius:20px;margin-bottom:20px;letter-spacing:0.5px}
-.hero h1{font-size:48px;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:12px}
+.hero-badge{
+  display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);
+  font-size:13px;padding:5px 14px;border-radius:20px;margin-bottom:20px;letter-spacing:0.5px;
+  animation:fadeSlideUp 0.55s var(--ease-out) both;
+}
+.hero h1{
+  font-size:48px;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:12px;
+  animation:fadeSlideUp 0.65s var(--ease-out) 0.09s both;
+}
 .hero h1 span{color:#7dd4e8}
-.hero-sub{font-size:19px;color:rgba(255,255,255,0.8);margin-bottom:10px}
-.hero-desc{font-size:15px;color:rgba(255,255,255,0.65);margin-bottom:32px;line-height:1.7}
-.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
-.btn-primary{background:var(--white);color:var(--teal-dark);padding:13px 28px;border-radius:7px;font-weight:700;font-size:15px;cursor:pointer;border:none;display:inline-block;transition:background 0.2s}
-.btn-primary:hover{background:#e8f4f7}
-.btn-secondary{border:2px solid rgba(255,255,255,0.5);color:var(--white);padding:13px 28px;border-radius:7px;font-weight:600;font-size:15px;display:inline-block;transition:border-color 0.2s,background 0.2s}
-.btn-secondary:hover{border-color:var(--white);background:rgba(255,255,255,0.1)}
-.hero-logo-wrap{flex-shrink:0}
+.hero-sub{
+  font-size:19px;color:rgba(255,255,255,0.8);margin-bottom:10px;
+  animation:fadeSlideUp 0.6s var(--ease-out) 0.18s both;
+}
+.hero-desc{
+  font-size:15px;color:rgba(255,255,255,0.65);margin-bottom:32px;line-height:1.7;
+  animation:fadeSlideUp 0.6s var(--ease-out) 0.26s both;
+}
+.hero-btns{
+  display:flex;gap:14px;flex-wrap:wrap;
+  animation:fadeSlideUp 0.6s var(--ease-out) 0.34s both;
+}
+.hero-logo-wrap{
+  flex-shrink:0;
+  animation:fadeSlideUp 0.7s var(--ease-out) 0.12s both;
+}
+.hero-logo-wrap img{
+  max-height:180px;display:block;
+  animation:floatLogo 5s ease-in-out 1.2s infinite;
+}
+
+@keyframes fadeSlideUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes floatLogo{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-11px)}
+}
+
+/* ── Buttons ── */
+.btn-primary{
+  background:var(--white);color:var(--teal-dark);padding:13px 28px;border-radius:7px;
+  font-weight:700;font-size:15px;cursor:pointer;border:none;display:inline-block;
+  transition:background 0.18s var(--ease-out),transform 0.12s var(--ease-out),box-shadow 0.2s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.btn-primary:hover{background:#e8f4f7;box-shadow:0 4px 16px rgba(0,0,0,0.14)}}
+.btn-primary:active{transform:scale(0.97)}
+.btn-secondary{
+  border:2px solid rgba(255,255,255,0.5);color:var(--white);padding:13px 28px;border-radius:7px;
+  font-weight:600;font-size:15px;display:inline-block;
+  transition:border-color 0.18s var(--ease-out),background 0.18s var(--ease-out),transform 0.12s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.btn-secondary:hover{border-color:var(--white);background:rgba(255,255,255,0.1)}}
+.btn-secondary:active{transform:scale(0.97)}
+
+/* ── Stats ── */
 .stats{background:var(--white);border-bottom:1px solid var(--border);padding:36px 5%}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:960px;margin:0 auto;text-align:center}
 .stat-num{font-size:36px;font-weight:800;color:var(--teal-dark)}
 .stat-label{font-size:13px;color:var(--text-muted);margin-top:4px}
+
+/* ── Scroll reveal ── */
+.reveal{
+  opacity:0;transform:translateY(24px);
+  transition:opacity 0.55s var(--ease-out),transform 0.55s var(--ease-out);
+}
+.reveal.in{opacity:1;transform:translateY(0)}
+.reveal[data-d="2"]{transition-delay:70ms}
+.reveal[data-d="3"]{transition-delay:140ms}
+.reveal[data-d="4"]{transition-delay:210ms}
+
 section{padding:70px 5%}
 .section-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal-mid);margin-bottom:10px}
 .section-title{font-size:34px;font-weight:800;color:var(--steel);margin-bottom:14px;line-height:1.2}
 .section-desc{font-size:16px;color:var(--text-muted);max-width:580px;line-height:1.75}
 .section-header{margin-bottom:44px}
+
+/* ── Services ── */
 .services{background:var(--off-white)}
 .services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
-.service-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:30px;transition:box-shadow 0.2s,border-color 0.2s;display:block;color:inherit}
-.service-card:hover{box-shadow:0 4px 20px rgba(26,107,124,0.12);border-color:var(--teal-mid);text-decoration:none}
-.service-icon{width:46px;height:46px;background:var(--teal-light);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.service-card{
+  background:var(--white);border:1px solid var(--border);border-radius:12px;padding:30px;
+  display:block;color:inherit;
+  transition:box-shadow 0.25s var(--ease-out),border-color 0.25s var(--ease-out),transform 0.25s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){
+  .service-card:hover{box-shadow:0 10px 32px rgba(26,107,124,0.16);border-color:var(--teal-mid);transform:translateY(-5px);text-decoration:none}
+  .service-card:hover .service-icon{transform:scale(1.1)}
+  .service-card:hover .service-link{transform:translateX(5px)}
+}
+.service-card:active{transform:scale(0.99)}
+.service-icon{
+  width:46px;height:46px;background:var(--teal-light);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+  transition:transform 0.22s var(--ease-out);
+}
 .service-icon svg{width:24px;height:24px;stroke:var(--teal-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .service-card h3{font-size:18px;font-weight:700;color:var(--steel);margin-bottom:10px}
 .service-card p{font-size:14px;color:var(--text-muted);line-height:1.7}
-.service-link{display:inline-block;margin-top:14px;font-size:13px;font-weight:600;color:var(--teal-mid)}
+.service-link{display:inline-block;margin-top:14px;font-size:13px;font-weight:600;color:var(--teal-mid);transition:transform 0.18s var(--ease-out)}
+
+/* ── Tenders strip ── */
 .tenders-strip{padding:60px 5%;background:var(--white)}
 .tenders-strip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px}
-.strip-card{background:var(--off-white);border:1px solid var(--border);border-radius:12px;padding:22px;position:relative;overflow:hidden;cursor:pointer;transition:box-shadow 0.2s,border-color 0.2s}
-.strip-card:hover{box-shadow:0 4px 20px rgba(26,107,124,0.1);border-color:var(--teal-mid)}
+.strip-card{
+  background:var(--off-white);border:1px solid var(--border);border-radius:12px;padding:22px;
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:box-shadow 0.25s var(--ease-out),border-color 0.25s var(--ease-out),transform 0.25s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){
+  .strip-card:hover{box-shadow:0 8px 24px rgba(26,107,124,0.13);border-color:var(--teal-mid);transform:translateY(-4px)}
+}
 .strip-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--teal-mid)}
 .strip-card.urgent::before{background:#d94f3d}
 .strip-card.soon::before{background:#e8920a}
@@ -97,124 +231,265 @@ section{padding:70px 5%}
 .strip-cta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .strip-cta p{font-size:14px;color:var(--text-muted)}
 .strip-cta p strong{color:var(--steel)}
-.btn-teal{background:var(--teal-dark);color:var(--white);padding:11px 22px;border-radius:7px;font-weight:700;font-size:14px;display:inline-block;transition:background 0.2s;white-space:nowrap}
-.btn-teal:hover{background:var(--teal)}
+.btn-teal{
+  background:var(--teal-dark);color:var(--white);padding:11px 22px;border-radius:7px;
+  font-weight:700;font-size:14px;display:inline-block;white-space:nowrap;
+  transition:background 0.18s var(--ease-out),transform 0.12s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.btn-teal:hover{background:var(--teal)}}
+.btn-teal:active{transform:scale(0.97)}
+
+/* ── Sectors ── */
 .sectors-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
-.sector-card{border-left:4px solid var(--teal-mid);padding:24px 28px;background:var(--off-white);border-radius:0 10px 10px 0}
+.sector-card{
+  border-left:4px solid var(--teal-mid);padding:24px 28px;background:var(--off-white);
+  border-radius:0 10px 10px 0;
+  transition:box-shadow 0.22s var(--ease-out),transform 0.22s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.sector-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,107,124,0.1)}}
 .sector-card h3{font-size:19px;font-weight:700;color:var(--steel);margin-bottom:10px}
 .sector-card p{font-size:14px;color:var(--text-muted);line-height:1.75}
 .sector-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.tag{background:var(--teal-light);color:var(--teal-dark);font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px}
+.tag{
+  background:var(--teal-light);color:var(--teal-dark);font-size:12px;font-weight:600;
+  padding:4px 12px;border-radius:20px;
+  transition:background 0.16s var(--ease-out),color 0.16s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.tag:hover{background:var(--teal-mid);color:var(--white)}}
+
+/* ── Why ── */
 .why{background:var(--steel)}
 .why .section-title{color:var(--white)}
 .why .section-desc{color:rgba(255,255,255,0.7)}
 .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.why-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:28px}
+.why-card{
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
+  border-radius:12px;padding:28px;
+  transition:background 0.22s var(--ease-out),border-color 0.22s var(--ease-out),transform 0.25s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){
+  .why-card:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.24);transform:translateY(-5px)}
+}
 .why-card h3{font-size:16px;font-weight:700;color:var(--white);margin-bottom:10px}
 .why-card p{font-size:14px;color:rgba(255,255,255,0.65);line-height:1.7}
 .why-num{font-size:32px;font-weight:800;color:#7dd4e8;margin-bottom:8px}
+
+/* ── Testimonials ── */
 .testimonials{background:var(--off-white)}
 .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.testi-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px}
+.testi-card{
+  background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px;
+  transition:box-shadow 0.25s var(--ease-out),border-color 0.25s var(--ease-out),transform 0.25s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){
+  .testi-card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(26,107,124,0.1)}
+}
 .testi-quote{font-size:14px;color:var(--text-muted);line-height:1.8;font-style:italic;margin-bottom:18px}
 .testi-author{font-size:13px;font-weight:700;color:var(--steel)}
 .testi-role{font-size:12px;color:var(--text-muted)}
 .stars{color:var(--teal-mid);font-size:14px;margin-bottom:12px}
+
+/* ── Process ── */
 .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
 .process-steps::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:2px;background:var(--border);z-index:0}
 .step{text-align:center;padding:0 16px;position:relative;z-index:1}
-.step-num{width:56px;height:56px;background:var(--teal-dark);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin:0 auto 16px}
+.step-num{
+  width:56px;height:56px;background:var(--teal-dark);color:var(--white);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin:0 auto 16px;
+  transition:transform 0.22s var(--ease-out),background 0.22s var(--ease-out),box-shadow 0.22s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){
+  .step:hover .step-num{transform:scale(1.12);background:var(--teal-mid);box-shadow:0 6px 20px rgba(42,143,163,0.35)}
+}
 .step h3{font-size:15px;font-weight:700;color:var(--steel);margin-bottom:8px}
 .step p{font-size:13px;color:var(--text-muted);line-height:1.6}
+
+/* ── CTA Banner ── */
 .cta-banner{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));padding:70px 5%;text-align:center}
 .cta-banner h2{font-size:36px;font-weight:800;color:var(--white);margin-bottom:14px}
 .cta-banner p{font-size:17px;color:rgba(255,255,255,0.8);margin-bottom:32px}
+
+/* ── Action section ── */
 .action-section{background:var(--off-white);padding:70px 5%}
 .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
-.action-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:36px}
+.action-card{
+  background:var(--white);border:1px solid var(--border);border-radius:14px;padding:36px;
+  transition:box-shadow 0.25s var(--ease-out),border-color 0.25s var(--ease-out);
+}
+.action-icon{
+  width:52px;height:52px;background:var(--teal-light);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+  transition:transform 0.22s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.action-card:hover .action-icon{transform:scale(1.08)}}
+.action-icon svg{width:26px;height:26px;stroke:var(--teal-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .action-card h3{font-size:22px;font-weight:800;color:var(--steel);margin-bottom:8px}
 .action-card .action-sub{font-size:14px;color:var(--text-muted);margin-bottom:24px;line-height:1.7}
-.action-icon{width:52px;height:52px;background:var(--teal-light);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
-.action-icon svg{width:26px;height:26px;stroke:var(--teal-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.upload-zone{border:2px dashed var(--border);border-radius:10px;padding:32px 20px;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;margin-bottom:16px}
-.upload-zone:hover{border-color:var(--teal-mid);background:var(--teal-light)}
+.upload-zone{
+  border:2px dashed var(--border);border-radius:10px;padding:32px 20px;text-align:center;cursor:pointer;
+  transition:border-color 0.2s var(--ease-out),background 0.2s var(--ease-out),transform 0.15s var(--ease-out);
+  margin-bottom:16px;
+}
+@media(hover:hover)and(pointer:fine){
+  .upload-zone:hover{border-color:var(--teal-mid);background:var(--teal-light);transform:scale(1.01)}
+}
 .upload-zone svg{width:32px;height:32px;stroke:var(--teal-mid);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:10px}
 .upload-zone p{font-size:14px;color:var(--text-muted)}
 .upload-zone span{font-size:12px;color:var(--teal-mid);font-weight:600}
 .upload-file-name{font-size:13px;color:var(--teal-dark);font-weight:600;margin-bottom:12px;min-height:20px}
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-size:13px;font-weight:600;color:var(--steel);margin-bottom:5px}
-.form-group input,.form-group textarea,.form-group select{width:100%;border:1px solid var(--border);border-radius:7px;padding:10px 13px;font-size:14px;color:var(--text);background:var(--white);transition:border-color 0.2s;font-family:inherit}
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--teal-mid)}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;border:1px solid var(--border);border-radius:7px;padding:10px 13px;
+  font-size:14px;color:var(--text);background:var(--white);font-family:inherit;
+  transition:border-color 0.18s var(--ease-out),box-shadow 0.18s var(--ease-out);
+}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{
+  outline:none;border-color:var(--teal-mid);box-shadow:0 0 0 3px rgba(42,143,163,0.12);
+}
 .form-group textarea{min-height:90px;resize:vertical}
-.form-submit{background:var(--teal-dark);color:var(--white);border:none;padding:12px 28px;border-radius:7px;font-size:15px;font-weight:700;cursor:pointer;width:100%;transition:background 0.2s;margin-top:4px}
-.form-submit:hover{background:var(--teal)}
+.form-submit{
+  background:var(--teal-dark);color:var(--white);border:none;padding:12px 28px;border-radius:7px;
+  font-size:15px;font-weight:700;cursor:pointer;width:100%;margin-top:4px;
+  transition:background 0.18s var(--ease-out),transform 0.12s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.form-submit:hover{background:var(--teal)}}
+.form-submit:active{transform:scale(0.98)}
 .success-msg{display:none;background:#e8f7f0;border:1px solid #a3dcc0;border-radius:8px;padding:14px 18px;font-size:14px;color:#1a6b4a;margin-top:12px;font-weight:500}
+
+/* ── Contact ── */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
 .contact-info h3{font-size:20px;font-weight:700;color:var(--steel);margin-bottom:16px}
 .contact-info p{font-size:15px;color:var(--text-muted);line-height:1.75;margin-bottom:24px}
 .contact-detail{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-size:14px;color:var(--text-muted)}
 .contact-detail svg{width:18px;height:18px;stroke:var(--teal-mid);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.contact-box{display:flex;align-items:center;gap:16px;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:14px;transition:box-shadow 0.2s,border-color 0.2s;cursor:pointer;text-decoration:none;color:inherit}
-.contact-box:hover{box-shadow:0 4px 16px rgba(26,107,124,0.1);border-color:var(--teal-mid)}
+.contact-box{
+  display:flex;align-items:center;gap:16px;background:var(--white);border:1px solid var(--border);
+  border-radius:12px;padding:18px 22px;margin-bottom:14px;cursor:pointer;text-decoration:none;color:inherit;
+  transition:box-shadow 0.22s var(--ease-out),border-color 0.22s var(--ease-out),transform 0.2s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){
+  .contact-box:hover{box-shadow:0 4px 18px rgba(26,107,124,0.12);border-color:var(--teal-mid);transform:translateX(5px)}
+}
+.contact-box:active{transform:scale(0.99)}
 .contact-box-icon{width:44px;height:44px;background:var(--teal-light);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .contact-box-icon svg{width:22px;height:22px;stroke:var(--teal-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .contact-box-label{font-size:11px;font-weight:700;color:var(--teal-mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
 .contact-box-value{font-size:15px;font-weight:600;color:var(--steel)}
 .contact-box-sub{font-size:12px;color:var(--text-muted);margin-top:2px}
+
+/* ── Team ── */
 .team-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
-.team-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:36px 32px;text-align:center;box-shadow:0 2px 12px rgba(26,107,124,0.06);transition:box-shadow 0.2s,border-color 0.2s}
-.team-card:hover{box-shadow:0 6px 28px rgba(26,107,124,0.13);border-color:var(--teal-mid)}
-.team-photo{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid var(--teal-light);margin:0 auto 20px;display:block;background:var(--teal-light)}
+.team-card{
+  background:var(--white);border:1px solid var(--border);border-radius:16px;padding:36px 32px;text-align:center;
+  box-shadow:0 2px 12px rgba(26,107,124,0.06);
+  transition:box-shadow 0.28s var(--ease-out),border-color 0.28s var(--ease-out),transform 0.28s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){
+  .team-card:hover{box-shadow:0 12px 40px rgba(26,107,124,0.16);border-color:var(--teal-mid);transform:translateY(-6px)}
+  .team-card:hover .team-photo{border-color:var(--teal-mid)}
+}
+.team-photo{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid var(--teal-light);margin:0 auto 20px;display:block;background:var(--teal-light);transition:border-color 0.25s var(--ease-out)}
 .team-name{font-size:22px;font-weight:800;color:var(--steel);margin-bottom:4px}
 .team-title{font-size:13px;font-weight:700;color:var(--teal-mid);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:16px}
 .team-bio{font-size:14px;color:var(--text-muted);line-height:1.8;text-align:left}
+
+/* ── Timeline ── */
 .timeline-section{background:var(--off-white);padding:70px 5%}
 .timeline{position:relative;max-width:860px;margin:0 auto}
 .timeline::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;background:var(--teal-mid);transform:translateX(-50%);border-radius:2px}
 .tl-entry{display:flex;align-items:flex-start;gap:0;margin-bottom:36px;position:relative}
 .tl-entry.left{flex-direction:row}
 .tl-entry.right{flex-direction:row-reverse}
-.tl-content{width:calc(50% - 44px);background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
+.tl-content{
+  width:calc(50% - 44px);background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px;
+  transition:box-shadow 0.22s var(--ease-out),transform 0.22s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.tl-content:hover{box-shadow:0 6px 20px rgba(26,107,124,0.1);transform:scale(1.02)}}
 .tl-entry.left .tl-content{margin-right:auto;text-align:right}
 .tl-entry.right .tl-content{margin-left:auto;text-align:left}
 .tl-year-wrap{width:88px;flex-shrink:0;display:flex;justify-content:center;align-items:flex-start;padding-top:14px;position:relative;z-index:1}
-.tl-year{width:62px;height:62px;background:var(--teal-dark);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;text-align:center;line-height:1.2;border:3px solid var(--white);box-shadow:0 0 0 3px var(--teal-mid)}
+.tl-year{
+  width:62px;height:62px;background:var(--teal-dark);color:var(--white);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;text-align:center;line-height:1.2;
+  border:3px solid var(--white);box-shadow:0 0 0 3px var(--teal-mid);
+  transition:transform 0.2s var(--ease-out),box-shadow 0.2s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.tl-year:hover{transform:scale(1.1);box-shadow:0 0 0 4px var(--teal-mid),0 6px 20px rgba(42,143,163,0.3)}}
 .tl-milestone{font-size:14px;color:var(--text-muted);line-height:1.7}
 .tl-milestone strong{display:block;font-size:15px;color:var(--steel);font-weight:700;margin-bottom:4px}
+
+/* ── Clients ── */
 .clients-section{background:var(--white);padding:60px 5%}
 .clients-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}
-.client-logo-box{background:var(--off-white);border:1px solid var(--border);border-radius:10px;padding:20px 16px;display:flex;align-items:center;justify-content:center;min-height:80px;transition:box-shadow 0.2s,border-color 0.2s}
-.client-logo-box:hover{box-shadow:0 4px 16px rgba(26,107,124,0.08);border-color:var(--teal-mid)}
-.client-logo-box img{max-height:44px;max-width:100%;object-fit:contain;filter:grayscale(100%);opacity:0.65;transition:filter 0.2s,opacity 0.2s}
-.client-logo-box:hover img{filter:grayscale(0%);opacity:1}
-.client-logo-box span{font-size:12px;font-weight:700;color:var(--text-muted);text-align:center;line-height:1.4}
+.client-logo-box{
+  background:var(--off-white);border:1px solid var(--border);border-radius:10px;padding:20px 16px;
+  display:flex;align-items:center;justify-content:center;min-height:80px;
+  transition:box-shadow 0.22s var(--ease-out),border-color 0.22s var(--ease-out),transform 0.22s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){
+  .client-logo-box:hover{box-shadow:0 4px 16px rgba(26,107,124,0.1);border-color:var(--teal-mid);transform:translateY(-3px)}
+  .client-logo-box:hover img{filter:grayscale(0%);opacity:1}
+  .client-logo-box:hover span{color:var(--teal-dark)}
+}
+.client-logo-box img{max-height:44px;max-width:100%;object-fit:contain;filter:grayscale(100%);opacity:0.65;transition:filter 0.22s var(--ease-out),opacity 0.22s var(--ease-out)}
+.client-logo-box span{font-size:12px;font-weight:700;color:var(--text-muted);text-align:center;line-height:1.4;transition:color 0.18s var(--ease-out)}
+
+/* ── Values ── */
 .about-values{background:var(--steel);padding:70px 5%}
 .about-values .section-title{color:var(--white)}
 .about-values .section-desc{color:rgba(255,255,255,0.7)}
 .values-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:800px}
-.value-item{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:24px}
+.value-item{
+  display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:24px;
+  transition:background 0.22s var(--ease-out),border-color 0.22s var(--ease-out),transform 0.22s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){
+  .value-item:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.24);transform:translateY(-3px)}
+}
 .value-dot{width:10px;height:10px;background:var(--teal-mid);border-radius:50%;margin-top:6px;flex-shrink:0}
 .value-item strong{font-size:15px;color:var(--white);display:block;margin-bottom:5px}
 .value-item p{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7}
+
+/* ── Footer ── */
 footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:36px}
 .footer-col h4{color:var(--white);font-size:14px;font-weight:700;margin-bottom:14px}
-.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:8px;transition:color 0.2s}
-.footer-col a:hover{color:var(--white)}
+.footer-col a{
+  display:block;font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:8px;
+  transition:color 0.16s var(--ease-out),transform 0.16s var(--ease-out);
+}
+@media(hover:hover)and(pointer:fine){.footer-col a:hover{color:var(--white);transform:translateX(3px)}}
 .footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;font-size:12px;display:flex;justify-content:space-between}
+
+/* ── Admin ── */
 .admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:center;justify-content:center}
 .admin-overlay.open{display:flex}
 .admin-box{background:var(--white);border-radius:16px;width:90%;max-width:560px;padding:36px;position:relative}
 .admin-login{text-align:center;padding:20px 0}
 .admin-login h3{font-size:20px;font-weight:700;color:var(--steel);margin-bottom:8px}
 .admin-login p{font-size:14px;color:var(--text-muted);margin-bottom:24px}
-.admin-btn{background:var(--teal-dark);color:var(--white);border:none;padding:11px 24px;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer}
+.admin-btn{
+  background:var(--teal-dark);color:var(--white);border:none;padding:11px 24px;border-radius:7px;
+  font-size:14px;font-weight:700;cursor:pointer;
+  transition:background 0.18s var(--ease-out),transform 0.12s var(--ease-out);
+}
+.admin-btn:active{transform:scale(0.97)}
 .admin-btn.secondary{background:var(--white);color:var(--steel);border:1px solid var(--border)}
-.close-admin{position:absolute;top:16px;right:20px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted)}
+.close-admin{position:absolute;top:16px;right:20px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted);transition:color 0.15s var(--ease-out)}
+@media(hover:hover)and(pointer:fine){.close-admin:hover{color:var(--text)}}
 .ohnohoney{opacity:0;position:absolute;top:0;left:0;height:0;width:0;z-index:-1}
 .page{display:none}
 #home{display:block}
+
+/* ── Reduced motion ── */
+@media(prefers-reduced-motion:reduce){
+  .hero-badge,.hero h1,.hero-sub,.hero-desc,.hero-btns,.hero-logo-wrap{animation:none;opacity:1;transform:none}
+  .hero-logo-wrap img{animation:none}
+  .reveal{opacity:1;transform:none;transition:none}
+}
+
 @media(max-width:768px){
   .hero{flex-direction:column;text-align:center;padding:60px 5%}
   .hero h1{font-size:34px}
@@ -315,42 +590,42 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
       <a href="/services.html" class="btn-secondary">Our Services</a>
     </div>
   </div>
-  <div class="hero-logo-wrap"><img src="/logo.png" alt="Hawkeye Solutions" style="max-height:180px;display:block"></div>
+  <div class="hero-logo-wrap"><img src="/logo.png" alt="Hawkeye Solutions"></div>
 </div>
 <div class="stats">
   <div class="stats-grid">
-    <div><div class="stat-num">85%+</div><div class="stat-label">Bid success rate</div></div>
-    <div><div class="stat-num">200+</div><div class="stat-label">Contracts secured</div></div>
-    <div><div class="stat-num">10+</div><div class="stat-label">Years experience</div></div>
-    <div><div class="stat-num">£500m+</div><div class="stat-label">Contract value won</div></div>
+    <div class="reveal" data-d="1"><div class="stat-num" data-target="85" data-suffix="%+">85%+</div><div class="stat-label">Bid success rate</div></div>
+    <div class="reveal" data-d="2"><div class="stat-num" data-target="200" data-suffix="+">200+</div><div class="stat-label">Contracts secured</div></div>
+    <div class="reveal" data-d="3"><div class="stat-num" data-target="10" data-suffix="+">10+</div><div class="stat-label">Years experience</div></div>
+    <div class="reveal" data-d="4"><div class="stat-num" data-target="500" data-prefix="£" data-suffix="m+">£500m+</div><div class="stat-label">Contract value won</div></div>
   </div>
 </div>
 <section class="services" id="services">
-  <div class="section-header">
+  <div class="section-header reveal">
     <div class="section-label">What we do</div>
     <div class="section-title">Our Services</div>
     <p class="section-desc">From first draft to final submission, we provide complete bid support for public sector opportunities in recruitment and IT.</p>
   </div>
   <div class="services-grid">
-    <a href="/bid-writing.html" class="service-card">
+    <a href="/bid-writing.html" class="service-card reveal" data-d="1">
       <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
       <h3>Bid Writing</h3>
       <p>From reviewing procurement documents to final submission, we own the entire bid writing process on your behalf. We interview your subject matter experts, build the win strategy, write every response and manage the review cycle to deadline.</p>
       <span class="service-link">Find out more →</span>
     </a>
-    <a href="/bid-management.html" class="service-card">
+    <a href="/bid-management.html" class="service-card reveal" data-d="2">
       <div class="service-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
       <h3>Bid Management</h3>
       <p>We manage your entire bid pipeline from opportunity identification through to final submission. Deadline tracking, stakeholder coordination, quality assurance and post-submission debrief support - all handled.</p>
       <span class="service-link">Find out more →</span>
     </a>
-    <a href="/bid-consultancy.html" class="service-card">
+    <a href="/bid-consultancy.html" class="service-card reveal" data-d="3">
       <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
       <h3>Bid Consultancy &amp; Review</h3>
       <p>Already writing your own bids? Our expert reviewers quality-check your submission against the scoring criteria and identify exactly where you can score more marks - before the deadline.</p>
       <span class="service-link">Find out more →</span>
     </a>
-    <a href="/bid-training.html" class="service-card">
+    <a href="/bid-training.html" class="service-card reveal" data-d="4">
       <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
       <h3>Bid Writing Training</h3>
       <p>Build in-house bid writing capability. Our tailored training programmes equip your team with the skills to write competitive, winning tenders across recruitment and IT consultancy sectors.</p>
@@ -361,7 +636,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
 
 <!-- LATEST TENDERS STRIP -->
 <div class="tenders-strip">
-  <div class="section-header">
+  <div class="section-header reveal">
     <div class="section-label">Live opportunities</div>
     <div class="section-title">Latest Tenders</div>
     <p class="section-desc">We publish live public sector tender opportunities daily. Here are the most recent across recruitment and IT.</p>
@@ -370,55 +645,55 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);font-size:14px">Loading latest tenders...</div>
   </div>
   <div class="strip-cta">
-    <p><strong>Updated daily</strong> — new public sector opportunities across recruitment, IT and more.</p>
+    <p><strong>Updated daily</strong> – new public sector opportunities across recruitment, IT and more.</p>
     <a href="/tenders.html" class="btn-teal">View All Live Tenders →</a>
   </div>
 </div>
 
 <section>
-  <div class="section-header">
+  <div class="section-header reveal">
     <div class="section-label">How it works</div>
     <div class="section-title">Our Process</div>
     <p class="section-desc">A clear, structured approach that takes the stress out of bidding.</p>
   </div>
   <div class="process-steps">
-    <div class="step"><div class="step-num">1</div><h3>Free Consultation</h3><p>We discuss your opportunity, assess fit, and provide a clear, fixed-fee quote.</p></div>
-    <div class="step"><div class="step-num">2</div><h3>Discovery</h3><p>We interview your team to understand your solution, evidence, and unique strengths.</p></div>
-    <div class="step"><div class="step-num">3</div><h3>Writing and Review</h3><p>We draft responses, share for your review, and refine until you are satisfied.</p></div>
-    <div class="step"><div class="step-num">4</div><h3>Submission</h3><p>Final quality check, formatting, and portal upload ready to win.</p></div>
+    <div class="step reveal" data-d="1"><div class="step-num">1</div><h3>Free Consultation</h3><p>We discuss your opportunity, assess fit, and provide a clear, fixed-fee quote.</p></div>
+    <div class="step reveal" data-d="2"><div class="step-num">2</div><h3>Discovery</h3><p>We interview your team to understand your solution, evidence, and unique strengths.</p></div>
+    <div class="step reveal" data-d="3"><div class="step-num">3</div><h3>Writing and Review</h3><p>We draft responses, share for your review, and refine until you are satisfied.</p></div>
+    <div class="step reveal" data-d="4"><div class="step-num">4</div><h3>Submission</h3><p>Final quality check, formatting, and portal upload ready to win.</p></div>
   </div>
 </section>
 <section class="why">
-  <div class="section-header">
+  <div class="section-header reveal">
     <div class="section-label">Why Hawkeye</div>
     <div class="section-title">We see what others miss</div>
     <p class="section-desc" style="color:rgba(255,255,255,0.7)">Three things that set Hawkeye Solutions apart from the competition.</p>
   </div>
   <div class="why-grid">
-    <div class="why-card"><div class="why-num">01</div><h3>Sector Specialists</h3><p>We focus on recruitment and IT consultancy bids, giving you deeper insight than a generalist consultancy can offer.</p></div>
-    <div class="why-card"><div class="why-num">02</div><h3>Public Sector Expertise</h3><p>Our team understands the Procurement Act 2023, social value requirements, and what evaluators in local and central government are looking for.</p></div>
-    <div class="why-card"><div class="why-num">03</div><h3>Partnership Approach</h3><p>We work as an extension of your team. Our long-term clients trust us to protect and grow their public sector pipeline.</p></div>
+    <div class="why-card reveal" data-d="1"><div class="why-num">01</div><h3>Sector Specialists</h3><p>We focus on recruitment and IT consultancy bids, giving you deeper insight than a generalist consultancy can offer.</p></div>
+    <div class="why-card reveal" data-d="2"><div class="why-num">02</div><h3>Public Sector Expertise</h3><p>Our team understands the Procurement Act 2023, social value requirements, and what evaluators in local and central government are looking for.</p></div>
+    <div class="why-card reveal" data-d="3"><div class="why-num">03</div><h3>Partnership Approach</h3><p>We work as an extension of your team. Our long-term clients trust us to protect and grow their public sector pipeline.</p></div>
   </div>
 </section>
 <section class="testimonials">
-  <div class="section-header">
+  <div class="section-header reveal">
     <div class="section-label">Client stories</div>
     <div class="section-title">What our clients say</div>
   </div>
   <div class="testi-grid">
-    <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-quote">"Hawkeye took the stress out of the entire process. Their understanding of public sector procurement is second to none."</p><div class="testi-author">Director of Operations</div><div class="testi-role">Recruitment Agency, London</div></div>
-    <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-quote">"We had never won a government IT contract before. Hawkeye helped us secure a £2.4m framework on our first attempt."</p><div class="testi-author">Managing Director</div><div class="testi-role">IT Consultancy, Manchester</div></div>
-    <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-quote">"The training programme transformed how our team approaches tenders. Our internal win rate has improved significantly."</p><div class="testi-author">Head of Bids</div><div class="testi-role">Staffing Solutions Provider</div></div>
+    <div class="testi-card reveal" data-d="1"><div class="stars">★★★★★</div><p class="testi-quote">"Hawkeye took the stress out of the entire process. Their understanding of public sector procurement is second to none."</p><div class="testi-author">Director of Operations</div><div class="testi-role">Recruitment Agency, London</div></div>
+    <div class="testi-card reveal" data-d="2"><div class="stars">★★★★★</div><p class="testi-quote">"We had never won a government IT contract before. Hawkeye helped us secure a £2.4m framework on our first attempt."</p><div class="testi-author">Managing Director</div><div class="testi-role">IT Consultancy, Manchester</div></div>
+    <div class="testi-card reveal" data-d="3"><div class="stars">★★★★★</div><p class="testi-quote">"The training programme transformed how our team approaches tenders. Our internal win rate has improved significantly."</p><div class="testi-author">Head of Bids</div><div class="testi-role">Staffing Solutions Provider</div></div>
   </div>
 </section>
 <section class="action-section" id="upload">
-  <div class="section-header" style="text-align:center;max-width:600px;margin:0 auto 44px">
+  <div class="section-header reveal" style="text-align:center;max-width:600px;margin:0 auto 44px">
     <div class="section-label">Get started today</div>
     <div class="section-title">Upload Your Tender or Request a Call Back</div>
     <p class="section-desc" style="margin:0 auto">Have a live opportunity? Share your tender document for a fast, no-obligation quote. Or simply leave your details and one of our team will call you back.</p>
   </div>
   <div class="action-grid">
-    <div class="action-card">
+    <div class="action-card reveal" data-d="1">
       <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
       <h3>Upload Your Tender</h3>
       <p class="action-sub">Upload your PQQ or tender document and we will provide a fast, fair, fixed-fee quotation. All documents are handled securely and in strict confidence.</p>
@@ -439,7 +714,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
         <div class="success-msg" id="upload-success">&#10003; Thank you! We have received your document and will be in touch with a quotation within one business day.</div>
       </form>
     </div>
-    <div class="action-card">
+    <div class="action-card reveal" data-d="2">
       <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
       <h3>Request a Call Back</h3>
       <p class="action-sub">Not ready to upload a document yet? Leave your details below and one of our bid writing specialists will call you back at a time that suits you.</p>
@@ -466,9 +741,9 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
   </div>
 </section>
 <div class="cta-banner">
-  <h2>Ready to win your next contract?</h2>
-  <p>Book a free, no-obligation consultation with our team today.</p>
-  <a href="/contact.html" class="btn-primary">Book a Free Consultation</a>
+  <h2 class="reveal">Ready to win your next contract?</h2>
+  <p class="reveal" data-d="2">Book a free, no-obligation consultation with our team today.</p>
+  <a href="/contact.html" class="btn-primary reveal" data-d="3">Book a Free Consultation</a>
 </div>
 </div>
 
@@ -546,7 +821,6 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     </div>
   </div>
 
-  <!-- CLIENT LOGOS — replace span with img once logos are available -->
   <div class="clients-section">
     <div style="text-align:center;max-width:640px;margin:0 auto">
       <div class="section-label">Trusted by</div>
@@ -554,7 +828,6 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
       <p class="section-desc" style="margin:0 auto">From local councils and NHS trusts to national energy companies and global consultancies, we have helped organisations across the UK win the contracts that matter.</p>
     </div>
     <div class="clients-grid">
-      <!-- To add a logo: replace the span with: <img src="/logos/filename.png" alt="Organisation name"> -->
       <div class="client-logo-box"><span>Hampshire County Council</span></div>
       <div class="client-logo-box"><span>NHS</span></div>
       <div class="client-logo-box"><span>E.ON UK</span></div>
@@ -666,6 +939,38 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
 var adminLoggedIn=false;
 var ADMIN_PASSWORD='hawkeye2025';
 
+/* ── Scroll reveal observer (defined first so async loadTendersStrip can use it) ── */
+var ro=null;
+if('IntersectionObserver' in window){
+  ro=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});
+  },{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
+}
+function revealEl(el){if(ro)ro.observe(el);else el.classList.add('in');}
+
+/* ── Stats counter ── */
+function animateNum(el){
+  var end=parseInt(el.dataset.target);
+  var prefix=el.dataset.prefix||'';
+  var suffix=el.dataset.suffix||'';
+  var dur=1300;var t0=null;
+  function step(ts){
+    if(!t0)t0=ts;
+    var p=Math.min((ts-t0)/dur,1);
+    var eased=1-Math.pow(1-p,3);
+    el.textContent=prefix+Math.floor(eased*end)+suffix;
+    if(p<1)requestAnimationFrame(step);else el.textContent=prefix+end+suffix;
+  }
+  requestAnimationFrame(step);
+}
+var statsObs=null;
+if('IntersectionObserver' in window){
+  statsObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){animateNum(e.target);statsObs.unobserve(e.target);}});
+  },{threshold:0.5});
+  document.querySelectorAll('.stat-num[data-target]').forEach(function(el){statsObs.observe(el);});
+}
+
 function toggleMobileMenu(){
   var btn=document.getElementById('hamburger-btn'),menu=document.getElementById('mobile-menu'),open=menu.classList.contains('open');
   if(open){menu.classList.remove('open');btn.classList.remove('open');btn.setAttribute('aria-expanded','false');}
@@ -717,6 +1022,12 @@ async function loadTendersStrip(){
       html+='</div>';
       return html;
     }).join('');
+    /* stagger reveal the dynamically-rendered tender cards */
+    grid.querySelectorAll('.strip-card').forEach(function(card,i){
+      card.classList.add('reveal');
+      card.dataset.d=i+1;
+      revealEl(card);
+    });
   }catch(e){
     grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px"><a href="/tenders.html" style="color:var(--teal-mid);font-weight:700;font-size:14px">View all live tenders</a></div>';
   }
@@ -757,6 +1068,9 @@ dz.addEventListener('drop',function(e){e.preventDefault();dz.style.borderColor='
 function handleUploadSubmit(e){e.preventDefault();fetch('/',{method:'POST',body:new FormData(e.target)}).catch(function(){});e.target.querySelectorAll('input,textarea,select').forEach(function(el){if(el.type!=='hidden'&&el.name!=='form-name')el.value='';});document.getElementById('file-name').textContent='';document.getElementById('upload-success').style.display='block';}
 function handleCallbackSubmit(e){e.preventDefault();fetch('/',{method:'POST',body:new FormData(e.target)}).catch(function(){});e.target.querySelectorAll('input,textarea,select').forEach(function(el){if(el.type!=='hidden'&&el.name!=='form-name')el.value='';});document.getElementById('cb-success').style.display='block';}
 function handleContactSubmit(e){e.preventDefault();fetch('/',{method:'POST',body:new FormData(e.target)}).catch(function(){});e.target.querySelectorAll('input,textarea,select').forEach(function(el){if(el.type!=='hidden'&&el.name!=='form-name')el.value='';});document.getElementById('contact-success').style.display='block';}
+
+/* Initialise reveal for all static .reveal elements */
+document.querySelectorAll('.reveal').forEach(function(el){revealEl(el);});
 </script>
 <script>
 if(window.netlifyIdentity){window.netlifyIdentity.on('init',function(user){if(!user){window.netlifyIdentity.on('login',function(){document.location.href='/admin/';});}});}
