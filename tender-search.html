@@ -177,6 +177,10 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
 .drawer-doc:hover{background:var(--teal-light);border-color:var(--teal-mid)}
 .drawer-doc svg{flex-shrink:0;margin-top:2px}
 .drawer-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;background:var(--white)}
+.drawer-desc{font-size:14px;color:var(--text-muted);line-height:1.85;white-space:pre-wrap;word-break:break-word}
+.drawer-desc.clamped{display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden;white-space:normal}
+.drawer-read-more{background:none;border:none;color:var(--teal);font-size:13px;font-weight:600;cursor:pointer;padding:6px 0 0;font-family:inherit;display:block}
+.drawer-read-more:hover{text-decoration:underline}
 
 /* ── Responsive ───────────────────────────────────────── */
 @media(max-width:768px){
@@ -235,7 +239,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
 <!-- HERO -->
 <div class="hero">
   <div class="hero-badge">Updated daily · Free to use</div>
-  <h1>Find UK Tenders <span>That Match You</span></h1>
+  <h1>Live UK Tenders <span>Filtered For You</span></h1>
   <p>Live public sector contracts from Find a Tender — filtered by sector, region and deadline. No logins, no subscriptions.</p>
   <div class="search-wrap">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -594,9 +598,11 @@ function openDrawer(id) {
   // ── About This Tender (description)
   const desc = t.fullDescription || t.description || '';
   if (desc) {
+    const long = desc.length > 500;
     html += `<div class="drawer-block">
       <h3>About This Tender</h3>
-      <p>${esc(desc)}</p>
+      <p class="drawer-desc${long ? ' clamped' : ''}">${esc(desc)}</p>
+      ${long ? `<button class="drawer-read-more" onclick="toggleDesc(this)">Read more &#9660;</button>` : ''}
     </div>`;
   }
 
@@ -683,8 +689,11 @@ function openDrawer(id) {
 
   </div>`; // end drawer-body
 
+  const tenderLinkBtn = url
+    ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="flex:1">Full Tender Link</a>`
+    : `<button class="btn btn-primary" style="flex:1;opacity:.4;cursor:not-allowed" disabled title="Direct link not yet available — try searching Find a Tender by name">Full Tender Link</button>`;
   html += `<div class="drawer-footer">
-    <a href="${esc(noticeUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="flex:1">${url ? 'View on Find a Tender' : 'Search on Find a Tender'}</a>
+    ${tenderLinkBtn}
     <a href="${esc(CONTACT_URL)}" class="btn btn-secondary" style="flex:1">Enquire About This Bid</a>
   </div>`;
 
@@ -692,6 +701,13 @@ function openDrawer(id) {
   document.getElementById('detail-drawer').classList.add('open');
   document.getElementById('drawer-backdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function toggleDesc(btn) {
+  const p = btn.previousElementSibling;
+  const collapsed = p.classList.contains('clamped');
+  p.classList.toggle('clamped', !collapsed);
+  btn.innerHTML = collapsed ? 'Show less &#9650;' : 'Read more &#9660;';
 }
 
 function closeDrawer() {
@@ -726,8 +742,7 @@ function buildCard(t) {
     </div>
     <div class="card-description">${esc(t.description||'No description available.')}</div>
     <div class="card-actions" onclick="event.stopPropagation()">
-      <button class="btn btn-secondary" onclick="openDrawer('${tid}')">Full details</button>
-      <a href="${esc(noticeUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">${btnLabel}</a>
+      <button class="btn btn-primary" onclick="openDrawer('${tid}')">More info</button>
     </div>
   </div>`;
 }
