@@ -26,7 +26,7 @@ a{text-decoration:none;color:inherit}
 nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:12px}
 .nav-brand{color:var(--white);font-size:18px;font-weight:700}
-.nav-links{display:flex;gap:28px}
+.nav-links{display:flex;gap:28px;align-items:center}
 .nav-links a{
   color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;
   position:relative;padding-bottom:3px;
@@ -45,7 +45,8 @@ nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify
 }
 .nav-cta{
   background:var(--teal-mid);color:var(--white)!important;
-  padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important;
+  padding:10px 22px;border-radius:6px;font-size:14px;font-weight:600!important;
+  display:inline-flex;align-items:center;line-height:1;
   transition:background 0.18s var(--ease-out),transform 0.12s var(--ease-out)!important;
 }
 .nav-cta::after{display:none!important}
@@ -94,22 +95,6 @@ nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify
 @media(hover:hover)and(pointer:fine){.mobile-menu .mob-cta:hover{background:var(--teal)}}
 .mobile-menu .mob-cta:active{transform:scale(0.98)}
 
-/* ── Search ── */
-.search-bar{background:var(--teal-dark);padding:10px 5%;display:flex;align-items:center;gap:12px}
-.search-bar input{
-  flex:1;border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:9px 14px;
-  font-size:14px;color:var(--white);background:rgba(255,255,255,0.1);font-family:inherit;
-  transition:border-color 0.18s var(--ease-out),background 0.18s var(--ease-out);
-}
-.search-bar input::placeholder{color:rgba(255,255,255,0.5)}
-.search-bar input:focus{outline:none;border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.15)}
-.search-results{position:absolute;top:116px;left:5%;right:5%;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:200;max-height:320px;overflow-y:auto;display:none}
-.search-result-item{padding:14px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.14s var(--ease-out)}
-.search-result-item:last-child{border-bottom:none}
-@media(hover:hover)and(pointer:fine){.search-result-item:hover{background:var(--teal-light)}}
-.sri-page{font-size:11px;font-weight:700;color:var(--teal-mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
-.sri-title{font-size:14px;font-weight:600;color:var(--steel)}
-.search-no-results{padding:18px;font-size:14px;color:var(--text-muted);text-align:center}
 
 /* ── Hero ── */
 .hero{background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 60%,var(--teal) 100%);padding:90px 5% 80px;display:flex;align-items:center;justify-content:space-between;gap:40px;min-height:520px}
@@ -269,22 +254,6 @@ section{padding:70px 5%}
 }
 @media(hover:hover)and(pointer:fine){.tag:hover{background:var(--teal-mid);color:var(--white)}}
 
-/* ── Why ── */
-.why{background:var(--steel)}
-.why .section-title{color:var(--white)}
-.why .section-desc{color:rgba(255,255,255,0.7)}
-.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.why-card{
-  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
-  border-radius:12px;padding:28px;
-  transition:background 0.22s var(--ease-out),border-color 0.22s var(--ease-out),transform 0.25s var(--ease-out);
-}
-@media(hover:hover)and(pointer:fine){
-  .why-card:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.24);transform:translateY(-5px)}
-}
-.why-card h3{font-size:16px;font-weight:700;color:var(--white);margin-bottom:10px}
-.why-card p{font-size:14px;color:rgba(255,255,255,0.65);line-height:1.7}
-.why-num{font-size:32px;font-weight:800;color:#7dd4e8;margin-bottom:8px}
 
 /* ── Testimonials ── */
 .testimonials{background:var(--off-white)}
@@ -298,8 +267,10 @@ section{padding:70px 5%}
 }
 .testi-quote{font-size:14px;color:var(--text-muted);line-height:1.8;font-style:italic;margin-bottom:18px}
 .testi-author{font-size:13px;font-weight:700;color:var(--steel)}
-.testi-role{font-size:12px;color:var(--text-muted)}
+.testi-role{font-size:12px;color:var(--text-muted);margin-bottom:14px}
 .stars{color:var(--teal-mid);font-size:14px;margin-bottom:12px}
+.testi-sector-link{font-size:12px;font-weight:600;color:var(--teal-mid);display:inline-block;transition:color 0.16s var(--ease-out),transform 0.16s var(--ease-out)}
+@media(hover:hover)and(pointer:fine){.testi-sector-link:hover{color:var(--teal-dark);transform:translateX(3px)}}
 
 /* ── Process ── */
 .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
@@ -313,8 +284,12 @@ section{padding:70px 5%}
 @media(hover:hover)and(pointer:fine){
   .step:hover .step-num{transform:scale(1.12);background:var(--teal-mid);box-shadow:0 6px 20px rgba(42,143,163,0.35)}
 }
-.step h3{font-size:15px;font-weight:700;color:var(--steel);margin-bottom:8px}
-.step p{font-size:13px;color:var(--text-muted);line-height:1.6}
+.step h3{font-size:15px;font-weight:700;color:var(--steel);margin-bottom:8px;transition:color 0.22s var(--ease-out)}
+.step p{font-size:13px;color:var(--text-muted);line-height:1.6;transition:color 0.22s var(--ease-out)}
+@media(hover:hover)and(pointer:fine){
+  .step:hover h3{color:var(--teal-dark)}
+  .step:hover p{color:var(--text)}
+}
 
 /* ── CTA Banner ── */
 .cta-banner{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));padding:70px 5%;text-align:center}
@@ -596,9 +571,9 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     <a href="/services.html">Services</a>
     <a href="/sectors.html">Sectors</a>
     <a href="blog.html">Blog</a>
-    <a href="/about.html">About Us</a>
+    <a href="/about.html">About</a>
     <a href="/contact.html">Contact Us</a>
-    <a href="/tender-search.html" class="nav-cta"><span class="live-dot"></span>Live Tender Search</a>
+    <a href="/tender-search.html" class="nav-cta"><span class="live-dot"></span>Live Tenders</a>
   </div>
   <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileMenu()">
     <span></span><span></span><span></span>
@@ -609,15 +584,10 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
   <a href="/services.html" onclick="closeMobileMenu()">Services</a>
   <a href="/sectors.html" onclick="closeMobileMenu()">Sectors</a>
   <a href="blog.html" onclick="closeMobileMenu()">Blog</a>
-  <a href="/about.html" onclick="closeMobileMenu()">About Us</a>
+  <a href="/about.html" onclick="closeMobileMenu()">About</a>
   <a href="/contact.html" onclick="closeMobileMenu()">Contact Us</a>
-  <a href="/tender-search.html" class="mob-cta"><span class="live-dot"></span>Live Tender Search</a>
+  <a href="/tender-search.html" class="mob-cta"><span class="live-dot"></span>Live Tenders</a>
 </div>
-<div class="search-bar">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-  <input type="text" id="site-search" placeholder="Search services, sectors, tenders..." autocomplete="off" oninput="doSearch(this.value)" onfocus="doSearch(this.value)" onblur="setTimeout(()=>closeSearch(),200)">
-</div>
-<div class="search-results" id="search-results"></div>
 </div>
 
 <!-- HOME -->
@@ -631,6 +601,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     <div class="hero-btns">
       <a href="/contact.html" class="btn-primary">Get a Free Consultation</a>
       <a href="/services.html" class="btn-secondary">Our Services</a>
+      <a href="/tender-search.html" class="btn-secondary">Search Tenders</a>
     </div>
   </div>
   <div class="hero-logo-wrap"><img src="/logo.png" alt="Hawkeye Solutions"></div>
@@ -702,7 +673,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
   </div>
   <div class="strip-cta">
     <p><strong>Updated daily</strong> – new public sector opportunities across recruitment, IT and more.</p>
-    <a href="/tenders.html" class="btn-teal">View All Live Tenders →</a>
+    <a href="/tender-search.html" class="btn-teal">View All Live Tenders →</a>
   </div>
 </div>
 
@@ -717,29 +688,6 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     <div class="step reveal" data-d="2"><div class="step-num">2</div><h3>Discovery</h3><p>We interview your team to understand your solution, evidence, and unique strengths.</p></div>
     <div class="step reveal" data-d="3"><div class="step-num">3</div><h3>Writing and Review</h3><p>We draft responses, share for your review, and refine until you are satisfied.</p></div>
     <div class="step reveal" data-d="4"><div class="step-num">4</div><h3>Submission</h3><p>Final quality check, formatting, and portal upload ready to win.</p></div>
-  </div>
-</section>
-<section class="why">
-  <div class="section-header reveal">
-    <div class="section-label">Why Hawkeye</div>
-    <div class="section-title">We see what others miss</div>
-    <p class="section-desc" style="color:rgba(255,255,255,0.7)">Three things that set Hawkeye Solutions apart from the competition.</p>
-  </div>
-  <div class="why-grid">
-    <div class="why-card reveal" data-d="1"><div class="why-num">01</div><h3>Sector Specialists</h3><p>We focus on recruitment and IT consultancy bids, giving you deeper insight than a generalist consultancy can offer.</p></div>
-    <div class="why-card reveal" data-d="2"><div class="why-num">02</div><h3>Public Sector Expertise</h3><p>Our team understands the Procurement Act 2023, social value requirements, and what evaluators in local and central government are looking for.</p></div>
-    <div class="why-card reveal" data-d="3"><div class="why-num">03</div><h3>Partnership Approach</h3><p>We work as an extension of your team. Our long-term clients trust us to protect and grow their public sector pipeline.</p></div>
-  </div>
-</section>
-<section class="testimonials">
-  <div class="section-header reveal">
-    <div class="section-label">Client stories</div>
-    <div class="section-title">What our clients say</div>
-  </div>
-  <div class="testi-grid">
-    <div class="testi-card reveal" data-d="1"><div class="stars">★★★★★</div><p class="testi-quote">"Hawkeye took the stress out of the entire process. Their understanding of public sector procurement is second to none."</p><div class="testi-author">Director of Operations</div><div class="testi-role">Recruitment Agency, London</div></div>
-    <div class="testi-card reveal" data-d="2"><div class="stars">★★★★★</div><p class="testi-quote">"We had never won a government IT contract before. Hawkeye helped us secure a £2.4m framework on our first attempt."</p><div class="testi-author">Managing Director</div><div class="testi-role">IT Consultancy, Manchester</div></div>
-    <div class="testi-card reveal" data-d="3"><div class="stars">★★★★★</div><p class="testi-quote">"The training programme transformed how our team approaches tenders. Our internal win rate has improved significantly."</p><div class="testi-author">Head of Bids</div><div class="testi-role">Staffing Solutions Provider</div></div>
   </div>
 </section>
 <section class="action-section" id="upload">
@@ -775,7 +723,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
         <img src="/james-consulting.jpg" alt="James Pitt" class="specialist-img">
         <div>
           <div class="specialist-name">James Pitt</div>
-          <div class="specialist-role">Senior Director, Business Development</div>
+          <div class="specialist-role">Business Development</div>
         </div>
       </div>
       <h3>Request a Call Back</h3>
@@ -800,6 +748,20 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
         <div class="success-msg" id="cb-success">&#10003; Thank you! One of our team will call you back within one business day.</div>
       </form>
     </div>
+  </div>
+</section>
+<section class="testimonials">
+  <div class="section-header reveal">
+    <div class="section-label">Client stories</div>
+    <div class="section-title">What our clients say</div>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal" data-d="1"><div class="stars">★★★★★</div><p class="testi-quote">"Hawkeye took the stress out of the entire process. Their understanding of public sector procurement is second to none. We went from zero public sector contracts to three framework wins in eighteen months."</p><div class="testi-author">Director of Operations</div><div class="testi-role">Recruitment Agency, London</div><a href="/sectors.html" class="testi-sector-link">See our sectors →</a></div>
+    <div class="testi-card reveal" data-d="2"><div class="stars">★★★★★</div><p class="testi-quote">"We had never won a government IT contract before. Hawkeye helped us secure a £2.4m framework on our first attempt. Philip's knowledge of what evaluators actually want to read made all the difference."</p><div class="testi-author">Managing Director</div><div class="testi-role">IT Consultancy, Manchester</div><a href="/sectors.html" class="testi-sector-link">See our sectors →</a></div>
+    <div class="testi-card reveal" data-d="3"><div class="stars">★★★★★</div><p class="testi-quote">"The training programme transformed how our team approaches tenders. Our internal win rate has improved significantly and we now bid with genuine confidence rather than hoping for the best."</p><div class="testi-author">Head of Bids</div><div class="testi-role">Staffing Solutions Provider</div><a href="/sectors.html" class="testi-sector-link">See our sectors →</a></div>
+    <div class="testi-card reveal" data-d="1"><div class="stars">★★★★★</div><p class="testi-quote">"We had tried writing our own bids for two years without success. Hawkeye reviewed our approach, rewrote our key responses and within three months we were appointed to a Crown Commercial Service framework. Night and day."</p><div class="testi-author">Operations Director</div><div class="testi-role">Healthcare Recruitment, Birmingham</div><a href="/sectors.html" class="testi-sector-link">See our sectors →</a></div>
+    <div class="testi-card reveal" data-d="2"><div class="stars">★★★★★</div><p class="testi-quote">"I was sceptical about the cost at first. Then we won a three-year NHS staffing contract worth £1.8 million on our first submission. I have not questioned the investment since and we use Hawkeye for every significant bid we submit."</p><div class="testi-author">Managing Director</div><div class="testi-role">Nursing Staffing Agency, Bristol</div><a href="/sectors.html" class="testi-sector-link">See our sectors →</a></div>
+    <div class="testi-card reveal" data-d="3"><div class="stars">★★★★★</div><p class="testi-quote">"Hawkeye managed our entire G-Cloud 14 submission from start to finish. We had six services to list and a tight deadline. They delivered everything on time and all six were accepted. Exceptional service throughout."</p><div class="testi-author">Head of Sales</div><div class="testi-role">IT Services Provider, Leeds</div><a href="/sectors.html" class="testi-sector-link">See our sectors →</a></div>
   </div>
 </section>
 <div class="cta-banner">
@@ -859,7 +821,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
       <div class="team-card">
         <img src="/james.jpg" alt="James Pitt" class="team-photo">
         <div class="team-name">James Pitt</div>
-        <div class="team-title">Senior Director, Business Development</div>
+        <div class="team-title">Business Development</div>
         <p class="team-bio">James brings a background in finance and a sharp commercial instinct to Hawkeye Solutions, having transitioned into business development and bid management to help drive the company's growth. Since joining the team James has played a pivotal role in securing significant client relationships, with particular success across G-Cloud and Digital Outcomes and Specialists frameworks. Working alongside his father Philip, James has helped expand Hawkeye's reach across the utilities sector and beyond, building lasting partnerships with organisations navigating the complexities of public sector procurement.</p>
       </div>
     </div>
@@ -1067,7 +1029,7 @@ async function loadTendersStrip(){
     live.sort(function(a,b){return new Date(a.deadline)-new Date(b.deadline);});
     var top=live.slice(0,3);
     if(!top.length){
-      grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--text-muted);font-size:14px">Check back soon, or <a href="/tenders.html" style="color:var(--teal-mid);font-weight:600">view all tenders</a>.</div>';
+      grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--text-muted);font-size:14px">Check back soon, or <a href="/tender-search.html" style="color:var(--teal-mid);font-weight:600">view all tenders</a>.</div>';
       return;
     }
     grid.innerHTML=top.map(function(t){
@@ -1091,32 +1053,11 @@ async function loadTendersStrip(){
       revealEl(card);
     });
   }catch(e){
-    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px"><a href="/tenders.html" style="color:var(--teal-mid);font-weight:700;font-size:14px">View all live tenders</a></div>';
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px"><a href="/tender-search.html" style="color:var(--teal-mid);font-weight:700;font-size:14px">View all live tenders</a></div>';
   }
 }
 loadTendersStrip();
 
-var searchIndex=[
-  {page:'home',title:'Home',text:'bid writing management review training public sector recruitment IT consultancy precision proven results',external:false},
-  {page:'services.html',title:'Services',text:'bid writing management consultancy review training full service',external:true},
-  {page:'sectors.html',title:'Sectors',text:'recruitment staffing NHS local government IT consultancy G-Cloud digital outcomes utilities construction events',external:true},
-  {page:'about.html',title:'About Us',text:'about hawkeye Philip Pitt James Pitt founder team timeline values',external:true},
-  {page:'contact.html',title:'Free Consultation',text:'contact consultation callback phone email get in touch',external:true},
-];
-function doSearch(q){
-  var box=document.getElementById('search-results');
-  q=q.trim().toLowerCase();
-  if(!q){box.style.display='none';return;}
-  var results=searchIndex.filter(function(i){return i.title.toLowerCase().includes(q)||i.text.toLowerCase().includes(q);}).slice(0,6);
-  if('tender'.includes(q)||'tenders'.includes(q)||'opportunities'.includes(q))results.unshift({page:'tenders.html',title:'Live Tenders',text:'',external:true});
-  if(!results.length){box.innerHTML='<div class="search-no-results">No results for "'+q+'"</div>';}
-  else{box.innerHTML=results.map(function(r){
-    var action=r.external?"window.location='/"+r.page+"'":'showPage(\''+r.page+'\')';
-    return'<div class="search-result-item" onmousedown="'+action+';closeSearch()"><div class="sri-page">'+r.page+'</div><div class="sri-title">'+r.title+'</div></div>';
-  }).join('');}
-  box.style.display='block';
-}
-function closeSearch(){document.getElementById('search-results').style.display='none';document.getElementById('site-search').value='';}
 function showPage(id){
   document.querySelectorAll('.page').forEach(function(p){p.style.display='none';});
   var el=document.getElementById(id);
