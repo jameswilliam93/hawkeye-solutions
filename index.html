@@ -52,6 +52,18 @@ nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify
 @media(hover:hover)and(pointer:fine){.nav-cta:hover{background:var(--teal)!important}}
 .nav-cta:active{transform:scale(0.96)!important}
 
+.live-dot{
+  display:inline-block;width:8px;height:8px;background:#2ecc71;border-radius:50%;
+  margin-right:6px;vertical-align:middle;position:relative;top:-1px;
+  box-shadow:0 0 0 0 rgba(46,204,113,0.7);
+  animation:livePulse 2s infinite;
+}
+@keyframes livePulse{
+  0%{box-shadow:0 0 0 0 rgba(46,204,113,0.7)}
+  70%{box-shadow:0 0 0 7px rgba(46,204,113,0)}
+  100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}
+}
+
 .hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
 .hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:transform 0.22s var(--ease-out),opacity 0.22s var(--ease-out)}
 .hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
@@ -483,6 +495,34 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
 .page{display:none}
 #home{display:block}
 
+/* ── Founders strip ── */
+.founders-strip{display:grid;grid-template-columns:1fr 1.35fr;background:var(--steel);overflow:hidden}
+.founders-photo{position:relative;min-height:360px}
+.founders-photo img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;opacity:0.9}
+.founders-content{padding:56px 52px 56px 48px;display:flex;flex-direction:column;justify-content:center}
+.founders-quote{
+  font-size:18px;color:rgba(255,255,255,0.9);line-height:1.75;font-style:italic;font-weight:400;
+  margin-bottom:28px;padding-top:56px;position:relative;
+}
+.founders-quote::before{
+  content:'\201C';font-size:88px;color:var(--teal-mid);opacity:0.55;
+  position:absolute;top:0;left:-4px;font-style:normal;line-height:0.9;font-family:Georgia,serif;
+}
+.founders-attr-name{font-size:15px;font-weight:700;color:var(--white);margin-bottom:3px}
+.founders-attr-role{font-size:13px;color:rgba(255,255,255,0.5)}
+
+/* ── Specialist header (callback card) ── */
+.action-specialist{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--border);
+}
+.specialist-img{
+  width:58px;height:58px;border-radius:50%;object-fit:cover;object-position:center top;
+  border:2px solid var(--teal-light);flex-shrink:0;
+}
+.specialist-name{font-size:15px;font-weight:700;color:var(--steel);margin-bottom:2px}
+.specialist-role{font-size:12px;color:var(--text-muted);line-height:1.4}
+
 /* ── Reduced motion ── */
 @media(prefers-reduced-motion:reduce){
   .hero-badge,.hero h1,.hero-sub,.hero-desc,.hero-btns,.hero-logo-wrap{animation:none;opacity:1;transform:none}
@@ -506,6 +546,9 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
   .tl-content{width:auto;flex:1;margin-left:0!important;margin-right:0!important;text-align:left!important}
   .values-grid{grid-template-columns:1fr}
   .clients-grid{grid-template-columns:repeat(2,1fr)}
+  .founders-strip{grid-template-columns:1fr}
+  .founders-photo{min-height:220px}
+  .founders-content{padding:32px 5%}
 }
 </style>
 </head>
@@ -552,10 +595,10 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     <a href="#" onclick="showPage('home')">Home</a>
     <a href="/services.html">Services</a>
     <a href="/sectors.html">Sectors</a>
-    <a href="tenders.html">Tenders</a>
     <a href="blog.html">Blog</a>
     <a href="/about.html">About Us</a>
-    <a href="/contact.html" class="nav-cta">Free Consultation</a>
+    <a href="/contact.html">Contact Us</a>
+    <a href="/tender-search.html" class="nav-cta"><span class="live-dot"></span>Live Tender Search</a>
   </div>
   <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileMenu()">
     <span></span><span></span><span></span>
@@ -565,10 +608,10 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
   <a href="#" onclick="mobileNav('home')">Home</a>
   <a href="/services.html" onclick="closeMobileMenu()">Services</a>
   <a href="/sectors.html" onclick="closeMobileMenu()">Sectors</a>
-  <a href="tenders.html" onclick="closeMobileMenu()">Tenders</a>
   <a href="blog.html" onclick="closeMobileMenu()">Blog</a>
   <a href="/about.html" onclick="closeMobileMenu()">About Us</a>
-  <a href="/contact.html" class="mob-cta">Free Consultation</a>
+  <a href="/contact.html" onclick="closeMobileMenu()">Contact Us</a>
+  <a href="/tender-search.html" class="mob-cta"><span class="live-dot"></span>Live Tender Search</a>
 </div>
 <div class="search-bar">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -598,6 +641,19 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     <div class="reveal" data-d="2"><div class="stat-num" data-target="200" data-suffix="+">200+</div><div class="stat-label">Contracts secured</div></div>
     <div class="reveal" data-d="3"><div class="stat-num" data-target="10" data-suffix="+">10+</div><div class="stat-label">Years experience</div></div>
     <div class="reveal" data-d="4"><div class="stat-num" data-target="500" data-prefix="£" data-suffix="m+">£500m+</div><div class="stat-label">Contract value won</div></div>
+  </div>
+</div>
+<div class="founders-strip reveal">
+  <div class="founders-photo">
+    <img src="/conference.jpg" alt="Philip Pitt at an industry procurement event">
+  </div>
+  <div class="founders-content">
+    <div class="section-label" style="color:#7dd4e8">Founded by practitioners</div>
+    <p class="founders-quote">Every tender we write, we approach the way a strong evaluator reads it: looking for the evidence behind the claim, the commitment behind the promise. That focus is what separates a winning bid from one that almost won.</p>
+    <div>
+      <div class="founders-attr-name">Philip Pitt</div>
+      <div class="founders-attr-role">Founder, Hawkeye Solutions &middot; 24 years in public sector recruitment</div>
+    </div>
   </div>
 </div>
 <section class="services" id="services">
@@ -715,7 +771,13 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
       </form>
     </div>
     <div class="action-card reveal" data-d="2">
-      <div class="action-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.64A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+      <div class="action-specialist">
+        <img src="/james-consulting.jpg" alt="James Pitt" class="specialist-img">
+        <div>
+          <div class="specialist-name">James Pitt</div>
+          <div class="specialist-role">Senior Director, Business Development</div>
+        </div>
+      </div>
       <h3>Request a Call Back</h3>
       <p class="action-sub">Not ready to upload a document yet? Leave your details below and one of our bid writing specialists will call you back at a time that suits you.</p>
       <form name="callback-request" data-netlify="true" netlify-honeypot="bot-field-callback" onsubmit="handleCallbackSubmit(event)">
