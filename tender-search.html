@@ -859,7 +859,7 @@ fetch('uk-tenders.json')
   .then(data => {
     const now = Date.now();
     allTenders = data
-      .filter(t => !t.deadline || new Date(t.deadline) > now)
+      .filter(t => t.deadline && new Date(t.deadline) > now)
       .map(t => {
         const region = normaliseRegion(t.region) || 'UK';
         return {
