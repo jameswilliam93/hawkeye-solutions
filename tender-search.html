@@ -535,6 +535,21 @@ function esc(s) {
   return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function slugify(title, id) {
+  let s = (title||'').toLowerCase()
+    .replace(/[^a-z0-9\s-]/g,'')
+    .replace(/[\s-]+/g,'-')
+    .replace(/^-+|-+$/g,'')
+    .substring(0,60)
+    .replace(/-+$/g,'');
+  const suffix = (id||'').toLowerCase().replace(/[^a-z0-9]/g,'').slice(-6);
+  return suffix ? `${s}-${suffix}` : s;
+}
+
+function tenderPageUrl(t) {
+  return `/tenders/${slugify(t.title, t.id)}/`;
+}
+
 // ── Drawer ──────────────────────────────────────────────────────────────────────
 
 function procedureLabel(type) {
@@ -694,7 +709,8 @@ function openDrawer(id) {
     : `<button class="btn btn-primary" style="flex:1;opacity:.4;cursor:not-allowed" disabled title="Direct link not yet available — try searching Find a Tender by name">Full Tender Link</button>`;
   html += `<div class="drawer-footer">
     ${tenderLinkBtn}
-    <a href="${esc(CONTACT_URL)}" class="btn btn-secondary" style="flex:1">Enquire About This Bid</a>
+    <a href="${tenderPageUrl(t)}" class="btn btn-secondary" style="flex:1">View Full Page</a>
+    <a href="${esc(CONTACT_URL)}" class="btn btn-secondary" style="flex:1">Enquire</a>
   </div>`;
 
   document.getElementById('drawer-content').innerHTML = html;
@@ -731,7 +747,7 @@ function buildCard(t) {
   return `
   <div class="card ${esc(dl.card)}" onclick="openDrawer('${tid}')">
     <div class="card-top">
-      <div class="card-title">${esc(t.title)}</div>
+      <a href="${tenderPageUrl(t)}" class="card-title" onclick="event.stopPropagation()">${esc(t.title)}</a>
       ${val ? `<div class="card-value">${esc(val)}</div>` : ''}
     </div>
     <div class="card-buyer">${esc(t.buyer)}</div>
@@ -742,7 +758,8 @@ function buildCard(t) {
     </div>
     <div class="card-description">${esc(t.description||'No description available.')}</div>
     <div class="card-actions" onclick="event.stopPropagation()">
-      <button class="btn btn-primary" onclick="openDrawer('${tid}')">More info</button>
+      <button class="btn btn-primary" onclick="openDrawer('${tid}')">Quick view</button>
+      <a href="${tenderPageUrl(t)}" class="btn btn-secondary">View full page →</a>
     </div>
   </div>`;
 }
