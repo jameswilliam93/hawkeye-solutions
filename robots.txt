@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hawkeye-solutions.co.uk/sitemap.xml
+Sitemap: https://hawkeye-solutions.co.uk/sitemap-pages.xml

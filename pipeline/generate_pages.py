@@ -88,7 +88,7 @@ def fmt_value(amount, currency: str = "GBP") -> str:
 
 def meta_description(t: dict) -> str:
     buyer = t.get("buyer", "")
-    desc  = (t.get("description") or "").strip()
+    desc  = re.sub(r"\s+", " ", (t.get("description") or "")).strip()
     dl    = fmt_date(t.get("deadline", ""))
     val   = fmt_value(t.get("value"), t.get("currency", "GBP"))
 
@@ -96,9 +96,11 @@ def meta_description(t: dict) -> str:
     if buyer:
         parts.append(f"{buyer} is seeking bids.")
     if desc:
-        snippet = desc[:120].rstrip()
         if len(desc) > 120:
-            snippet += "…"
+            # Cut at the last whole word so the snippet never ends mid-word
+            snippet = desc[:120].rsplit(" ", 1)[0].rstrip(" .,;:-") + "…"
+        else:
+            snippet = desc
         parts.append(snippet)
     if dl:
         parts.append(f"Deadline: {dl}.")
@@ -513,7 +515,10 @@ def build_page(t: dict, slug: str, is_closed: bool) -> str:
         seo_title += f" – {buyer}"
     seo_title += " | UK Government Tender | Hawkeye Solutions"
     if len(seo_title) > 65:
-        seo_title = f"{title_raw[:52].rstrip()}… | Hawkeye Solutions"
+        if len(title_raw) > 52:
+            seo_title = f"{title_raw[:52].rstrip()}… | Hawkeye Solutions"
+        else:
+            seo_title = f"{title_raw} | Hawkeye Solutions"
 
     return f"""<!DOCTYPE html>
 <html lang="en">
