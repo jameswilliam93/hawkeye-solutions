@@ -1,0 +1,40 @@
+name: Update tenders
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 06:00 UTC daily
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r pipeline/requirements.txt
+
+      - name: Fetch latest tenders from Find a Tender
+        run: python pipeline/pipeline.py
+
+      - name: Generate per-tender pages and sitemap
+        run: python pipeline/generate_pages.py
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "hawkeye-tender-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add uk-tenders.json tenders sitemap.xml pipeline_state.json
+          if git diff --cached --quiet; then
+            echo "No tender changes today."
+          else
+            git commit -m "Daily tender update ($(date -u +%Y-%m-%d))"
+            git push
+          fi
