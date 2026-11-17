@@ -11,6 +11,9 @@
 <link rel="shortcut icon" href="/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RKL8KRV0S"></script>
 <script>
@@ -34,17 +37,27 @@
   :root{
     --teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;
     --steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee;
+    --font-display:'Source Serif 4',Georgia,'Times New Roman',serif;
   }
   body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
   a{text-decoration:none;color:inherit}
+  ::selection{background:var(--teal-mid);color:var(--white)}
+  :focus-visible{outline:2px solid var(--teal-mid);outline-offset:2px}
+  html{scrollbar-color:var(--teal-mid) var(--off-white)}
+  ::-webkit-scrollbar{width:12px;height:12px}
+  ::-webkit-scrollbar-track{background:var(--off-white)}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:20px;border:3px solid var(--off-white)}
+  ::-webkit-scrollbar-thumb:hover{background:var(--teal-mid)}
   nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
   .nav-logo{display:flex;align-items:center;gap:12px}
-  .nav-brand{color:var(--white);font-size:18px;font-weight:700}
-  .nav-links{display:flex;gap:28px}
+  .nav-brand{font-family:var(--font-display);color:var(--white);font-size:19px;font-weight:600}
+  .nav-links{display:flex;gap:28px;align-items:center}
   .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;transition:color 0.2s}
   .nav-links a:hover{color:var(--white)}
   .nav-links a.active{color:var(--white);font-weight:700}
-  .nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important}
+  .nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:10px 22px!important;border-radius:6px;font-size:14px;font-weight:600!important;display:inline-flex;align-items:center;line-height:1}
+  .live-dot{display:inline-block;width:7px;height:7px;background:#2ecc71;border-radius:50%;margin-right:6px;box-shadow:0 0 0 0 rgba(46,204,113,.7);animation:livePulse 2s infinite}
+  @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(46,204,113,.7)}70%{box-shadow:0 0 0 7px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
   .hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
   .hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:transform 0.25s,opacity 0.25s}
   .hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
@@ -59,10 +72,10 @@
   .mobile-menu .mob-cta:hover{background:var(--teal)}
 
   /* HERO */
-  .hero{background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 60%,var(--teal) 100%);padding:80px 5% 70px;min-height:340px;display:flex;align-items:center}
-  .hero-inner{max-width:680px}
-  .hero-badge{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:13px;padding:5px 14px;border-radius:20px;margin-bottom:20px;letter-spacing:0.5px}
-  .hero h1{font-size:46px;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:16px}
+  .hero{background:var(--steel);padding:80px 5% 70px;min-height:300px;display:flex;align-items:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-22%;right:-4%;width:460px;height:460px;background:url('/logo.png') no-repeat center/contain;opacity:.1;filter:grayscale(1) brightness(2.4);pointer-events:none}
+  .hero-inner{max-width:680px;position:relative;z-index:1}
+  .hero h1{font-family:var(--font-display);font-size:42px;font-weight:700;color:var(--white);line-height:1.2;margin-bottom:16px}
   .hero-sub{font-size:18px;color:rgba(255,255,255,0.8);line-height:1.65;max-width:580px}
 
   /* SECTOR NAV PILLS */
@@ -81,14 +94,12 @@
   .sector-block:last-child{border-bottom:none}
   .sector-block.alt{background:var(--off-white)}
   .sector-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;max-width:1100px}
-  .sector-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal-mid);margin-bottom:10px}
-  .sector-num{font-size:56px;font-weight:800;color:var(--border);line-height:1;margin-bottom:8px}
-  .sector-block h2{font-size:32px;font-weight:800;color:var(--steel);line-height:1.2;margin-bottom:14px}
+  .sector-num{font-family:var(--font-display);font-size:40px;font-weight:600;color:var(--teal-mid);line-height:1;margin-bottom:14px}
+  .sector-block h2{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--steel);line-height:1.25;margin-bottom:14px}
   .sector-desc{font-size:15px;color:var(--text-muted);line-height:1.85;margin-bottom:20px}
   .sector-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
   .tag{background:var(--teal-light);color:var(--teal-dark);font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px}
   .sector-cta-link{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--teal-mid)}
-  .sector-cta-link::after{content:'→'}
 
   /* LOGO GRID inside each sector */
   .logo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
@@ -109,13 +120,12 @@
   .ac-box img{max-height:36px;max-width:100%;object-fit:contain;filter:grayscale(100%);opacity:0.6;transition:filter 0.2s,opacity 0.2s}
   .ac-box:hover img{filter:grayscale(0%);opacity:1}
   .ac-box span{font-size:11px;font-weight:700;color:var(--text-muted);text-align:center;line-height:1.4}
-  .section-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal-mid);margin-bottom:10px}
-  .section-title{font-size:34px;font-weight:800;color:var(--steel);margin-bottom:14px;line-height:1.2}
+  .section-title{font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--steel);margin-bottom:14px;line-height:1.2}
   .section-desc{font-size:16px;color:var(--text-muted);line-height:1.75;max-width:580px;margin:0 auto}
 
   /* CTA */
-  .cta-section{background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 60%,var(--teal) 100%);padding:80px 5%;text-align:center}
-  .cta-section h2{font-size:36px;font-weight:800;color:var(--white);margin-bottom:12px}
+  .cta-section{background:var(--steel);border-top:3px solid var(--teal-mid);padding:80px 5%;text-align:center}
+  .cta-section h2{font-family:var(--font-display);font-size:34px;font-weight:600;color:var(--white);margin-bottom:12px}
   .cta-section p{font-size:17px;color:rgba(255,255,255,0.75);margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto}
   .btn-white{background:var(--white);color:var(--teal-dark);padding:13px 28px;border-radius:7px;font-weight:700;font-size:15px;display:inline-block;transition:background 0.2s}
   .btn-white:hover{background:#e8f4f7}
@@ -134,6 +144,7 @@
     .hamburger{display:flex}
     .hero h1{font-size:32px}
     .hero{padding:60px 5%}
+    .hero::before{width:280px;height:280px;top:-10%;right:-12%;opacity:.07}
     .sector-inner{grid-template-columns:1fr;gap:36px}
     .logo-grid{grid-template-columns:repeat(2,1fr)}
     .all-clients-grid{grid-template-columns:repeat(3,1fr)}
@@ -154,10 +165,10 @@
     <a href="/index.html">Home</a>
     <a href="/services.html">Services</a>
     <a href="/sectors.html" style="color:white;font-weight:700">Sectors</a>
-    <a href="/tenders.html">Tenders</a>
     <a href="/blog.html">Blog</a>
     <a href="/about.html">About Us</a>
-    <a href="/contact.html" class="nav-cta">Free Consultation</a>
+    <a href="/contact.html">Contact Us</a>
+    <a href="/tender-search.html" class="nav-cta"><span class="live-dot"></span>Live Tenders</a>
   </div>
   <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMenu()">
     <span></span><span></span><span></span>
@@ -167,17 +178,16 @@
   <a href="/index.html">Home</a>
   <a href="/services.html">Services</a>
   <a href="/sectors.html">Sectors</a>
-  <a href="/tenders.html">Tenders</a>
   <a href="/blog.html">Blog</a>
   <a href="/about.html">About Us</a>
-  <a href="/contact.html" class="mob-cta">Free Consultation</a>
+  <a href="/contact.html">Contact Us</a>
+  <a href="/tender-search.html" class="mob-cta"><span class="live-dot"></span>Live Tenders</a>
 </div>
 </div>
 
 <!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-badge">Sector Specialists</div>
     <h1>Sectors We Work In</h1>
     <p class="hero-sub">We have written and won bids across recruitment, IT, utilities, NHS, local government, construction and events. Deep sector knowledge is what separates a bid that scores from one that does not.</p>
   </div>
@@ -201,7 +211,6 @@
 <div class="sector-block" id="recruitment">
   <div class="sector-inner">
     <div>
-      <div class="sector-label">Sector 01</div>
       <div class="sector-num">01</div>
       <h2>Recruitment &amp; Staffing</h2>
       <p class="sector-desc">Recruitment sector tendering is one of the most competitive landscapes in UK public procurement. We understand the specific requirements buyers impose on staffing suppliers - social value obligations, TUPE, KPI structures, workforce planning and the framework conventions that govern how suppliers are evaluated.</p>
@@ -238,7 +247,6 @@
 <div class="sector-block alt" id="it">
   <div class="sector-inner">
     <div>
-      <div class="sector-label">Sector 02</div>
       <div class="sector-num">02</div>
       <h2>IT Consultancy &amp; Technology</h2>
       <p class="sector-desc">The public sector is one of the largest buyers of technology consultancy in the UK. We have deep expertise in the frameworks that matter most to IT suppliers - DOS 7, G-Cloud, and Crown Commercial Service routes that open doors to central government, NHS digital, defence and local authority procurement.</p>
@@ -274,7 +282,6 @@
 <div class="sector-block" id="utilities">
   <div class="sector-inner">
     <div>
-      <div class="sector-label">Sector 03</div>
       <div class="sector-num">03</div>
       <h2>Utilities &amp; Energy</h2>
       <p class="sector-desc">Utilities companies are among the most demanding procurement buyers in the UK - with complex supply chain requirements, stringent compliance expectations and multi-year contract values that make getting the bid right critical. We have specific experience writing bids for both utilities suppliers and for companies tendering to utilities clients.</p>
@@ -309,7 +316,6 @@
 <div class="sector-block alt" id="nhs">
   <div class="sector-inner">
     <div>
-      <div class="sector-label">Sector 04</div>
       <div class="sector-num">04</div>
       <h2>NHS &amp; Health</h2>
       <p class="sector-desc">The NHS is one of the most active public sector procurement bodies in the UK, spending billions annually on workforce, technology and professional services. We have specific expertise in NHS tendering - understanding the frameworks, the social value requirements, the patient safety considerations and the language that NHS procurement teams use to evaluate suppliers.</p>
@@ -344,7 +350,6 @@
 <div class="sector-block" id="councils">
   <div class="sector-inner">
     <div>
-      <div class="sector-label">Sector 05</div>
       <div class="sector-num">05</div>
       <h2>Local Government &amp; Councils</h2>
       <p class="sector-desc">Local authorities are prolific buyers of recruitment services, IT, professional services and operational support. We understand how council procurement teams work - the political considerations, the social value emphasis, the community benefit requirements and the specific evaluation conventions that local government buyers apply.</p>
@@ -379,7 +384,6 @@
 <div class="sector-block alt" id="construction">
   <div class="sector-inner">
     <div>
-      <div class="sector-label">Sector 06</div>
       <div class="sector-num">06</div>
       <h2>Construction &amp; Infrastructure</h2>
       <p class="sector-desc">Construction and infrastructure tendering demands a clear understanding of project delivery, supply chain management and health and safety compliance. We have experience supporting suppliers bidding into major construction programmes, infrastructure frameworks and built environment contracts across both public and private sector buyers.</p>
@@ -414,7 +418,6 @@
 <div class="sector-block" id="events">
   <div class="sector-inner">
     <div>
-      <div class="sector-label">Sector 07</div>
       <div class="sector-num">07</div>
       <h2>Events &amp; Hospitality</h2>
       <p class="sector-desc">Events and hospitality tendering requires a distinct approach - demonstrating operational delivery capability, logistics management, health and safety compliance and the ability to scale for large public-facing occasions. We have supported suppliers bidding for event management, staffing and support service contracts across venues, public bodies and major event programmes.</p>
@@ -449,7 +452,6 @@
 <div class="sector-block alt" id="more">
   <div class="sector-inner">
     <div>
-      <div class="sector-label">Sector 08</div>
       <div class="sector-num">08</div>
       <h2>And More</h2>
       <p class="sector-desc">Our experience spans well beyond our core sectors. We have written bids across financial services, charities and the third sector, defence, transport, professional services, facilities management and central government departments - wherever competitive tendering is the route to contract.</p>
@@ -483,7 +485,6 @@
 
 <!-- ALL CLIENTS STRIP -->
 <div class="all-clients">
-  <div class="section-label">Trusted across sectors</div>
   <h2 class="section-title">All Organisations We Have Worked With</h2>
   <p class="section-desc">A selection of the organisations Hawkeye Solutions has helped win contracts across the UK. Full list available on request.</p>
   <div class="all-clients-grid">
@@ -544,7 +545,7 @@
 <footer>
   <div class="footer-grid">
     <div>
-      <p style="color:rgba(255,255,255,0.9);font-size:16px;font-weight:700;margin-bottom:8px">Hawkeye Solutions</p>
+      <p style="font-family:var(--font-display);color:rgba(255,255,255,0.9);font-size:17px;font-weight:600;margin-bottom:8px">Hawkeye Solutions</p>
       <p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.6)">Precision Bids. Proven Results.<br>Specialist bid writing for public sector recruitment and IT consultancy contracts.</p>
     </div>
     <div class="footer-col">
