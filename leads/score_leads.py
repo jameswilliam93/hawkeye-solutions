@@ -26,9 +26,24 @@ Usage:
 import json
 from pathlib import Path
 
-CCS_FILE    = Path(__file__).parent / "ccs_frameworks.json"
-CH_FILE     = Path(__file__).parent / "companies_house.json"
-OUTPUT_FILE = Path(__file__).parent / "scored_leads.json"
+CCS_FILE      = Path(__file__).parent / "ccs_frameworks.json"
+CH_FILE       = Path(__file__).parent / "companies_house.json"
+WEBSITE_FILE  = Path(__file__).parent / "website_enrichment.json"
+OUTPUT_FILE   = Path(__file__).parent / "scored_leads.json"
+
+FREE_EMAIL_DOMAINS = {
+    "gmail.com", "googlemail.com", "hotmail.com", "hotmail.co.uk", "outlook.com",
+    "live.co.uk", "live.com", "yahoo.com", "yahoo.co.uk", "icloud.com", "aol.com",
+    "btinternet.com", "virginmedia.com", "sky.com", "talktalk.net", "msn.com",
+    "me.com", "mail.com",
+}
+
+
+def domain_from_email(email: str) -> str:
+    if not email or "@" not in email:
+        return ""
+    domain = email.split("@", 1)[1].strip().lower()
+    return "" if domain in FREE_EMAIL_DOMAINS else domain
 
 TIER2_BANDS = {"small", "medium"}
 TIER3_BANDS = {"micro", "large", "unknown", "unknown-full"}
@@ -76,12 +91,24 @@ def merge_ccs_suppliers(ccs_all: list[dict]) -> list[dict]:
 def main():
     ccs_all = json.loads(CCS_FILE.read_text())
     ch_all = json.loads(CH_FILE.read_text())
+    website_by_domain = json.loads(WEBSITE_FILE.read_text()) if WEBSITE_FILE.exists() else {}
 
     ccs_merged = merge_ccs_suppliers(ccs_all)
     ccs_numbers = {normalise_number(s["company_number"]) for s in ccs_merged if s["company_number"]}
 
     leads = []
+    enriched_count = 0
     for s in ccs_merged:
+        domain = domain_from_email(s["contact_email"])
+        site = website_by_domain.get(domain) if domain else None
+        website = s["website"] or (domain if site and site.get("fetched_ok") else "")
+        notes = ""
+        phone = s["contact_phone"]
+        if site and site.get("fetched_ok"):
+            notes = site.get("meta_description") or site.get("title") or ""
+            if not phone and site.get("extra_phones"):
+                phone = site["extra_phones"][0]
+            enriched_count += 1
         leads.append({
             "company_name": s["company_name"],
             "company_number": s["company_number"],
@@ -90,11 +117,13 @@ def main():
             "size_band": None,
             "contact_name": s["contact_name"],
             "contact_email": s["contact_email"],
-            "contact_phone": s["contact_phone"],
-            "website": s["website"],
+            "contact_phone": phone,
+            "website": website,
             "linkedin": s["linkedin"],
             "frameworks": s["frameworks"],
             "region": None,
+            "postal_code": "",
+            "notes": notes,
         })
 
     counts = {"excluded_dormant": 0, "deduped_vs_ccs": 0, "tier2": 0, "tier3": 0, "unscored_band": 0}
@@ -129,7 +158,9 @@ def main():
             "website": "",
             "linkedin": "",
             "frameworks": [],
-            "region": c.get("region") or c.get("locality"),
+            "region": c.get("locality") or c.get("region"),
+            "postal_code": c.get("postal_code") or "",
+            "notes": "",
         })
 
     OUTPUT_FILE.write_text(json.dumps(leads, indent=2))
@@ -144,6 +175,7 @@ def main():
     print(f"  Tier 3 (CH micro/large/unknown):  {by_tier[3]}")
     print(f"  Excluded as dormant:              {counts['excluded_dormant']}")
     print(f"  Deduped (already a CCS supplier): {counts['deduped_vs_ccs']}")
+    print(f"  Tier 1 enriched from their own website: {enriched_count}")
 
 
 if __name__ == "__main__":
