@@ -7,6 +7,9 @@
 <title>UK Tender Search – Find Live Public Sector Contracts | Hawkeye Solutions</title>
 <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
 <link rel="shortcut icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -14,14 +17,23 @@
   --steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;
   --text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee;
   --urgent:#c0392b;--warning:#b7670a;--safe:#1a7a50;
+  --font-display:'Source Serif 4',Georgia,'Times New Roman',serif;
 }
 body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
 a{text-decoration:none;color:inherit}
 
+::selection{background:var(--teal-mid);color:var(--white)}
+:focus-visible{outline:2px solid var(--teal-mid);outline-offset:2px}
+html{scrollbar-color:var(--teal-mid) var(--off-white)}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:var(--off-white)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:20px;border:3px solid var(--off-white)}
+::-webkit-scrollbar-thumb:hover{background:var(--teal-mid)}
+
 /* ── Nav ───────────────────────────────────────────────── */
 nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:12px}
-.nav-brand{color:var(--white);font-size:18px;font-weight:700}
+.nav-brand{font-family:var(--font-display);color:var(--white);font-size:19px;font-weight:600}
 .nav-links{display:flex;gap:28px}
 .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;transition:color .2s}
 .nav-links a:hover{color:var(--white)}
@@ -32,94 +44,109 @@ nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify
 .hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
-.mobile-menu{display:none;position:absolute;top:68px;left:0;right:0;background:var(--steel);z-index:99;flex-direction:column;border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;background:var(--steel);z-index:99;flex-direction:column;border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
 .mobile-menu.open{display:flex}
 .mobile-menu a{color:rgba(255,255,255,0.85);font-size:15px;font-weight:500;padding:14px 5%;border-bottom:1px solid rgba(255,255,255,0.07)}
 .mobile-menu a:last-child{border-bottom:none}
 .mobile-menu a:hover{background:rgba(255,255,255,0.07);color:var(--white)}
 .mobile-menu .mob-cta{background:var(--teal-mid);color:var(--white);margin:12px 5%;border-radius:6px;text-align:center;border-bottom:none!important;padding:12px 5%}
 
-/* ── Hero ─────────────────────────────────────────────── */
-.hero{background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 60%,var(--teal) 100%);padding:60px 5% 52px;text-align:center}
-.hero-badge{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:13px;padding:5px 16px;border-radius:20px;margin-bottom:18px;letter-spacing:.5px}
-.hero h1{font-size:clamp(28px,4vw,42px);font-weight:800;color:var(--white);line-height:1.2;margin-bottom:10px}
-.hero h1 span{color:#7dd4e8}
-.hero p{font-size:16px;color:rgba(255,255,255,0.75);margin-bottom:32px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.7}
+/* ── Tool header (compact — this is a working tool, not a landing page) ── */
+.tool-header{background:var(--steel);padding:30px 5% 26px;position:relative;overflow:hidden}
+.tool-header::before{
+  content:'';position:absolute;top:-18%;right:-6%;width:420px;height:420px;
+  background:url('/logo.png') no-repeat center/contain;
+  opacity:0.1;
+  filter:grayscale(1) brightness(2.4);
+}
+.tool-header-inner{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+.tool-header h1{font-family:var(--font-display);font-size:clamp(22px,2.6vw,28px);font-weight:600;color:var(--white);line-height:1.2;margin-bottom:6px}
+.tool-header h1 span{color:#8fcdd9}
+.tool-header p{font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:20px;max-width:620px;line-height:1.6}
+.header-stats{display:flex;gap:32px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.14)}
+.stat-chip{display:flex;flex-direction:column;gap:2px}
+.stat-chip strong{font-family:var(--font-display);font-size:21px;font-weight:600;color:var(--white);font-variant-numeric:tabular-nums}
+.stat-chip span{font-size:11px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:.05em}
 
 /* ── Search bar ───────────────────────────────────────── */
-.search-wrap{max-width:680px;margin:0 auto;position:relative}
-.search-wrap svg{position:absolute;left:20px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted)}
-#search{width:100%;padding:17px 52px 17px 52px;border:none;border-radius:50px;font-size:16px;color:var(--text);font-family:inherit;outline:none;background:var(--white);box-shadow:0 4px 28px rgba(0,0,0,0.2)}
+.search-wrap{max-width:560px;position:relative}
+.search-wrap svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted)}
+#search{width:100%;padding:12px 44px;border:1px solid var(--border);border-radius:8px;font-size:14px;color:var(--text);font-family:inherit;outline:none;background:var(--white)}
 #search::placeholder{color:var(--text-muted)}
-#search:focus{box-shadow:0 4px 28px rgba(0,0,0,0.2),0 0 0 3px rgba(42,143,163,0.35)}
-.search-clear{position:absolute;right:18px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.07);border:none;cursor:pointer;color:var(--text-muted);padding:5px;border-radius:50%;display:none;align-items:center;justify-content:center;transition:background .15s}
+#search:focus{box-shadow:0 0 0 3px rgba(42,143,163,0.3)}
+.search-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.07);border:none;cursor:pointer;color:var(--text-muted);padding:5px;border-radius:50%;display:none;align-items:center;justify-content:center;transition:background .15s}
 .search-clear.visible{display:flex}
 .search-clear:hover{background:rgba(0,0,0,0.13);color:var(--text)}
 
-/* ── Filters ──────────────────────────────────────────── */
-.filters-bar{background:var(--white);border-bottom:1px solid var(--border);padding:16px 5%;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
-.filter-group{flex:1;min-width:150px}
-select.filter{width:100%;padding:9px 32px 9px 12px;border:1px solid var(--border);border-radius:7px;color:var(--text);font-size:13.5px;font-family:inherit;appearance:none;cursor:pointer;outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%234a6572' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;transition:border-color .18s}
+/* ── Tool layout: filter rail + results ─────────────────── */
+.tool-layout{max-width:1400px;margin:0 auto;padding:28px 5% 0;display:grid;grid-template-columns:230px 1fr;gap:32px;align-items:start}
+
+.filter-rail{position:sticky;top:88px;background:var(--off-white);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.filter-group label{display:block;font-size:11px;font-weight:700;color:var(--steel);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+select.filter{width:100%;padding:9px 30px 9px 12px;border:1px solid var(--border);border-radius:7px;color:var(--text);font-size:13.5px;font-family:inherit;appearance:none;cursor:pointer;outline:none;background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%234a6572' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;transition:border-color .18s}
 select.filter:focus{border-color:var(--teal-mid);box-shadow:0 0 0 3px rgba(42,143,163,0.12)}
 select.filter:hover{border-color:var(--teal-mid)}
-.btn-clear{padding:9px 16px;background:none;border:1px solid var(--border);border-radius:7px;color:var(--text-muted);font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap;transition:border-color .18s,color .18s}
+.btn-clear{padding:9px 16px;background:var(--white);border:1px solid var(--border);border-radius:7px;color:var(--text-muted);font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap;transition:border-color .18s,color .18s;width:100%}
 .btn-clear:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
 
+.results-col{min-width:0}
+
 /* ── Results bar ──────────────────────────────────────── */
-.results-bar{padding:18px 5%;display:flex;align-items:center;justify-content:space-between;max-width:1400px;margin:0 auto}
+.results-bar{padding-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .results-count{font-size:14px;color:var(--text-muted)}
-.results-count strong{color:var(--steel);font-weight:700}
+.results-count strong{font-family:var(--font-display);color:var(--steel);font-weight:600;font-size:16px}
 .live-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--teal-mid);background:var(--teal-light);border:1px solid var(--border);border-radius:20px;padding:4px 12px}
 .live-dot{width:7px;height:7px;background:var(--teal-mid);border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* ── Cards grid ───────────────────────────────────────── */
-.cards-wrap{padding:0 5% 60px;max-width:1400px;margin:0 auto}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+/* ── Results list ─────────────────────────────────────── */
+.cards-wrap{padding-bottom:60px}
+.cards-grid{display:flex;flex-direction:column;border-top:1px solid var(--border)}
 
-/* ── Card ─────────────────────────────────────────────── */
-.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;transition:box-shadow .2s,border-color .2s;animation:fadeUp .22s ease both;cursor:pointer}
-.card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--teal-mid)}
-.card.urgent::before{background:var(--urgent)}
-.card.warning::before{background:#e8920a}
-@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.card:hover{box-shadow:0 6px 24px rgba(26,107,124,0.12);border-color:var(--teal-mid)}
+/* ── Row (one tender) ─────────────────────────────────── */
+.row{display:flex;gap:24px;padding:18px 4px 18px 18px;border-bottom:1px solid var(--border);border-left:3px solid var(--teal-mid);cursor:pointer;animation:fadeUp .22s ease both;transition:background .15s}
+.row.urgent{border-left-color:var(--urgent)}
+.row.warning{border-left-color:#e8920a}
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.row:hover{background:var(--off-white)}
 
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.card-title{font-size:15px;font-weight:700;color:var(--steel);line-height:1.4;flex:1}
-.card-value{font-size:15px;font-weight:800;color:var(--teal-dark);white-space:nowrap;flex-shrink:0}
-.card-buyer{font-size:13px;color:var(--text-muted)}
+.row-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.row-top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.row-title{font-size:15.5px;font-weight:700;color:var(--steel);line-height:1.4}
+.row-buyer{font-size:13px;color:var(--text-muted)}
+.row-desc{font-size:13px;color:var(--text-muted);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.row-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
-.card-meta{display:flex;flex-wrap:wrap;gap:6px}
-.tag{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;background:var(--teal-light);color:var(--teal-dark)}
-.tag-deadline{font-weight:700}
-.tag-deadline.urgent{background:#fdf0ee;color:var(--urgent)}
-.tag-deadline.warning{background:#fef6e8;color:var(--warning)}
-.tag-deadline.safe{background:#eaf7f1;color:var(--safe)}
-.tag-sector{background:#eef0fb;color:#3a3faa}
-.tag-region{background:var(--off-white);color:var(--text-muted);border:1px solid var(--border)}
+.row-side{flex-shrink:0;width:190px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right}
+.row-value{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--teal-dark);font-variant-numeric:tabular-nums}
+.row-deadline{font-size:13px;font-weight:700;margin-bottom:10px}
+.row-deadline.urgent{color:var(--urgent)}
+.row-deadline.warning{color:var(--warning)}
+.row-deadline.safe{color:var(--safe)}
+.row-actions{display:flex;flex-direction:column;gap:6px;width:100%}
 
-.card-description{font-size:13px;color:var(--text-muted);line-height:1.65;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;flex:1}
+.tag{font-size:12px;font-weight:600;color:var(--text-muted)}
+.tag-sector{display:inline-flex;padding:3px 10px;border-radius:20px;background:var(--teal-light);color:var(--teal-dark)}
+.tag-region{color:var(--text-muted)}
 
-.card-actions{display:flex;gap:8px;margin-top:4px}
-.btn{flex:1;padding:9px 12px;border-radius:7px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;text-align:center;text-decoration:none;transition:background .18s,border-color .18s;border:none;display:inline-flex;align-items:center;justify-content:center}
+.btn{padding:9px 12px;border-radius:7px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;text-align:center;text-decoration:none;transition:background .18s,border-color .18s;border:none;display:inline-flex;align-items:center;justify-content:center;width:100%}
 .btn-primary{background:var(--teal-dark);color:var(--white)}
 .btn-primary:hover{background:var(--teal)}
 .btn-secondary{background:transparent;border:1.5px solid var(--teal-mid);color:var(--teal-dark)}
 .btn-secondary:hover{background:var(--teal-light)}
 
 /* ── Empty state ──────────────────────────────────────── */
-.empty-state{grid-column:1/-1;text-align:center;padding:72px 24px;color:var(--text-muted)}
+.empty-state{text-align:center;padding:72px 24px;color:var(--text-muted)}
 .empty-state h3{font-size:18px;font-weight:700;color:var(--steel);margin-bottom:8px}
 
 /* ── Load more ────────────────────────────────────────── */
-.load-more-wrap{text-align:center;padding:8px 5% 48px}
+.load-more-wrap{text-align:center;padding:24px 0 48px}
 .btn-load-more{padding:13px 40px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;color:var(--text-muted);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:border-color .2s,color .2s,box-shadow .2s}
 .btn-load-more:hover{border-color:var(--teal-mid);color:var(--teal-dark);box-shadow:0 2px 12px rgba(26,107,124,0.1)}
 
 /* ── CTA banner ───────────────────────────────────────── */
-.cta-banner{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));padding:60px 5%;text-align:center}
-.cta-banner h2{font-size:30px;font-weight:800;color:var(--white);margin-bottom:12px}
+.cta-banner{background:var(--steel);border-top:3px solid var(--teal-mid);padding:60px 5%;text-align:center}
+.cta-banner h2{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--white);margin-bottom:12px}
 .cta-banner p{font-size:16px;color:rgba(255,255,255,0.8);margin-bottom:28px}
 .btn-white{background:var(--white);color:var(--teal-dark);padding:13px 28px;border-radius:7px;font-weight:700;font-size:15px;display:inline-block;transition:background .2s}
 .btn-white:hover{background:var(--teal-light)}
@@ -138,13 +165,13 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
 .detail-drawer{position:fixed;top:0;right:0;width:min(580px,100vw);height:100vh;background:var(--off-white);z-index:201;box-shadow:-4px 0 32px rgba(0,0,0,0.2);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);overflow:hidden}
 .detail-drawer.open{transform:translateX(0)}
 #drawer-content{display:flex;flex-direction:column;height:100%;overflow:hidden}
-.drawer-header{background:linear-gradient(135deg,var(--steel),var(--teal-dark));color:var(--white);padding:24px 56px 20px 24px;flex-shrink:0;position:relative}
+.drawer-header{background:linear-gradient(170deg,var(--steel),var(--teal-dark));color:var(--white);padding:24px 56px 20px 24px;flex-shrink:0;position:relative}
 .drawer-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.15);border:none;color:var(--white);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s}
 .drawer-close:hover{background:rgba(255,255,255,0.28)}
 .drawer-h-badges{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
-.drawer-h-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;background:rgba(125,212,100,0.2);color:#7dd464}
-.drawer-h-sector{background:rgba(232,244,247,0.2);color:#a0d8e8}
-.drawer-h-title{font-size:17px;font-weight:800;line-height:1.3;margin-bottom:6px}
+.drawer-h-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;background:rgba(143,205,217,0.2);color:#8fcdd9}
+.drawer-h-sector{background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.85)}
+.drawer-h-title{font-family:var(--font-display);font-size:18px;font-weight:600;line-height:1.3;margin-bottom:6px}
 .drawer-h-buyer{font-size:13px;opacity:.8}
 .drawer-h-ref{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:12px;font-weight:700;padding:4px 12px;border-radius:6px;margin-top:12px;font-family:monospace;letter-spacing:.4px}
 .drawer-body{flex:1;overflow-y:auto;padding:20px 20px 8px}
@@ -160,7 +187,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
 .drawer-deadline.warning{border:1px solid #f0c070;background:#fef6e8}
 .drawer-deadline.safe{border:1px solid #a3dcc0;background:#e8f7f0}
 .drawer-deadline.open{border:1px solid var(--border);background:var(--off-white)}
-.drawer-dl-days{font-size:32px;font-weight:800;line-height:1}
+.drawer-dl-days{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
 .drawer-dl-days.urgent{color:var(--urgent)}
 .drawer-dl-days.warning{color:var(--warning)}
 .drawer-dl-days.safe{color:var(--safe)}
@@ -183,30 +210,38 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
 .drawer-read-more:hover{text-decoration:underline}
 
 /* ── Responsive ───────────────────────────────────────── */
+@media(max-width:900px){
+  .tool-layout{grid-template-columns:1fr;padding-top:20px}
+  .filter-rail{position:static;flex-direction:row;flex-wrap:wrap;align-items:flex-end}
+  .filter-group{flex:1;min-width:140px}
+  .btn-clear{width:auto;flex:0 0 100%}
+}
 @media(max-width:768px){
   nav .nav-links{display:none}
   .hamburger{display:flex}
-  .filters-bar{top:68px;gap:8px}
-  .filter-group{min-width:calc(50% - 5px)}
-  .btn-clear{flex:0 0 100%;text-align:center}
-  .cards-grid{grid-template-columns:1fr}
-  .card-actions{flex-direction:column}
   .footer-grid{grid-template-columns:1fr 1fr}
   .footer-bottom{flex-direction:column;gap:8px}
-  .results-bar{flex-direction:column;align-items:flex-start;gap:8px}
+  .row{flex-direction:column;gap:12px}
+  .row-side{width:100%;flex-direction:row;align-items:center;justify-content:flex-start;gap:16px;text-align:left}
+  .row-deadline{margin-bottom:0}
+  .row-actions{flex-direction:row;width:auto;margin-left:auto}
+  .header-stats{gap:24px}
   .drawer-body{padding:14px 16px}
   .drawer-footer{padding:12px 16px}
 }
 @media(max-width:480px){
   .footer-grid{grid-template-columns:1fr}
+  .filter-rail{flex-direction:column}
   .filter-group{min-width:100%}
+  .btn-clear{width:100%}
+  .row-side{flex-wrap:wrap}
+  .row-actions{flex-direction:column;width:100%;margin-left:0}
 }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<div style="position:relative">
 <nav>
   <a href="/" class="nav-logo">
     <img src="/logo.png" alt="Hawkeye Solutions" height="44" style="display:block">
@@ -234,74 +269,86 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
   <a href="/about.html">About Us</a>
   <a href="/contact.html" class="mob-cta">Free Consultation</a>
 </div>
-</div>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-badge">Updated daily · Free to use</div>
-  <h1>Live UK Tenders <span>Filtered For You</span></h1>
-  <p>Live public sector contracts from Find a Tender — filtered by sector, region and deadline. No logins, no subscriptions.</p>
-  <div class="search-wrap">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="search" id="search" placeholder="Search by keyword, buyer, sector or region…" autocomplete="off" spellcheck="false">
-    <button class="search-clear" id="search-clear" aria-label="Clear">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-    </button>
-  </div>
-</div>
-
-<!-- FILTER BAR -->
-<div class="filters-bar">
-  <div class="filter-group">
-    <select class="filter" id="filter-sector"><option value="">All sectors</option></select>
-  </div>
-  <div class="filter-group">
-    <select class="filter" id="filter-region"><option value="">All regions</option></select>
-  </div>
-  <div class="filter-group">
-    <select class="filter" id="filter-value">
-      <option value="">Any value</option>
-      <option value="10000">£10k+</option>
-      <option value="50000">£50k+</option>
-      <option value="100000">£100k+</option>
-      <option value="500000">£500k+</option>
-      <option value="1000000">£1m+</option>
-    </select>
-  </div>
-  <div class="filter-group">
-    <select class="filter" id="filter-deadline">
-      <option value="">Any deadline</option>
-      <option value="1">Closes today</option>
-      <option value="7">Within 7 days</option>
-      <option value="14">Within 14 days</option>
-      <option value="30">Within 30 days</option>
-      <option value="90">Within 90 days</option>
-    </select>
-  </div>
-  <button class="btn-clear" id="btn-clear">Clear all</button>
-</div>
-
-<!-- RESULTS BAR -->
-<div class="results-bar">
-  <div class="results-count" id="results-count">Loading tenders…</div>
-  <div style="display:flex;align-items:center;gap:12px">
-    <select class="filter" id="sort-by" style="min-width:175px;flex:none">
-      <option value="recent">Sort: Most recent</option>
-      <option value="oldest">Sort: Oldest first</option>
-      <option value="value-high">Sort: Highest value</option>
-      <option value="value-low">Sort: Lowest value</option>
-    </select>
-    <div class="live-pill"><span class="live-dot"></span>Updated daily</div>
+<!-- TOOL HEADER -->
+<div class="tool-header">
+  <div class="tool-header-inner">
+    <h1>Live UK Tenders <span>Filtered For You</span></h1>
+    <p>Live public sector contracts from Find a Tender — filtered by sector, region and deadline. No logins, no subscriptions.</p>
+    <div class="search-wrap">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search" placeholder="Search by keyword, buyer, sector or region…" autocomplete="off" spellcheck="false">
+      <button class="search-clear" id="search-clear" aria-label="Clear">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="header-stats">
+      <div class="stat-chip"><strong id="stat-value">—</strong><span>combined value in view</span></div>
+      <div class="stat-chip"><strong id="stat-soon">—</strong><span>closing within 14 days</span></div>
+    </div>
   </div>
 </div>
 
-<!-- CARDS -->
-<div class="cards-wrap">
-  <div class="cards-grid" id="cards-grid"></div>
-</div>
+<!-- TOOL LAYOUT: filter rail + results -->
+<div class="tool-layout">
+  <aside class="filter-rail">
+    <div class="filter-group">
+      <label for="filter-sector">Sector</label>
+      <select class="filter" id="filter-sector"><option value="">All sectors</option></select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-region">Region</label>
+      <select class="filter" id="filter-region"><option value="">All regions</option></select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-value">Value</label>
+      <select class="filter" id="filter-value">
+        <option value="">Any value</option>
+        <option value="10000">£10k+</option>
+        <option value="50000">£50k+</option>
+        <option value="100000">£100k+</option>
+        <option value="500000">£500k+</option>
+        <option value="1000000">£1m+</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-deadline">Deadline</label>
+      <select class="filter" id="filter-deadline">
+        <option value="">Any deadline</option>
+        <option value="1">Closes today</option>
+        <option value="7">Within 7 days</option>
+        <option value="14">Within 14 days</option>
+        <option value="30">Within 30 days</option>
+        <option value="90">Within 90 days</option>
+      </select>
+    </div>
+    <button class="btn-clear" id="btn-clear">Clear all filters</button>
+  </aside>
 
-<div class="load-more-wrap" id="load-more-wrap" style="display:none">
-  <button class="btn-load-more" id="btn-load-more">Load more tenders</button>
+  <div class="results-col">
+    <!-- RESULTS BAR -->
+    <div class="results-bar">
+      <div class="results-count" id="results-count">Loading tenders…</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <select class="filter" id="sort-by" style="min-width:175px;flex:none">
+          <option value="recent">Sort: Most recent</option>
+          <option value="oldest">Sort: Oldest first</option>
+          <option value="value-high">Sort: Highest value</option>
+          <option value="value-low">Sort: Lowest value</option>
+        </select>
+        <div class="live-pill"><span class="live-dot"></span>Updated daily</div>
+      </div>
+    </div>
+
+    <!-- RESULTS LIST -->
+    <div class="cards-wrap">
+      <div class="cards-grid" id="cards-grid"></div>
+    </div>
+
+    <div class="load-more-wrap" id="load-more-wrap" style="display:none">
+      <button class="btn-load-more" id="btn-load-more">Load more tenders</button>
+    </div>
+  </div>
 </div>
 
 <!-- DETAIL DRAWER -->
@@ -499,6 +546,22 @@ function toBroadRegion(specificRegion) {
 }
 
 let allTenders = [], filtered = [], shown = 0, tenderMap = {};
+
+function formatBigValue(amount) {
+  if (!amount) return '£0';
+  if (amount >= 1_000_000_000) return `£${(amount/1_000_000_000).toFixed(1)}bn`;
+  if (amount >= 1_000_000)     return `£${(amount/1_000_000).toFixed(0)}m`;
+  if (amount >= 1_000)         return `£${(amount/1_000).toFixed(0)}k`;
+  return `£${Math.round(amount).toLocaleString('en-GB')}`;
+}
+
+function updateStats() {
+  const totalValue = filtered.reduce((sum, t) => sum + (t.value || 0), 0);
+  const now = Date.now();
+  const closingSoon = filtered.filter(t => t.deadline && (new Date(t.deadline) - now) / 86_400_000 <= 14).length;
+  document.getElementById('stat-value').textContent = formatBigValue(totalValue);
+  document.getElementById('stat-soon').textContent = closingSoon.toLocaleString();
+}
 
 function fixUrl(url) {
   if (url && /find-tender\.service\.gov\.uk\/Notice\/\d+-\d{4}/.test(url)) return url;
@@ -738,28 +801,29 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(
 // ── Cards ───────────────────────────────────────────────────────────────────────
 
 function buildCard(t) {
-  const val       = formatValue(t.value);
-  const dl        = deadlineInfo(t.deadline);
-  const url       = fixUrl(t.url);
-  const noticeUrl = url || ('https://www.find-tender.service.gov.uk/Search/Results?keyword=' + encodeURIComponent(t.title));
-  const btnLabel  = url ? 'View tender' : 'Search on Find a Tender';
-  const tid       = esc(t.id);
+  const val = formatValue(t.value);
+  const dl  = deadlineInfo(t.deadline);
+  const tid = esc(t.id);
   return `
-  <div class="card ${esc(dl.card)}" onclick="openDrawer('${tid}')">
-    <div class="card-top">
-      <a href="${tenderPageUrl(t)}" class="card-title" onclick="event.stopPropagation()">${esc(t.title)}</a>
-      ${val ? `<div class="card-value">${esc(val)}</div>` : ''}
+  <div class="row ${esc(dl.card)}" onclick="openDrawer('${tid}')">
+    <div class="row-main">
+      <div class="row-top">
+        <a href="${tenderPageUrl(t)}" class="row-title" onclick="event.stopPropagation()">${esc(t.title)}</a>
+      </div>
+      <div class="row-buyer">${esc(t.buyer)}</div>
+      <div class="row-desc">${esc(t.description||'No description available.')}</div>
+      <div class="row-meta">
+        ${t.sector && t.sector!=='Uncategorised' ? `<span class="tag tag-sector">${esc(t.sector)}</span>` : ''}
+        ${t.broadRegion ? `<span class="tag tag-region">${esc(t.broadRegion)}</span>` : (t.region && t.region!=='UK' ? `<span class="tag tag-region">${esc(t.region)}</span>` : '')}
+      </div>
     </div>
-    <div class="card-buyer">${esc(t.buyer)}</div>
-    <div class="card-meta">
-      <span class="tag tag-deadline ${esc(dl.cls)}">&#9201; ${esc(dl.label)}</span>
-      ${t.sector && t.sector!=='Uncategorised' ? `<span class="tag tag-sector">${esc(t.sector)}</span>` : ''}
-      ${t.broadRegion ? `<span class="tag tag-region">${esc(t.broadRegion)}</span>` : (t.region && t.region!=='UK' ? `<span class="tag tag-region">${esc(t.region)}</span>` : '')}
-    </div>
-    <div class="card-description">${esc(t.description||'No description available.')}</div>
-    <div class="card-actions" onclick="event.stopPropagation()">
-      <button class="btn btn-primary" onclick="openDrawer('${tid}')">Quick view</button>
-      <a href="${tenderPageUrl(t)}" class="btn btn-secondary">View full page →</a>
+    <div class="row-side">
+      ${val ? `<div class="row-value">${esc(val)}</div>` : ''}
+      <div class="row-deadline ${esc(dl.cls)}">${esc(dl.label)}</div>
+      <div class="row-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-primary" onclick="openDrawer('${tid}')">Quick view</button>
+        <a href="${tenderPageUrl(t)}" class="btn btn-secondary">View full page</a>
+      </div>
     </div>
   </div>`;
 }
@@ -826,6 +890,7 @@ function applyFilters() {
   });
 
   updateCount();
+  updateStats();
   renderPage(true);
 }
 
