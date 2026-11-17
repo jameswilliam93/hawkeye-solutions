@@ -41,7 +41,9 @@ nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify
 .nav-links{display:flex;gap:28px}
 .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;transition:color .2s}
 .nav-links a:hover,.nav-links a.active{color:var(--white)}
-.nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important}
+.nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important;display:inline-flex;align-items:center}
+.live-dot{display:inline-block;width:7px;height:7px;background:#2ecc71;border-radius:50%;margin-right:6px;box-shadow:0 0 0 0 rgba(46,204,113,0.7);animation:livePulse 2s infinite}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(46,204,113,0.7)}70%{box-shadow:0 0 0 7px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
 .hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
 .hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:transform .25s,opacity .25s}
 .hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
@@ -219,7 +221,7 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
     <a href="/tender-search.html">Tender Search</a>
     <a href="/blog.html">Blog</a>
     <a href="/about.html">About Us</a>
-    <a href="/contact.html" class="nav-cta">Free Consultation</a>
+    <a href="/tender-search.html" class="nav-cta"><span class="live-dot"></span>Live Tenders</a>
   </div>
   <button class="hamburger" id="ham" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -232,7 +234,7 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
   <a href="/tender-search.html">Tenders</a>
   <a href="/blog.html">Blog</a>
   <a href="/about.html">About Us</a>
-  <a href="/contact.html" class="mob-cta">Free Consultation</a>
+  <a href="/tender-search.html" class="mob-cta"><span class="live-dot"></span>Live Tenders</a>
 </div>
 
 <div class="hero">
@@ -280,10 +282,10 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
       <div class="tl-rel" style="color:var(--teal-dark)">Today</div>
     </div>
     <div class="tl-node">
-      <div class="tl-dot" style="background:var(--teal-mid);"></div>
+      <div class="tl-dot" style="background:#b7670a;"></div>
       <div class="tl-label">Closes</div>
       <div class="tl-date">9 Dec 2026</div>
-      <div class="tl-rel" style="color:var(--teal-mid)">in 3 weeks</div>
+      <div class="tl-rel" style="color:#b7670a">in 3 weeks</div>
     </div></div>
 </div>
 
