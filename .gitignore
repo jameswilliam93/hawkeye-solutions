@@ -3,3 +3,15 @@ backfill_progress.json
 __pycache__/
 *.pyc
 .DS_Store
+
+# leads pipeline
+leads/.env
+leads/*.log
+leads/companies_house_state.json
+leads/companies_house.json
+leads/ccs_frameworks.json
+leads/ccs_frameworks.log
+leads/crm_import_*.csv
+leads/scored_leads.json
+leads/enrich_directors_state.json
+leads/companies_house_state.json
