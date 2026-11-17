@@ -141,11 +141,11 @@
   <div class="search-bar">
     <input type="text" id="search-input" placeholder="Search articles by title, topic or keyword..." oninput="filterPosts()">
     <div class="filter-btns">
-      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
-      <button class="filter-btn" onclick="setFilter('bid-writing',this)">Bid Writing</button>
-      <button class="filter-btn" onclick="setFilter('procurement',this)">Procurement Basics</button>
-      <button class="filter-btn" onclick="setFilter('sector',this)">Sector Guides</button>
-      <button class="filter-btn" onclick="setFilter('mistakes',this)">Common Mistakes</button>
+      <button class="filter-btn active" data-category="all" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" data-category="bid-writing" onclick="setFilter('bid-writing',this)">Bid Writing</button>
+      <button class="filter-btn" data-category="procurement" onclick="setFilter('procurement',this)">Procurement Basics</button>
+      <button class="filter-btn" data-category="sector" onclick="setFilter('sector',this)">Sector Guides</button>
+      <button class="filter-btn" data-category="mistakes" onclick="setFilter('mistakes',this)">Common Mistakes</button>
     </div>
   </div>
   <div class="post-count" id="post-count"></div>
@@ -214,9 +214,11 @@ function renderPosts(list) {
   grid.innerHTML = list.map(function(p) {
     var excerpt = (p.excerpt || p.description || '').replace(/[#*`]/g,'').substring(0,160);
     var slug = p.slug || encodeURIComponent(p.title);
-    return '<div class="blog-card" onclick="window.location=\'/blog/' + slug + '.html\'">' +
+    var href = '/blog-post.html?slug=' + encodeURIComponent(slug);
+    var author = p.author_name || p.author || 'Hawkeye Team';
+    return '<div class="blog-card" onclick="window.location=\'' + href + '\'">' +
       '<span class="category-tag ' + categoryTagClass(p.category) + '">' + categoryLabel(p.category) + '</span>' +
-      '<h3><a href="/blog/' + slug + '.html" onclick="event.stopPropagation()">' + (p.title || '') + '</a></h3>' +
+      '<h3><a href="' + href + '" onclick="event.stopPropagation()">' + (p.title || '') + '</a></h3>' +
       '<div class="post-meta">' +
         '<span>' + formatDate(p.date) + '</span>' +
         (p.reading_time ? '<span class="dot">·</span><span>' + p.reading_time + ' min read</span>' : '') +
@@ -224,10 +226,10 @@ function renderPosts(list) {
       '<p class="post-excerpt">' + excerpt + (excerpt.length >= 160 ? '...' : '') + '</p>' +
       '<div class="card-footer">' +
         '<div class="author">' +
-          '<div class="author-avatar">' + initials(p.author) + '</div>' +
-          '<span class="author-name">' + (p.author || 'Hawkeye Team') + '</span>' +
+          '<div class="author-avatar">' + initials(author) + '</div>' +
+          '<span class="author-name">' + author + '</span>' +
         '</div>' +
-        '<a class="read-more" href="/blog/' + slug + '.html" onclick="event.stopPropagation()">Read more</a>' +
+        '<a class="read-more" href="' + href + '" onclick="event.stopPropagation()">Read more</a>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -240,7 +242,7 @@ function filterPosts() {
   if (q) list = list.filter(function(p) {
     return (p.title||'').toLowerCase().includes(q) ||
            (p.excerpt||'').toLowerCase().includes(q) ||
-           (p.author||'').toLowerCase().includes(q);
+           (p.author_name||p.author||'').toLowerCase().includes(q);
   });
   renderPosts(list);
 }
@@ -266,7 +268,16 @@ async function loadPosts() {
     var data = await r.json();
     allPosts = Array.isArray(data) ? data : (data.posts || []);
     allPosts.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
-    renderPosts(allPosts);
+
+    // Honour a ?category= link (e.g. from a post's sidebar) by pre-selecting
+    // that filter button instead of always landing on "All".
+    var urlCategory = new URLSearchParams(window.location.search).get('category');
+    var matchingBtn = urlCategory && document.querySelector('.filter-btn[data-category="' + urlCategory + '"]');
+    if (matchingBtn) {
+      setFilter(urlCategory, matchingBtn);
+    } else {
+      renderPosts(allPosts);
+    }
   } catch(e) {
     document.getElementById('blog-grid').innerHTML = '<div class="no-results">No posts found. Check back soon.</div>';
   }

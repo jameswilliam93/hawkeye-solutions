@@ -242,12 +242,22 @@ function readingTime(html) {
   return Math.max(1, Math.round(words / 200)) + ' min read';
 }
 
+/* Same four categories as the blog index's filter buttons -- category is
+   stored as the slug ('bid-writing' etc) and mapped to a label/colour here
+   so the two pages always agree on what a given post's category looks like. */
+function categoryLabel(c) {
+  var map = {'bid-writing':'Bid Writing','procurement':'Procurement Basics','sector':'Sector Guides','mistakes':'Common Mistakes'};
+  return map[c] || c || 'General';
+}
+
 function categoryTagClass(cat) {
-  if (!cat) return '';
-  var c = cat.toLowerCase();
-  if (c.includes('recruit')) return 'background:#e8f4f7;color:#0e4a57';
-  if (c.includes('it') || c.includes('tech')) return 'background:#eef0fb;color:#3a3faa';
-  return 'background:#f3f0fb;color:#5a3faa';
+  var map = {
+    'bid-writing': 'background:#e8f4f7;color:#0e4a57',
+    'procurement': 'background:#eef0fb;color:#3a3faa',
+    'sector':      'background:#eaf7f1;color:#1a7a50',
+    'mistakes':    'background:#fef6e8;color:#b7670a',
+  };
+  return map[cat] || 'background:#f3f0fb;color:#5a3faa';
 }
 
 function getInitials(name) {
@@ -284,8 +294,8 @@ function renderPost(post, allPosts) {
   }).join('') : '<p style="font-size:13px;color:var(--text-muted)">No related articles yet.</p>';
 
   var catHTML = Object.keys(catMap).map(function(cat){
-    return '<div class="cat-item" onclick="window.location=\'blog.html?category='+encodeURIComponent(cat)+'\'">' +
-      '<span class="cat-name">'+cat+'</span>' +
+    return '<div class="cat-item" onclick="window.location=\'/blog.html?category='+encodeURIComponent(cat)+'\'">' +
+      '<span class="cat-name">'+categoryLabel(cat)+'</span>' +
       '<span class="cat-count">'+catMap[cat]+'</span>' +
     '</div>';
   }).join('');
@@ -294,7 +304,7 @@ function renderPost(post, allPosts) {
     return '<div class="article-card" onclick="window.location=\'blog-post.html?slug='+encodeURIComponent(a.slug||a.title)+'\'">' +
       '<div class="article-card-thumb">'+docIcon+'</div>' +
       '<div class="article-card-body">' +
-        '<span class="article-card-tag">'+(a.category||'General')+'</span>' +
+        '<span class="article-card-tag">'+categoryLabel(a.category)+'</span>' +
         '<div class="article-card-title">'+(a.title||'')+'</div>' +
         '<div class="article-card-date">'+formatDate(a.date)+'</div>' +
       '</div>' +
@@ -310,7 +320,7 @@ function renderPost(post, allPosts) {
   document.getElementById('page-content').innerHTML =
     '<div class="post-container">' +
       '<div class="post-main">' +
-        '<span class="category-tag" style="'+(categoryTagClass(post.category))+'">'+((post.category)||'General')+'</span>' +
+        '<span class="category-tag" style="'+(categoryTagClass(post.category))+'">'+categoryLabel(post.category)+'</span>' +
         '<h1 class="post-title">'+(post.title||'')+'</h1>' +
         '<div class="post-meta">' +
           '<span class="meta-author">'+(post.author_name||'Hawkeye Solutions')+'</span>' +
