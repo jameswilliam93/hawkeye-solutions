@@ -36,6 +36,7 @@ SIZE_BAND_TO_CRM = {
 SOURCE_TO_CRM = {
     "CCS Framework": "Framework",
     "Companies House": "Scraped",
+    "Award Notice": "Award Notice",
 }
 
 
@@ -61,8 +62,10 @@ def main():
             skipped_no_contact += 1
             continue
         tags = [f"tier-{lead['tier']}"]
-        if lead["tier"] == 1:
+        if lead["source"] == "CCS Framework":
             tags.append("framework")
+        elif lead["source"] == "Award Notice":
+            tags.append("award-winner")
         notes = lead.get("notes") or ""
         if lead.get("company_number"):
             ch_link = f"Companies House: https://find-and-update.company-information.service.gov.uk/company/{lead['company_number']}"

@@ -2,11 +2,13 @@
 """
 Hawkeye Solutions — tier and categorise every lead pulled so far
 
-Combines leads/companies_house.json and leads/ccs_frameworks.json into one
-scored dataset, tagged with where each lead came from (source) and how
-good a target it is (tier):
+Combines leads/companies_house.json, leads/ccs_frameworks.json and
+leads/award_notices.json into one scored dataset, tagged with where each
+lead came from (source) and how good a target it is (tier):
 
-    Tier 1 — CCS Framework supplier (confirmed, highest confidence)
+    Tier 1 — CCS Framework supplier, OR a confirmed recent award-notice
+             winner (either one is a confirmed, active public-sector
+             relationship — the highest confidence available)
     Tier 2 — Companies House match, small/medium accounts category
     Tier 3 — Companies House match, everything else (micro/large/unknown)
 
@@ -14,6 +16,16 @@ A company on more than one CCS framework (happens — 49 companies hold
 more than one of the three we've pulled) is merged into a single Tier 1
 lead rather than counted twice, combining the best contact info found
 across all of its framework entries.
+
+Award-notice winners are cross-referenced by company name against the
+CCS and Companies House lists (the award data has no Companies House
+number to join on directly):
+  - a name match against a CCS supplier gets an award note appended,
+    nothing else changes — the CCS contact info is already richer
+  - a name match against a Companies House Tier 2/3 lead gets PROMOTED
+    to Tier 1 (unless dormant) — winning a live contract outweighs size
+  - no match at all becomes a standalone Tier 1 lead, only kept if it
+    has an email (otherwise there's no way to contact them at all)
 
 Dormant companies are dropped entirely (not trading, can't be a client).
 Any Companies House company that's also a CCS supplier is dropped from
@@ -29,6 +41,8 @@ from pathlib import Path
 CCS_FILE      = Path(__file__).parent / "ccs_frameworks.json"
 CH_FILE       = Path(__file__).parent / "companies_house.json"
 WEBSITE_FILE  = Path(__file__).parent / "website_enrichment.json"
+AWARDS_FILE   = Path(__file__).parent / "award_notices.json"
+DOMAIN_GUESSES_FILE = Path(__file__).parent / "domain_guesses.json"
 OUTPUT_FILE   = Path(__file__).parent / "scored_leads.json"
 
 FREE_EMAIL_DOMAINS = {
@@ -38,16 +52,16 @@ FREE_EMAIL_DOMAINS = {
     "me.com", "mail.com",
 }
 
+TIER2_BANDS = {"small", "medium"}
+TIER3_BANDS = {"micro", "large", "unknown", "unknown-full"}
+EXCLUDED_BANDS = {"dormant"}
+
 
 def domain_from_email(email: str) -> str:
     if not email or "@" not in email:
         return ""
     domain = email.split("@", 1)[1].strip().lower()
     return "" if domain in FREE_EMAIL_DOMAINS else domain
-
-TIER2_BANDS = {"small", "medium"}
-TIER3_BANDS = {"micro", "large", "unknown", "unknown-full"}
-EXCLUDED_BANDS = {"dormant"}
 
 
 def normalise_number(num: str) -> str:
@@ -61,6 +75,10 @@ def normalise_name(name: str) -> str:
 
 def first_nonempty(values: list[str]) -> str:
     return next((v for v in values if v), "")
+
+
+def award_note(a: dict) -> str:
+    return f'Won a live award: "{a["tender_title"]}" — {a["buyer"]} ({a["award_date"][:10]})'
 
 
 def merge_ccs_suppliers(ccs_all: list[dict]) -> list[dict]:
@@ -92,9 +110,38 @@ def main():
     ccs_all = json.loads(CCS_FILE.read_text())
     ch_all = json.loads(CH_FILE.read_text())
     website_by_domain = json.loads(WEBSITE_FILE.read_text()) if WEBSITE_FILE.exists() else {}
+    awards = json.loads(AWARDS_FILE.read_text()) if AWARDS_FILE.exists() else []
+    domain_guesses = json.loads(DOMAIN_GUESSES_FILE.read_text()) if DOMAIN_GUESSES_FILE.exists() else {}
 
     ccs_merged = merge_ccs_suppliers(ccs_all)
+    ccs_by_name = {normalise_name(s["company_name"]): s for s in ccs_merged}
     ccs_numbers = {normalise_number(s["company_number"]) for s in ccs_merged if s["company_number"]}
+
+    ch_name_to_number = {}
+    for c in ch_all:
+        ch_name_to_number.setdefault(normalise_name(c["company_name"]), normalise_number(c["company_number"]))
+
+    # One award per company name — keep the most recent if they won more than once
+    awards_by_name: dict[str, dict] = {}
+    for a in awards:
+        key = normalise_name(a["supplier_name"])
+        existing = awards_by_name.get(key)
+        if not existing or a["award_date"] > existing["award_date"]:
+            awards_by_name[key] = a
+
+    promoted_numbers: dict[str, dict] = {}
+    award_note_for_ccs: dict[str, str] = {}
+    standalone_awards: list[dict] = []
+
+    for name, a in awards_by_name.items():
+        if name in ccs_by_name:
+            award_note_for_ccs[name] = award_note(a)
+            continue
+        number = ch_name_to_number.get(name)
+        if number:
+            promoted_numbers[number] = a
+            continue
+        standalone_awards.append(a)
 
     leads = []
     enriched_count = 0
@@ -109,6 +156,9 @@ def main():
             if not phone and site.get("extra_phones"):
                 phone = site["extra_phones"][0]
             enriched_count += 1
+        award_bit = award_note_for_ccs.get(normalise_name(s["company_name"]))
+        if award_bit:
+            notes = f"{notes}\n{award_bit}".strip()
         leads.append({
             "company_name": s["company_name"],
             "company_number": s["company_number"],
@@ -126,7 +176,10 @@ def main():
             "notes": notes,
         })
 
-    counts = {"excluded_dormant": 0, "deduped_vs_ccs": 0, "tier2": 0, "tier3": 0, "unscored_band": 0}
+    counts = {
+        "excluded_dormant": 0, "deduped_vs_ccs": 0, "tier2": 0, "tier3": 0,
+        "unscored_band": 0, "promoted_by_award": 0,
+    }
 
     for c in ch_all:
         number = normalise_number(c["company_number"])
@@ -134,10 +187,15 @@ def main():
             counts["deduped_vs_ccs"] += 1
             continue
         band = c["size_band"]
-        if band in EXCLUDED_BANDS:
+        award = promoted_numbers.get(number)
+        promoted = award is not None and band not in EXCLUDED_BANDS
+        if band in EXCLUDED_BANDS and not promoted:
             counts["excluded_dormant"] += 1
             continue
-        if band in TIER2_BANDS:
+        if promoted:
+            tier = 1
+            counts["promoted_by_award"] += 1
+        elif band in TIER2_BANDS:
             tier = 2
             counts["tier2"] += 1
         elif band in TIER3_BANDS:
@@ -146,22 +204,60 @@ def main():
         else:
             counts["unscored_band"] += 1
             continue
+
+        guess = domain_guesses.get(c["company_number"]) if not promoted else None
+        website, notes, email, phone = "", "", "", ""
+        if promoted:
+            email = award["contact_email"]
+            website = award.get("website", "")
+            notes = award_note(award)
+        elif guess and guess.get("fetched_ok"):
+            website = guess.get("domain", "")
+            notes = guess.get("meta_description") or guess.get("title") or ""
+            if guess.get("extra_emails"):
+                email = guess["extra_emails"][0]
+            if guess.get("extra_phones"):
+                phone = guess["extra_phones"][0]
+            counts["tier2_domain_matched"] = counts.get("tier2_domain_matched", 0) + 1
+
         leads.append({
             "company_name": c["company_name"],
             "company_number": c["company_number"],
-            "source": "Companies House",
+            "source": "Award Notice" if promoted else "Companies House",
             "tier": tier,
             "size_band": band,
             "contact_name": "",
-            "contact_email": "",
-            "contact_phone": "",
-            "website": "",
+            "contact_email": email,
+            "contact_phone": phone,
+            "website": website,
             "linkedin": "",
             "frameworks": [],
             "region": c.get("locality") or c.get("region"),
             "postal_code": c.get("postal_code") or "",
-            "notes": "",
+            "notes": notes,
         })
+
+    standalone_added = 0
+    for a in standalone_awards:
+        if not a.get("contact_email"):
+            continue  # no name and no email — nothing to contact, would be dropped at export anyway
+        leads.append({
+            "company_name": a["supplier_name"],
+            "company_number": "",
+            "source": "Award Notice",
+            "tier": 1,
+            "size_band": None,
+            "contact_name": "",
+            "contact_email": a["contact_email"],
+            "contact_phone": "",
+            "website": a.get("website", ""),
+            "linkedin": "",
+            "frameworks": [],
+            "region": a.get("locality", ""),
+            "postal_code": a.get("postal_code", ""),
+            "notes": award_note(a),
+        })
+        standalone_added += 1
 
     OUTPUT_FILE.write_text(json.dumps(leads, indent=2))
 
@@ -176,6 +272,9 @@ def main():
     print(f"  Excluded as dormant:              {counts['excluded_dormant']}")
     print(f"  Deduped (already a CCS supplier): {counts['deduped_vs_ccs']}")
     print(f"  Tier 1 enriched from their own website: {enriched_count}")
+    print(f"  Promoted to Tier 1 by an award win:     {counts['promoted_by_award']}")
+    print(f"  Standalone award winners (no CH/CCS match, email only): {standalone_added}")
+    print(f"  Tier 2 matched to a guessed-and-verified domain: {counts.get('tier2_domain_matched', 0)}")
 
 
 if __name__ == "__main__":
