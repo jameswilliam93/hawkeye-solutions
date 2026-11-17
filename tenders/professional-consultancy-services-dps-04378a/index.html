@@ -127,6 +127,8 @@ h1{font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:60
 .kp-list li:last-child{margin-bottom:0}
 .kp-list li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal-mid);margin-top:7px;flex-shrink:0}
 
+.who-note{background:var(--teal-light);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--teal-dark);line-height:1.6;margin-bottom:14px}
+
 .desc-text{font-size:14px;color:var(--text-muted);line-height:1.8;white-space:pre-wrap;word-break:break-word}
 .desc-toggle{background:none;border:none;color:var(--teal-mid);font-weight:700;font-size:13px;cursor:pointer;padding:10px 0 0;font-family:inherit}
 .desc-full{display:none}
@@ -300,6 +302,11 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
   <p class="desc-text desc-short">The Dynamic Purchasing System (DPS) will provide a database of Approved suppliers considered capable of carrying out professional consultancy services to a satisfactory standard. The nature and types of services that may be required may include, but are not&hellip;</p>
   <p class="desc-text desc-full">The Dynamic Purchasing System (DPS) will provide a database of Approved suppliers considered capable of carrying out professional consultancy services to a satisfactory standard. The nature and types of services that may be required may include, but are not limited to, those services identified by the CPV code and summarised in section II.2. The specific services cannot be clearly defined at this stage, however the nature and types of services that may be required may include, but are not limited to, buildings and civils professional consultancy services. The DPS is a 2-stage process: Stage 1 - All providers who meet the selection criteria within the online Questionnaire and are not excluded will be admitted to the DPS. New providers can also apply to join the DPS at any point during its lifetime. Stage 2 - Contracts are awarded during the second stage. A Call-Off competition will be put out inviting each approved provider on the DPS list relating to the particular Lot.</p>
   <button class="desc-toggle" onclick="var s=this.parentElement.querySelector('.desc-short'),f=this.parentElement.querySelector('.desc-full');s.classList.toggle('hidden');f.classList.toggle('open');this.textContent=this.textContent.startsWith('Read')?'Show less':'Read full description';">Read full description</button>
+</div>
+<div class="card">
+  <h2>Scope &amp; Who Can Bid</h2>
+  
+  <div class="fact-row"><span class="fact-label">CPV Code</span><span class="fact-value">71324000</span></div>
 </div>
 <div class="card">
   <h2>Lots (56)</h2>

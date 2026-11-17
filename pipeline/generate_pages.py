@@ -14,15 +14,17 @@ Usage:
 import argparse
 import json
 import re
+import shutil
 from datetime import datetime, timezone, timedelta
 from html import escape as esc
 from pathlib import Path
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 
-BASE_URL   = "https://hawkeye-solutions.co.uk"
-CONTACT    = "/contact.html"
-INPUT_FILE = Path("uk-tenders.json")
+BASE_URL          = "https://hawkeye-solutions.co.uk"
+CONTACT           = "/contact.html"
+INPUT_FILE        = Path("uk-tenders.json")
+CLEANUP_AFTER_DAYS = 30  # retire a tender's page once its deadline is this many days in the past
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -301,6 +303,8 @@ h1{font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:60
 .kp-list li:last-child{margin-bottom:0}
 .kp-list li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal-mid);margin-top:7px;flex-shrink:0}
 
+.who-note{background:var(--teal-light);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--teal-dark);line-height:1.6;margin-bottom:14px}
+
 .desc-text{font-size:14px;color:var(--text-muted);line-height:1.8;white-space:pre-wrap;word-break:break-word}
 .desc-toggle{background:none;border:none;color:var(--teal-mid);font-weight:700;font-size:13px;cursor:pointer;padding:10px 0 0;font-family:inherit}
 .desc-full{display:none}
@@ -513,6 +517,49 @@ def build_timeline_html(t: dict, now) -> str:
       <div class="tl-rel" style="color:{color}">{esc(human_relative(d, now))}</div>
     </div>""")
     return f'<div class="timeline">{"".join(nodes)}</div>'
+
+
+# ── Scope & eligibility card (award criteria, procedure, who can bid) ──────────
+
+# Real PCR2015/OJEU procedure classifications -- each has a distinct, well-
+# defined answer to "can I just submit a bid, or is there a gate first".
+# Only "open" and "selective" show up in the live dataset today, but "limited"
+# and "direct" are kept for completeness since they're valid OCDS values.
+PROCEDURE_ELIGIBILITY = {
+    "open":      "Open procedure — any supplier can submit a full tender directly. There is no pre-qualification stage to pass first.",
+    "selective": "Restricted procedure — suppliers must pass a pre-qualification (PQQ/SQ) stage before being invited to submit a full tender. You cannot submit a bid outright.",
+    "limited":   "Negotiated procedure — the buyer selects and negotiates with suppliers directly, typically after an initial evaluation stage.",
+    "direct":    "Direct award — the buyer has awarded this contract directly, without running a competitive tender.",
+}
+
+def build_details_card(t: dict, procedure: str) -> str:
+    """Surfaces the scope/eligibility facts that already exist in the scraped
+    data (award criteria, procedure type, CPV code) but weren't being shown
+    anywhere on the standalone tender page -- only used internally for the
+    quiz widget's personalisation. Mirrors the 'Tender Details' block already
+    shown in the search page's drawer, so the two stay consistent."""
+    award_text = (t.get("awardCriteriaDesc") or "").strip()
+    proc_type  = (t.get("procedureType") or "").strip().lower()
+    eligibility = PROCEDURE_ELIGIBILITY.get(proc_type, "")
+    cpv = t.get("cpvCode") or ""
+
+    if not (award_text or procedure or eligibility or cpv):
+        return ""
+
+    rows = ""
+    if procedure:
+        rows += f'<div class="fact-row"><span class="fact-label">Procedure</span><span class="fact-value">{esc(procedure)}</span></div>'
+    if award_text:
+        rows += f'<div class="fact-row"><span class="fact-label">Award Criteria</span><span class="fact-value">{esc(award_text)}</span></div>'
+    if cpv:
+        rows += f'<div class="fact-row"><span class="fact-label">CPV Code</span><span class="fact-value">{esc(cpv)}</span></div>'
+
+    return f"""
+<div class="card">
+  <h2>Scope &amp; Who Can Bid</h2>
+  {f'<div class="who-note">{eligibility}</div>' if eligibility else ''}
+  {rows}
+</div>"""
 
 
 # ── Rule-based key points (no AI -- built from fields we already have) ─────────
@@ -841,7 +888,8 @@ def build_page(t: dict, slug: str, is_closed: bool, buyer_others=None, sector_re
   <ul class="domain-list">{domain_rows}</ul>
 </div>"""
 
-    main_col = f"{kp_card}{desc_card}{lots_card}{docs_card}{domains_card}"
+    details_card = build_details_card(t, procedure)
+    main_col = f"{kp_card}{desc_card}{details_card}{lots_card}{docs_card}{domains_card}"
 
     # ── Sidebar: quiz (open) or closed-notice CTA ──────────────────────────────
     if is_closed:
@@ -1064,8 +1112,10 @@ def main():
     data = json.loads(Path(args.input).read_text())
     out  = Path(args.output_dir)
     now  = datetime.now(timezone.utc)
+    cleanup_cutoff = now - timedelta(days=CLEANUP_AFTER_DAYS)
 
     skipped = 0
+    retired = 0
     seen_slugs: set[str] = set()
 
     # ── Pass 1: assign slugs, build buyer/sector indices ───────────────────────
@@ -1088,6 +1138,12 @@ def main():
                     dl = dl.replace(tzinfo=timezone.utc)
                 if dl < now:
                     is_closed = True
+                # A tender whose deadline is more than CLEANUP_AFTER_DAYS in the
+                # past is retired: don't (re)generate its page, and let the
+                # cleanup pass below remove it from disk if it already exists.
+                if dl < cleanup_cutoff:
+                    retired += 1
+                    continue
             except Exception:
                 pass
 
@@ -1140,10 +1196,47 @@ def main():
     sitemap_path = out / "sitemap.xml"
     sitemap_path.write_text(build_sitemap(sitemap_entries), encoding="utf-8")
 
+    # ── Pass 3: clean up retired tender pages still sitting on disk ────────────
+    # A directory under tenders/ that wasn't (re)written above is either a
+    # tender no longer in the feed, or one just excluded above as retired.
+    # Only remove it if its own previously-generated page confirms a deadline
+    # more than CLEANUP_AFTER_DAYS in the past — if we can't positively read
+    # a past deadline from it (no "expires" field, unparseable, or the
+    # deadline is still within the cutoff window) it's left alone untouched.
+    removed = 0
+    tenders_root = out / "tenders"
+    if tenders_root.is_dir():
+        for child in tenders_root.iterdir():
+            if not child.is_dir() or child.name in seen_slugs:
+                continue
+            existing_html = child / "index.html"
+            if not existing_html.exists():
+                continue
+            try:
+                text = existing_html.read_text(encoding="utf-8", errors="ignore")
+            except Exception:
+                continue
+            m = re.search(r'"expires":\s*"([^"]+)"', text)
+            if not m:
+                continue
+            try:
+                old_dl = datetime.fromisoformat(m.group(1).replace("Z", "+00:00"))
+                if old_dl.tzinfo is None:
+                    old_dl = old_dl.replace(tzinfo=timezone.utc)
+            except Exception:
+                continue
+            if old_dl < cleanup_cutoff:
+                shutil.rmtree(child)
+                removed += 1
+
     print(f"Generated {generated} tender pages → {out}/tenders/")
     print(f"Sitemap   → {sitemap_path}  ({len(sitemap_entries)} URLs)")
     if skipped:
         print(f"Skipped   {skipped} tenders (no title)")
+    if retired:
+        print(f"Retired   {retired} tenders from this run (deadline more than {CLEANUP_AFTER_DAYS} days past)")
+    if removed:
+        print(f"Removed   {removed} stale tender page(s) from disk (confirmed deadline more than {CLEANUP_AFTER_DAYS} days past)")
 
 
 if __name__ == "__main__":

@@ -127,6 +127,8 @@ h1{font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:60
 .kp-list li:last-child{margin-bottom:0}
 .kp-list li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal-mid);margin-top:7px;flex-shrink:0}
 
+.who-note{background:var(--teal-light);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--teal-dark);line-height:1.6;margin-bottom:14px}
+
 .desc-text{font-size:14px;color:var(--text-muted);line-height:1.8;white-space:pre-wrap;word-break:break-word}
 .desc-toggle{background:none;border:none;color:var(--teal-mid);font-weight:700;font-size:13px;cursor:pointer;padding:10px 0 0;font-family:inherit}
 .desc-full{display:none}
@@ -308,6 +310,11 @@ Providers can apply to be on the PDSP to provide services for one or more of the
   <button class="desc-toggle" onclick="var s=this.parentElement.querySelector('.desc-short'),f=this.parentElement.querySelector('.desc-full');s.classList.toggle('hidden');f.classList.toggle('open');this.textContent=this.textContent.startsWith('Read')?'Show less':'Read full description';">Read full description</button>
 </div>
 <div class="card">
+  <h2>Scope &amp; Who Can Bid</h2>
+  <div class="who-note">Open procedure — any supplier can submit a full tender directly. There is no pre-qualification stage to pass first.</div>
+  <div class="fact-row"><span class="fact-label">Procedure</span><span class="fact-value">Open procedure</span></div><div class="fact-row"><span class="fact-label">CPV Code</span><span class="fact-value">85312400</span></div>
+</div>
+<div class="card">
   <h2>Lots (1)</h2>
   
 <div class="lot"><div><div class="lot-title">Lot 1</div><div class="lot-desc">The Council is looking to develop a Pseudo Dynamic Purchasing System (Pseudo DPS) for the delivery of Care and Support services . It is expected that the PDSP will operate for initially for 5 years, w</div></div><div class="lot-val">£95.0m</div></div>
@@ -349,7 +356,7 @@ Providers can apply to be on the PDSP to provide services for one or more of the
 </div>
 <script>
 (function() {
-  var QUIZ_CTX = {"title": "My Life PDSP", "slug": "my-life-pdsp-0307c9", "value": "£95.0m", "rawValue": 95000000.0, "sector": "Health & Social Care", "daysLeft": 142, "scoreSplit": ""};
+  var QUIZ_CTX = {"title": "My Life PDSP", "slug": "my-life-pdsp-0307c9", "value": "£95.0m", "rawValue": 95000000.0, "sector": "Health & Social Care", "daysLeft": 141, "scoreSplit": ""};
   var quizAnswers = [];
 
   window.quizNext = function(step, points) {
