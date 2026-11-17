@@ -11,23 +11,34 @@
 <link rel="shortcut icon" href="/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RKL8KRV0S"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-5RKL8KRV0S');</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee}
+:root{--teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;--steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;--text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee;--font-display:'Source Serif 4',Georgia,'Times New Roman',serif}
 body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
 a{text-decoration:none;color:inherit}
+::selection{background:var(--teal-mid);color:var(--white)}
+:focus-visible{outline:2px solid var(--teal-mid);outline-offset:2px}
+html{scrollbar-color:var(--teal-mid) var(--off-white)}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:var(--off-white)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:20px;border:3px solid var(--off-white)}
+::-webkit-scrollbar-thumb:hover{background:var(--teal-mid)}
 nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:12px}
-.nav-brand{color:var(--white);font-size:18px;font-weight:700}
-.nav-links{display:flex;gap:28px}
+.nav-brand{font-family:var(--font-display);color:var(--white);font-size:19px;font-weight:600}
+.nav-links{display:flex;gap:28px;align-items:center}
 .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;transition:color 0.2s}
 .nav-links a:hover{color:var(--white)}
 .nav-links a.active{color:var(--white);font-weight:700}
-.nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600!important}
-.nav-cta.active{background:var(--teal-dark)!important}
+.nav-cta{background:var(--teal-mid);color:var(--white)!important;padding:10px 22px!important;border-radius:6px;font-size:14px;font-weight:600!important;display:inline-flex;align-items:center;line-height:1}
+.live-dot{display:inline-block;width:7px;height:7px;background:#2ecc71;border-radius:50%;margin-right:6px;box-shadow:0 0 0 0 rgba(46,204,113,.7);animation:livePulse 2s infinite}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(46,204,113,.7)}70%{box-shadow:0 0 0 7px rgba(46,204,113,0)}100%{box-shadow:0 0 0 0 rgba(46,204,113,0)}}
 .hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
 .hamburger span{display:block;width:100%;height:2px;background:var(--white);border-radius:2px;transition:transform 0.25s,opacity 0.25s}
 .hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
@@ -62,7 +73,8 @@ nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify
 .ohnohoney{opacity:0;position:absolute;top:0;left:0;height:0;width:0;z-index:-1}
 
 /* UPLOAD ZONE */
-.upload-zone{border:2px dashed var(--border);border-radius:10px;padding:28px 20px;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;margin-bottom:16px}
+.upload-zone{position:relative;border:1px solid var(--border);border-radius:4px;background:var(--off-white);padding:26px 20px;text-align:center;cursor:pointer;overflow:hidden;transition:border-color 0.2s,background 0.2s;margin-bottom:16px}
+.upload-zone::before{content:'';position:absolute;top:0;right:0;width:0;height:0;border-style:solid;border-width:0 18px 18px 0;border-color:transparent var(--white) transparent transparent;filter:drop-shadow(-2px 2px 2px rgba(28,61,79,.12))}
 .upload-zone:hover{border-color:var(--teal-mid);background:var(--teal-light)}
 .upload-zone svg{width:28px;height:28px;stroke:var(--teal-mid);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:8px}
 .upload-zone p{font-size:14px;color:var(--text-muted)}
@@ -73,7 +85,7 @@ nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify
 .page-section{padding:60px 5%}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start}
 .card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:36px}
-.card h3{font-size:20px;font-weight:800;color:var(--steel);margin-bottom:8px}
+.card h3{font-family:var(--font-display);font-size:21px;font-weight:600;color:var(--steel);margin-bottom:8px}
 .card .sub{font-size:14px;color:var(--text-muted);margin-bottom:24px;line-height:1.7}
 .card-icon{width:48px;height:48px;background:var(--teal-light);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
 .card-icon svg{width:24px;height:24px;stroke:var(--teal-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -119,10 +131,10 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     <a href="/index.html">Home</a>
     <a href="/services.html">Services</a>
     <a href="/sectors.html">Sectors</a>
-    <a href="/tenders.html">Tenders</a>
     <a href="/blog.html">Blog</a>
     <a href="/about.html">About Us</a>
-    <a href="/contact.html" class="nav-cta active">Free Consultation</a>
+    <a href="/contact.html" class="active">Contact Us</a>
+    <a href="/tender-search.html" class="nav-cta"><span class="live-dot"></span>Live Tenders</a>
   </div>
   <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMenu()">
     <span></span><span></span><span></span>
@@ -132,18 +144,20 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
   <a href="/index.html">Home</a>
   <a href="/services.html">Services</a>
   <a href="/sectors.html">Sectors</a>
-  <a href="/tenders.html">Tenders</a>
   <a href="/blog.html">Blog</a>
   <a href="/about.html">About Us</a>
-  <a href="/contact.html" class="mob-cta">Free Consultation</a>
+  <a href="/contact.html">Contact Us</a>
+  <a href="/tender-search.html" class="mob-cta"><span class="live-dot"></span>Live Tenders</a>
 </div>
 </div>
 
 <!-- HERO -->
-<div style="background:var(--steel);padding:70px 5% 60px">
-  <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7dd4e8;margin-bottom:10px">Get in Touch</div>
-  <h1 style="font-size:42px;font-weight:800;color:var(--white);margin-bottom:12px;line-height:1.2">Free Consultation</h1>
-  <p style="font-size:18px;color:rgba(255,255,255,0.75);max-width:580px;line-height:1.65">Tell us about your opportunity. We will be in touch within one business day to discuss how we can help — completely free, no obligation.</p>
+<div style="background:var(--steel);padding:70px 5% 60px;position:relative;overflow:hidden">
+  <div style="position:absolute;top:-22%;right:-4%;width:400px;height:400px;background:url('/logo.png') no-repeat center/contain;opacity:.1;filter:grayscale(1) brightness(2.4);pointer-events:none"></div>
+  <div style="position:relative;z-index:1">
+    <h1 style="font-family:var(--font-display);font-size:38px;font-weight:700;color:var(--white);margin-bottom:12px;line-height:1.25">Free Consultation</h1>
+    <p style="font-size:18px;color:rgba(255,255,255,0.75);max-width:580px;line-height:1.65">Tell us about your opportunity. We will be in touch within one business day to discuss how we can help — completely free, no obligation.</p>
+  </div>
 </div>
 
 <!-- CONTACT DETAILS + CONSULTATION FORM -->
@@ -152,7 +166,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
 
     <!-- LEFT: Contact info -->
     <div>
-      <h2 style="font-size:22px;font-weight:700;color:var(--steel);margin-bottom:8px">Let us talk</h2>
+      <h2 style="font-family:var(--font-display);font-size:23px;font-weight:600;color:var(--steel);margin-bottom:8px">Let us talk</h2>
       <p style="font-size:15px;color:var(--text-muted);line-height:1.75;margin-bottom:28px">Whether you have a live tender opportunity or you are planning ahead for future bids, we would love to hear from you. Our initial consultation is completely free and carries no obligation.</p>
 
       <a href="tel:0330 223 8040" class="contact-box">
@@ -216,8 +230,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
 <!-- UPLOAD + CALLBACK -->
 <div class="page-section">
   <div style="text-align:center;max-width:600px;margin:0 auto 44px">
-    <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal-mid);margin-bottom:10px">Or get started right away</div>
-    <h2 style="font-size:32px;font-weight:800;color:var(--steel);margin-bottom:12px;line-height:1.2">Upload Your Tender or Request a Call Back</h2>
+    <h2 style="font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--steel);margin-bottom:12px;line-height:1.25">Upload Your Tender or Request a Call Back</h2>
     <p style="font-size:16px;color:var(--text-muted);line-height:1.75">Have a live opportunity? Share your tender document for a fast, no-obligation quote. Or simply leave your details and one of our team will call you back.</p>
   </div>
   <div class="two-col">
@@ -276,7 +289,7 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
 
 <footer>
   <div class="footer-grid">
-    <div><p style="color:rgba(255,255,255,0.9);font-size:16px;font-weight:700;margin-bottom:8px">Hawkeye Solutions</p><p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.6)">Precision Bids. Proven Results.<br>Specialist bid writing for public sector recruitment and IT consultancy contracts.</p></div>
+    <div><p style="font-family:var(--font-display);color:rgba(255,255,255,0.9);font-size:17px;font-weight:600;margin-bottom:8px">Hawkeye Solutions</p><p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.6)">Precision Bids. Proven Results.<br>Specialist bid writing for public sector recruitment and IT consultancy contracts.</p></div>
     <div class="footer-col"><h4>Services</h4><a href="/bid-writing.html">Bid Writing</a><a href="/bid-management.html">Bid Management</a><a href="/bid-consultancy.html">Bid Consultancy &amp; Review</a><a href="/bid-training.html">Bid Writing Training</a></div>
     <div class="footer-col"><h4>Company</h4><a href="/about.html">About Us</a><a href="/sectors.html">Sectors</a><a href="/tenders.html">Tenders</a><a href="/contact.html">Contact</a></div>
     <div class="footer-col"><h4>Sectors</h4><a href="/sectors.html#recruitment">Recruitment and Staffing</a><a href="/sectors.html#it">IT Consultancy</a><a href="/sectors.html#councils">Local Government</a></div>
