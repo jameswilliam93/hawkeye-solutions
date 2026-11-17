@@ -63,6 +63,10 @@ def main():
         tags = [f"tier-{lead['tier']}"]
         if lead["tier"] == 1:
             tags.append("framework")
+        notes = lead.get("notes") or ""
+        if lead.get("company_number"):
+            ch_link = f"Companies House: https://find-and-update.company-information.service.gov.uk/company/{lead['company_number']}"
+            notes = f"{notes}\n{ch_link}".strip()
         rows.append({
             "Company": lead["company_name"],
             "Contact Name": contact_name,
@@ -80,7 +84,7 @@ def main():
             "Contract End": "",
             "Frameworks": "|".join(lead.get("frameworks") or []),
             "Tags": "|".join(tags),
-            "Notes": lead.get("notes") or "",
+            "Notes": notes,
         })
 
     with OUTPUT_FILE.open("w", newline="", encoding="utf-8") as f:
