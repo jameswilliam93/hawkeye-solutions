@@ -17,7 +17,7 @@
 :root{
   --teal:#1a6b7c;--teal-dark:#0e4a57;--teal-light:#e8f4f7;--teal-mid:#2a8fa3;
   --steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;
-  --text:#1a2e35;--text-muted:#4a6572;--border:#d0e8ee;
+  --text:#1a2e35;--text-muted:#4a6572;--border:#d8ecf0;
   --urgent:#c0392b;--warning:#b7670a;--safe:#1a7a50;
 }
 body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
@@ -42,94 +42,150 @@ nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify
 .mobile-menu a:hover{background:rgba(255,255,255,0.07);color:var(--white)}
 .mob-cta{background:var(--teal-mid);color:var(--white)!important;margin:12px 5%;border-radius:6px;text-align:center;border-bottom:none!important;padding:12px 5%}
 
-.hero{background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 60%,var(--teal) 100%);padding:48px 5% 40px}
-.breadcrumb{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.wrap{max-width:1180px;margin:0 auto;padding:0 5%}
+
+.hero{background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 55%,var(--teal) 100%);padding:36px 0 30px}
+.hero-inner{max-width:1180px;margin:0 auto;padding:0 5%}
+.breadcrumb{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .breadcrumb a{color:rgba(255,255,255,0.6);transition:color .15s}
 .breadcrumb a:hover{color:var(--white)}
 .breadcrumb span{color:rgba(255,255,255,0.35)}
-.hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.hero-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
-.badge-live{background:rgba(100,220,120,0.2);color:#7dd464}
-.badge-closed{background:rgba(200,80,80,0.2);color:#f08080}
-.badge-sector{background:rgba(232,244,247,0.2);color:#a0d8e8}
-.badge-region{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.75)}
-.hero h1{font-size:clamp(22px,3.5vw,36px);font-weight:800;color:var(--white);line-height:1.25;margin-bottom:8px}
-.hero-buyer{font-size:15px;color:rgba(255,255,255,0.75);margin-bottom:18px}
-.hero-ref{display:inline-block;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.8);font-size:12px;font-weight:600;padding:4px 12px;border-radius:6px;font-family:monospace;letter-spacing:.3px}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+.hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.hero-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.badge-live{background:rgba(110,220,140,.2);color:#8fe3a8}
+.badge-closed{background:rgba(200,80,80,.2);color:#f08080}
+.badge-sector{background:rgba(255,255,255,.14);color:rgba(255,255,255,.85)}
+.badge-region{background:rgba(255,255,255,.14);color:rgba(255,255,255,.85)}
+h1{font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--white);line-height:1.22;text-wrap:balance;max-width:780px}
+.hero-buyer{font-size:15px;color:rgba(255,255,255,.75);margin-top:8px}
+.hero-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.hero-actions .btn{white-space:nowrap}
+.hero-nav{display:flex;gap:8px;font-size:12px}
+.hero-nav a{color:rgba(255,255,255,.7);padding:5px 10px;border:1px solid rgba(255,255,255,.25);border-radius:6px;background:none;cursor:pointer;font-family:inherit}
+.hero-nav a:hover{background:rgba(255,255,255,.1)}
 
-.page-wrap{max-width:980px;margin:0 auto;padding:40px 5% 60px;display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:start}
-.main-col{}
-.side-col{}
-
-.block{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
-.block h2{font-size:16px;font-weight:700;color:var(--steel);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-.block p{font-size:14px;color:var(--text-muted);line-height:1.85}
-
-.dl-box{border-radius:12px;padding:18px 20px;margin-bottom:20px;display:flex;align-items:center;gap:20px}
-.dl-box.urgent{border:1px solid #f0a0a0;background:#fdf0ee}
-.dl-box.warning{border:1px solid #f0c070;background:#fef6e8}
-.dl-box.safe{border:1px solid #a3dcc0;background:#e8f7f0}
-.dl-box.open{border:1px solid var(--border);background:var(--off-white)}
-.dl-box.closed{border:1px solid #d0d0d0;background:#f5f5f5}
-.dl-days{font-size:36px;font-weight:800;line-height:1}
-.dl-days.urgent{color:var(--urgent)}
-.dl-days.warning{color:var(--warning)}
-.dl-days.safe{color:var(--safe)}
-.dl-days.closed{color:#999}
-.dl-sub{font-size:11px;color:var(--text-muted);margin-top:3px}
-.dl-label{font-size:12px;color:var(--text-muted);margin-bottom:3px}
-.dl-date{font-size:15px;font-weight:700;color:var(--steel)}
-
-.fact-row{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
-.fact-row:last-child{border-bottom:none;padding-bottom:0}
-.fact-row:first-child{padding-top:0}
-.fact-label{font-weight:600;color:var(--steel);width:130px;flex-shrink:0}
-.fact-value{color:var(--text-muted);flex:1;word-break:break-word}
-
-.cta-box{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));border-radius:12px;padding:24px;margin-bottom:20px;text-align:center}
-.cta-box h3{color:var(--white);font-size:17px;font-weight:800;margin-bottom:8px}
-.cta-box p{color:rgba(255,255,255,0.8);font-size:13px;line-height:1.6;margin-bottom:18px}
-.btn{display:block;width:100%;padding:12px 16px;border-radius:7px;font-size:14px;font-weight:700;text-align:center;transition:background .18s,opacity .18s;border:none;cursor:pointer;font-family:inherit;text-decoration:none}
+.btn{display:inline-block;padding:11px 20px;border-radius:8px;font-size:13px;font-weight:700;text-align:center;border:none;cursor:pointer;font-family:inherit;text-decoration:none}
 .btn-white{background:var(--white);color:var(--teal-dark)}
 .btn-white:hover{background:var(--teal-light)}
-.btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,0.5);color:var(--white);margin-top:8px}
-.btn-outline:hover{background:rgba(255,255,255,0.12)}
-.btn-primary{background:var(--teal-dark);color:var(--white);margin-bottom:8px}
+.btn-outline-light{background:transparent;border:1.5px solid rgba(255,255,255,.5);color:var(--white)}
+.btn-outline-light:hover{background:rgba(255,255,255,.12)}
+.btn-primary{background:var(--teal-dark);color:var(--white)}
 .btn-primary:hover{background:var(--teal)}
 .btn-secondary{background:transparent;border:1.5px solid var(--teal-mid);color:var(--teal-dark)}
 .btn-secondary:hover{background:var(--teal-light)}
 
-.lot{background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px}
-.lot-title{font-size:13px;font-weight:700;color:var(--steel);margin-bottom:2px}
-.lot-val{font-size:13px;font-weight:800;color:var(--teal-dark);margin-bottom:6px}
-.lot-desc{font-size:12px;color:var(--text-muted);line-height:1.6}
-.doc-link{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border:1px solid var(--border);border-radius:7px;margin-bottom:6px;font-size:13px;color:var(--teal-dark);background:var(--white);transition:background .15s;word-break:break-word}
-.doc-link:hover{background:var(--teal-light);border-color:var(--teal-mid)}
+/* At-a-glance row */
+.glance{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:-22px auto 0;max-width:1180px;padding:0 5%;position:relative;z-index:2}
+.gcard{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:11px 14px;box-shadow:0 4px 14px rgba(20,60,70,.07)}
+.gcard .g-label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.gcard .g-value{font-size:15px;font-weight:800;color:var(--steel);line-height:1.25}
 
-.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--teal);font-weight:600;margin-bottom:20px}
-.back-link:hover{text-decoration:underline}
+.map-widget{text-align:center}
+.map-widget svg{max-width:150px;margin:0 auto 6px;display:block}
+.map-widget .map-cap{font-size:12px;color:var(--text-muted);font-weight:700}
 
-.cta-banner{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));padding:60px 5%;text-align:center;margin-top:0}
-.cta-banner h2{font-size:28px;font-weight:800;color:var(--white);margin-bottom:10px}
-.cta-banner p{font-size:15px;color:rgba(255,255,255,0.8);margin-bottom:24px}
-.btn-white-lg{background:var(--white);color:var(--teal-dark);padding:13px 28px;border-radius:7px;font-weight:700;font-size:15px;display:inline-block;transition:background .2s}
-.btn-white-lg:hover{background:var(--teal-light)}
+/* Timeline */
+.timeline-section{margin-top:28px}
+.timeline-section h2{font-size:14px;font-weight:700;color:var(--steel);text-transform:uppercase;letter-spacing:.5px;margin-bottom:18px}
+.timeline{display:flex;position:relative;padding-top:10px}
+.timeline::before{content:"";position:absolute;top:19px;left:0;right:0;height:2px;background:var(--border)}
+.tl-node{flex:1;text-align:center;position:relative;padding:0 4px}
+.tl-dot{width:14px;height:14px;border-radius:50%;margin:0 auto 10px;position:relative;z-index:1;border:3px solid var(--white)}
+.tl-label{font-size:11px;font-weight:700;color:var(--steel);text-transform:uppercase;letter-spacing:.3px}
+.tl-date{font-size:13px;font-weight:700;color:var(--text);margin-top:3px}
+.tl-rel{font-size:11px;font-weight:600;margin-top:2px}
 
-footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:28px}
-.footer-col h4{color:var(--white);font-size:14px;font-weight:700;margin-bottom:12px}
-.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:7px;transition:color .2s}
+/* Main grid */
+.content-grid{display:grid;grid-template-columns:1fr 320px;gap:32px;margin-top:36px;padding-bottom:48px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:20px}
+.card h2{font-size:15px;font-weight:700;color:var(--steel);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+
+.kp-card{background:var(--teal-light);border:1px solid #c9e4ea}
+.kp-card h2{border-bottom-color:#c9e4ea}
+.kp-list{list-style:none}
+.kp-list li{display:flex;gap:10px;font-size:14px;color:var(--steel);line-height:1.5;margin-bottom:10px;font-weight:500}
+.kp-list li:last-child{margin-bottom:0}
+.kp-list li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal-mid);margin-top:7px;flex-shrink:0}
+
+.desc-text{font-size:14px;color:var(--text-muted);line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.desc-toggle{background:none;border:none;color:var(--teal-mid);font-weight:700;font-size:13px;cursor:pointer;padding:10px 0 0;font-family:inherit}
+.desc-full{display:none}
+.desc-full.open{display:block}
+.desc-short.hidden{display:none}
+
+.domain-list{list-style:none}
+.domain-list li{padding:6px 0}
+.domain-list a{font-size:13px;color:var(--teal-mid);word-break:break-all}
+
+.lot{background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;gap:10px}
+.lot-title{font-size:13px;font-weight:700;color:var(--steel)}
+.lot-desc{font-size:12px;color:var(--text-muted);margin-top:4px;line-height:1.6}
+.lot-val{font-size:13px;font-weight:800;color:var(--teal-dark);flex-shrink:0}
+.doc-link{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border:1px solid var(--border);border-radius:7px;margin-bottom:6px;font-size:13px;color:var(--teal-dark);background:var(--white);word-break:break-word}
+.doc-link:hover{background:var(--teal-light)}
+
+.fact-row{display:flex;gap:16px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.fact-row:last-child{border-bottom:none}
+.fact-label{font-weight:600;color:var(--steel);width:110px;flex-shrink:0}
+.fact-value{color:var(--text-muted);min-width:0;overflow-wrap:anywhere;word-break:break-word}
+
+.rel-tenders{display:flex;flex-direction:column}
+.rel-tender{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);transition:background .15s;border-radius:6px}
+.rel-tender:last-child{border-bottom:none}
+.rel-tender:hover{background:var(--off-white)}
+.rel-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12.5px;font-weight:700;color:var(--steel);line-height:1.4}
+.rel-meta{display:block;font-size:11px;color:var(--text-muted);margin-top:2px}
+.rel-arrow{color:var(--teal-mid);font-weight:700;flex-shrink:0;margin-top:1px}
+.rel-empty{font-size:12.5px;color:var(--text-muted)}
+
+.cta-card{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));border-radius:12px;padding:22px;margin-bottom:20px;text-align:center}
+.cta-card h3{color:var(--white);font-size:16px;font-weight:800;margin-bottom:8px}
+.cta-card p{color:rgba(255,255,255,.82);font-size:13px;line-height:1.6;margin-bottom:16px}
+.cta-card .btn{display:block;width:100%;margin-bottom:8px}
+
+/* Sidebar quiz widget */
+.quiz-widget{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));border-radius:12px;padding:20px;margin-bottom:20px;text-align:center;transition:transform .2s ease,box-shadow .2s ease;transform-origin:top center}
+.quiz-widget:hover{transform:scale(1.035);box-shadow:0 10px 28px rgba(14,74,87,.28)}
+.quiz-widget h3{color:var(--white);font-size:15px;font-weight:800;margin-bottom:4px}
+.quiz-widget .quiz-sub{color:rgba(255,255,255,.82);font-size:12px;margin-bottom:14px}
+.quiz-widget .quiz-progress{display:flex;gap:5px;justify-content:center;margin-bottom:14px}
+.quiz-widget .quiz-progress span{width:20px;height:3px;border-radius:2px;background:rgba(255,255,255,.3)}
+.quiz-widget .quiz-progress span.done{background:var(--white)}
+.quiz-widget .quiz-step{display:none;text-align:left}
+.quiz-widget .quiz-step.active{display:block}
+.quiz-widget .q-text{font-size:13px;font-weight:700;color:var(--white);margin-bottom:10px;text-align:center}
+.quiz-widget .quiz-options{display:flex;flex-direction:column;gap:7px}
+.quiz-widget .quiz-options button{padding:9px 12px;border:1px solid rgba(255,255,255,.35);border-radius:7px;background:rgba(255,255,255,.1);font-size:12px;font-weight:600;color:var(--white);cursor:pointer;text-align:left;font-family:inherit}
+.quiz-widget .quiz-options button:hover{background:rgba(255,255,255,.22)}
+.quiz-widget .quiz-result{display:none}
+.quiz-widget .quiz-result.active{display:block}
+.quiz-widget .score-badge{display:inline-block;background:rgba(255,255,255,.18);color:var(--white);font-weight:800;font-size:11px;padding:5px 12px;border-radius:16px;margin-bottom:10px}
+.quiz-widget .quiz-result p{font-size:12px;color:rgba(255,255,255,.88);line-height:1.6;margin-bottom:14px}
+
+.cta-banner{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));padding:50px 5%;text-align:center}
+.cta-banner h2{font-size:24px;font-weight:800;color:var(--white);margin-bottom:8px}
+.cta-banner p{font-size:14px;color:rgba(255,255,255,.8);margin-bottom:20px}
+
+footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:24px;max-width:1180px;margin-left:auto;margin-right:auto}
+.footer-col h4{color:var(--white);font-size:14px;font-weight:700;margin-bottom:10px}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,.55);margin-bottom:6px;transition:color .2s}
 .footer-col a:hover{color:var(--white)}
-.footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:18px;font-size:12px;display:flex;justify-content:space-between}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:16px;font-size:12px;display:flex;justify-content:space-between;max-width:1180px;margin:0 auto}
 
-@media(max-width:768px){
+@media(max-width:900px){
   nav .nav-links{display:none}
   .hamburger{display:flex}
-  .page-wrap{grid-template-columns:1fr;padding:24px 5% 48px}
-  .side-col{order:-1}
+  .glance{grid-template-columns:repeat(2,1fr);margin-top:16px}
+  .content-grid{grid-template-columns:1fr}
+  .timeline{flex-wrap:wrap;gap:16px 0}
+  .tl-node{flex:0 0 50%}
   .footer-grid{grid-template-columns:1fr 1fr}
-  .footer-bottom{flex-direction:column;gap:8px}
-}</style>
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+  .hero-actions{align-items:flex-start}
+}
+</style>
 </head>
 <body>
 <nav>
@@ -160,88 +216,135 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
 </div>
 
 <div class="hero">
-  <div class="breadcrumb">
-    <a href="/">Home</a>
-    <span>›</span>
-    <a href="/tender-search.html">Tender Search</a>
-    <span>›</span>
-    <span style="color:rgba(255,255,255,0.85)">Unpaid Carer Support Service</span>
-  </div>
-  <div class="hero-badges"><span class="hero-badge badge-live">Live</span><span class="hero-badge badge-sector">Health &amp; Social Care</span><span class="hero-badge badge-region">Scotland</span></div>
-  <h1>Unpaid Carer Support Service</h1>
-  <div class="hero-buyer">Midlothian Council</div>
-  <div class="hero-ref">ocds-h6vhtk-06b7f6</div>
-</div>
-
-<div class="page-wrap">
-
-  <div class="main-col">
-    <a href="/tender-search.html" class="back-link">
-      ← Back to all tenders
-    </a>
-
-    
-<div class="block">
-  <h2>Tender Description</h2>
-  <p style="white-space:pre-wrap;word-break:break-word">Midlothian Council seeks a single Provider to be the main service delivering a range of community based unpaid carer support services to relevant carers in Midlothian. The services will support carers in a range of carer roles and circumstances, including carers who are currently underserved within services. The service contract is focussed on delivery of Midlothian Integration Joint Board (IJB) Unpaid Carer Strategy (2025-28), and the Provider will support development and delivery of future strategies in place during the duration of the contract. The Provider is expected to work collaboratively with statutory and Third Sector Providers in Midlothian. The funding to support the contract is fixed over the term.</p>
-</div>
-
-    
-<div class="block">
-  <h2>Lots (1)</h2>
-  
-<div class="lot">
-  <div class="lot-title">Lot 1</div>
-  
-  <div class="lot-desc">The Authority seeks proposals for unpaid carer support services to implement the Midlothian Integration Joint Board (IJB) Unpaid Carer Strategy (2025-2028) and Action Plan, and Midlothian Integration </div>
-</div>
-</div>
-
-    
-
-    
-<div class="block">
-  <h2>Buyer Information</h2>
-  <div class="fact-row"><span class="fact-label">Email</span><span class="fact-value"><a href="mailto:barbara.foxwell@midlothian.gov.uk" style="color:var(--teal)">barbara.foxwell@midlothian.gov.uk</a></span></div><div class="fact-row"><span class="fact-label">Location</span><span class="fact-value">Dalkeith, EH22 3AA</span></div>
-</div>
-
-    <div class="block">
-      <h2>Key Facts</h2>
-      <div class="fact-row"><span class="fact-label">Buyer</span><span class="fact-value">Midlothian Council</span></div><div class="fact-row"><span class="fact-label">Contract Value</span><span class="fact-value">£3.7m</span></div><div class="fact-row"><span class="fact-label">Sector</span><span class="fact-value">Health &amp; Social Care</span></div><div class="fact-row"><span class="fact-label">Region</span><span class="fact-value">Scotland</span></div><div class="fact-row"><span class="fact-label">Procedure</span><span class="fact-value">Open procedure</span></div><div class="fact-row"><span class="fact-label">Published</span><span class="fact-value">21 Oct 2026</span></div><div class="fact-row"><span class="fact-label">Reference</span><span class="fact-value"><code style='font-size:12px;font-family:monospace'>ocds-h6vhtk-06b7f6</code></span></div>
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="/">Home</a><span>&rsaquo;</span>
+      <a href="/tender-search.html">Tender Search</a><span>&rsaquo;</span>
+      <span style="color:rgba(255,255,255,0.85)">Unpaid Carer Support Service</span>
+    </div>
+    <div class="hero-top">
+      <div>
+        <div class="hero-badges"><span class="hero-badge badge-live">Live</span><span class="hero-badge badge-sector">Health &amp; Social Care</span><span class="hero-badge badge-region">Scotland</span></div>
+        <h1>Unpaid Carer Support Service</h1>
+        <div class="hero-buyer">Midlothian Council &middot; Published 21 Oct 2026</div>
+      </div>
+      <div class="hero-actions">
+        <a href="/contact.html" class="btn btn-white">Enquire About This Bid</a>
+        <div class="hero-nav"><a href="/tenders/apheresis-expansion-main-contractor-078d51/">&larr; Previous</a><a href="/tenders/roller-shutters-and-automatic-doors-servicing-and-responsive-06f8b0/">Next &rarr;</a><a onclick="navigator.clipboard&&navigator.clipboard.writeText(location.href);this.textContent='Copied!';return false;">Share</a></div>
+      </div>
     </div>
   </div>
+</div>
 
-  <div class="side-col">
-    
-<div class="dl-box warning">
-  <div style="text-align:center;width:60px;flex-shrink:0">
-    <div class="dl-days warning">15</div>
-    <div class="dl-sub">days left</div>
-  </div>
+
+<div class="glance">
+  <div class="gcard"><div class="g-label">Value</div><div class="g-value">£3.7m</div></div>
+  <div class="gcard"><div class="g-label">Procedure</div><div class="g-value">Open</div></div>
+  <div class="gcard"><div class="g-label">Sector</div><div class="g-value" style="font-size:13px">Health &amp; Social Care</div></div>
+  <div class="gcard"><div class="g-label">Lots</div><div class="g-value">1</div></div>
+</div>
+
+<div class="wrap timeline-section">
+  <h2>Dates</h2>
+  <div class="timeline">
+    <div class="tl-node">
+      <div class="tl-dot" style="background:var(--text-muted);"></div>
+      <div class="tl-label">Published</div>
+      <div class="tl-date">21 Oct 2026</div>
+      <div class="tl-rel" style="color:var(--text-muted)">4 weeks ago</div>
+    </div>
+    <div class="tl-node">
+      <div class="tl-dot" style="background:var(--teal-dark);box-shadow:0 0 0 4px rgba(26,107,124,.15);"></div>
+      <div class="tl-label">Today</div>
+      <div class="tl-date">17 Nov 2026</div>
+      <div class="tl-rel" style="color:var(--teal-dark)">Today</div>
+    </div>
+    <div class="tl-node">
+      <div class="tl-dot" style="background:#b7670a;"></div>
+      <div class="tl-label">Closes</div>
+      <div class="tl-date">27 Nov 2026</div>
+      <div class="tl-rel" style="color:#b7670a">in 10 days</div>
+    </div></div>
+</div>
+
+<div class="wrap content-grid">
   <div>
-    <div class="dl-label">Submission deadline</div>
-    <div class="dl-date">27 Nov 2026</div>
+<div class="card kp-card">
+  <h2>Key Points</h2>
+  <ul class="kp-list"><li>Open procedure procurement</li><li>Estimated value of £3.7m</li><li>Delivered in Scotland</li><li>Sector: Health &amp; Social Care</li></ul>
+</div>
+<div class="card">
+  <h2>Description</h2>
+  <p class="desc-text desc-short">Midlothian Council seeks a single Provider to be the main service delivering a range of community based unpaid carer support services to relevant carers in Midlothian. The services will support carers in a range of carer roles and circumstances, including&hellip;</p>
+  <p class="desc-text desc-full">Midlothian Council seeks a single Provider to be the main service delivering a range of community based unpaid carer support services to relevant carers in Midlothian. The services will support carers in a range of carer roles and circumstances, including carers who are currently underserved within services. The service contract is focussed on delivery of Midlothian Integration Joint Board (IJB) Unpaid Carer Strategy (2025-28), and the Provider will support development and delivery of future strategies in place during the duration of the contract. The Provider is expected to work collaboratively with statutory and Third Sector Providers in Midlothian. The funding to support the contract is fixed over the term.</p>
+  <button class="desc-toggle" onclick="var s=this.parentElement.querySelector('.desc-short'),f=this.parentElement.querySelector('.desc-full');s.classList.toggle('hidden');f.classList.toggle('open');this.textContent=this.textContent.startsWith('Read')?'Show less':'Read full description';">Read full description</button>
+</div>
+<div class="card">
+  <h2>Lots (1)</h2>
+  
+<div class="lot"><div><div class="lot-title">Lot 1</div><div class="lot-desc">The Authority seeks proposals for unpaid carer support services to implement the Midlothian Integration Joint Board (IJB) Unpaid Carer Strategy (2025-2028) and Action Plan, and Midlothian Integration </div></div></div>
+</div>
+<div class="card">
+  <h2>Referenced Sources</h2>
+  <ul class="domain-list"><li><a href="https://find-tender.service.gov.uk" target="_blank" rel="noopener nofollow">find-tender.service.gov.uk</a></li><li><a href="https://midlothian.gov.uk" target="_blank" rel="noopener nofollow">midlothian.gov.uk</a></li></ul>
+</div></div>
+  <div><div class="quiz-widget">
+  <h3>Should You Bid on This One?</h3>
+  <p class="quiz-sub">4 quick questions &rarr; your Bid Readiness Score</p>
+  <div class="quiz-progress"><span id="qp1" class="done"></span><span id="qp2"></span><span id="qp3"></span><span id="qp4"></span></div>
+  <div class="quiz-step active" data-step="1"><div class="q-text">Delivered a similar contract before?</div>
+    <div class="quiz-options"><button onclick="quizNext(1,3)">Yes, multiple times</button><button onclick="quizNext(1,2)">Once or twice</button><button onclick="quizNext(1,0)">Not yet</button></div></div>
+  <div class="quiz-step" data-step="2"><div class="q-text">Could you deliver within the timeframe?</div>
+    <div class="quiz-options"><button onclick="quizNext(2,3)">Yes, comfortably</button><button onclick="quizNext(2,2)">It'd be tight</button><button onclick="quizNext(2,0)">Unsure</button></div></div>
+  <div class="quiz-step" data-step="3"><div class="q-text">Written a public-sector bid before?</div>
+    <div class="quiz-options"><button onclick="quizNext(3,3)">Yes, and won</button><button onclick="quizNext(3,2)">Yes, not won yet</button><button onclick="quizNext(3,0)">Never</button></div></div>
+  <div class="quiz-step" data-step="4"><div class="q-text">Time to dedicate before the deadline?</div>
+    <div class="quiz-options"><button onclick="quizNext(4,3)">Plenty</button><button onclick="quizNext(4,2)">Some, but tight</button><button onclick="quizNext(4,0)">Very little</button></div></div>
+  <div class="quiz-result" id="quizResult">
+    <div class="score-badge" id="quizScoreBadge">Bid Readiness: Strong</div>
+    <p id="quizResultText"></p>
+    <a href="/contact.html" class="btn btn-white" style="display:block;color:var(--teal-dark)">Get a Free Bid Consultation</a>
   </div>
 </div>
-    
-<div class="cta-box">
-  <h3>Need help winning this bid?</h3>
-  <p>Our expert bid writers have helped clients win contracts just like this one. Don't leave it to chance.</p>
-  <a href="/contact.html" class="btn btn-white">Get a Free Bid Review</a>
-  <a href="/contact.html" class="btn btn-outline">Enquire About This Bid</a>
-</div>
-<div class="block" style="margin-bottom:20px">
-  <button class="btn btn-primary" style="opacity:.4;cursor:not-allowed" disabled>Official Notice (link pending)</button>
-  <a href="/contact.html" class="btn btn-secondary" style="margin-top:8px;display:block;text-align:center;padding:12px 16px">Enquire About This Bid</a>
-</div>
-  </div>
+<script>
+let quizScore = 0;
+function quizNext(step, points) {
+  quizScore += points;
+  document.querySelector('.quiz-step[data-step="'+step+'"]').classList.remove('active');
+  const dot = document.getElementById('qp'+step); if (dot) dot.classList.add('done');
+  if (step < 4) { document.querySelector('.quiz-step[data-step="'+(step+1)+'"]').classList.add('active'); return; }
+  const badge = document.getElementById('quizScoreBadge'), text = document.getElementById('quizResultText');
+  if (quizScore >= 9) { badge.textContent = 'Bid Readiness: Strong'; text.textContent = "You're in a good position to bid \u2014 our bid writers can take the writing burden off your team."; }
+  else if (quizScore >= 5) { badge.textContent = 'Bid Readiness: Worth a Closer Look'; text.textContent = "There are some gaps, but they're not disqualifying. A free consultation can help you decide."; }
+  else { badge.textContent = 'Bid Readiness: Needs Support'; text.textContent = "This looks challenging on paper, but plenty of clients have won contracts like this. Talk to us first."; }
+  document.getElementById('quizResult').classList.add('active');
+}
+</script>
 
+<div class="card map-widget">
+  <svg viewBox="0 0 164 206" width="100%" height="100%"><rect x="42" y="0" width="122" height="38" rx="6" fill="var(--teal-mid)" stroke="var(--teal-dark)" stroke-width="1.5"><title>Scotland</title></rect><text x="103.0" y="22.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">Scotland</text><rect x="0" y="42" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>Northern Ireland</title></rect><text x="19.0" y="64.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">N.I.</text><rect x="42" y="42" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>North West</title></rect><text x="61.0" y="64.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">N.West</text><rect x="126" y="42" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>North East</title></rect><text x="145.0" y="64.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">N.East</text><rect x="84" y="84" width="80" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>Yorkshire &amp; The Humber</title></rect><text x="124.0" y="106.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">Yorks.</text><rect x="0" y="126" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>Wales</title></rect><text x="19.0" y="148.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">Wales</text><rect x="42" y="126" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>West Midlands</title></rect><text x="61.0" y="148.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">W.Mid.</text><rect x="84" y="126" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>East Midlands</title></rect><text x="103.0" y="148.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">E.Mid.</text><rect x="126" y="126" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>East of England</title></rect><text x="145.0" y="148.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">E.Eng.</text><rect x="0" y="168" width="80" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>South West</title></rect><text x="40.0" y="190.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">S.West</text><rect x="84" y="168" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>London</title></rect><text x="103.0" y="190.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">London</text><rect x="126" y="168" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>South East</title></rect><text x="145.0" y="190.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">S.East</text></svg>
+  <div class="map-cap">Delivered in Scotland</div>
+</div>
+<div class="card">
+  <h2>Buyer</h2>
+  <div class="fact-row"><span class="fact-label">Name</span><span class="fact-value">Midlothian Council</span></div>
+  <div class="fact-row"><span class="fact-label">Email</span><span class="fact-value"><a href="mailto:barbara.foxwell@midlothian.gov.uk" style="color:var(--teal)">barbara.foxwell@midlothian.gov.uk</a></span></div><div class="fact-row"><span class="fact-label">Location</span><span class="fact-value">Dalkeith, EH22 3AA</span></div>
+  
+</div>
+<div class="card">
+  <h2 style="font-size:13px">More from Midlothian Council</h2>
+  <div class="rel-tenders"><p class="rel-empty">Nothing else currently listed.</p></div>
+</div>
+<div class="card">
+  <h2 style="font-size:13px">Related in Health &amp; Social Care</h2>
+  <div class="rel-tenders"><a class="rel-tender" href="/tenders/sol30514-sol-asb-hotspot-youth-work-07bc32/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">SOL30514 SOL ASB Hotspot Youth Work</span><span class="rel-meta">Solihull Metropolitan Borough Council</span></span></a><a class="rel-tender" href="/tenders/framework-for-the-provision-of-forensic-testing-05abb4/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">Framework for the Provision of Forensic Testing</span><span class="rel-meta">The Council of the City of Wakefield</span></span></a><a class="rel-tender" href="/tenders/general-practice-primary-care-medical-services-at-new-quay-07bc6a/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">General Practice Primary Care Medical Services at New Quay</span><span class="rel-meta">Hywel Dda University Health Board</span></span></a><a class="rel-tender" href="/tenders/home-care-framework-tender-050eb6/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">Home Care Framework Tender</span><span class="rel-meta">London Borough of Harrow</span></span></a></div>
+</div></div>
 </div>
 
 <div class="cta-banner">
   <h2>Don't Miss Your Next Contract</h2>
   <p>Hawkeye Solutions helps businesses win UK public sector tenders. From bid writing to full tender management.</p>
-  <a href="/contact.html" class="btn-white-lg">Get a Free Consultation</a>
+  <a href="/contact.html" class="btn btn-white">Get a Free Consultation</a>
 </div>
 
 <footer>
@@ -289,10 +392,12 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
 <script>
 const ham = document.getElementById('ham');
 const mob = document.getElementById('mob');
-ham.addEventListener('click', () => {
-  ham.classList.toggle('open');
-  mob.classList.toggle('open');
-});
+if (ham && mob) {
+  ham.addEventListener('click', () => {
+    ham.classList.toggle('open');
+    mob.classList.toggle('open');
+  });
+}
 </script>
 </body>
 </html>
