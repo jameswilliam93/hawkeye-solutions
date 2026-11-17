@@ -546,21 +546,55 @@ def _norm_domain(d: str) -> str:
     d = d.lower()
     return d[4:] if d.startswith("www.") else d
 
-def build_domains(t: dict) -> list[str]:
-    domains = {"find-tender.service.gov.uk"}
+def build_domains(t: dict) -> list[tuple[str, str]]:
+    """(domain, link) pairs -- each domain links to the actual page it was
+    found on, not just its homepage (e.g. Find a Tender links to this
+    specific notice, not the site root)."""
+    ft_domain = "find-tender.service.gov.uk"
+    official_url = t.get("url", "")
+    entries: dict[str, str] = {ft_domain: official_url or f"https://{ft_domain}"}
+
     email = (t.get("buyerContact") or {}).get("email", "")
     if "@" in email:
-        domains.add(_norm_domain(email.split("@")[-1]))
+        d = _norm_domain(email.split("@")[-1])
+        entries.setdefault(d, f"https://{d}")
+
     for doc in t.get("documents", []) or []:
-        m = re.search(r"https?://([^/]+)/?", doc.get("url",""))
+        doc_url = doc.get("url", "")
+        m = re.search(r"https?://([^/]+)/?", doc_url)
         if m:
-            domains.add(_norm_domain(m.group(1)))
-    return sorted(domains)
+            d = _norm_domain(m.group(1))
+            if d not in entries or entries[d] == f"https://{d}":
+                entries[d] = doc_url
+
+    return sorted(entries.items())
 
 
 # ── Bid-readiness quiz widget (static -- same on every page) ───────────────────
 
-QUIZ_WIDGET = """\
+def build_quiz_widget(t: dict, slug: str, value_str: str, sector: str) -> str:
+    """Bid-readiness quiz, personalised to this specific tender's own facts
+    (award criteria split, days left) and to whichever answer was weakest,
+    then captures the visitor's email as a CRM lead via a Netlify Function."""
+    title_raw = t.get("title", "this tender")
+    days_left = days_until(t.get("deadline", ""))
+    award_text = (t.get("awardCriteriaDesc") or "").strip()
+    # Only worth quoting back if it's short and looks like an actual scoring
+    # split (e.g. "70% quality and 30% price") -- not a wall of regulatory text
+    score_split = award_text if (award_text and len(award_text) <= 160 and "%" in award_text) else ""
+
+    context = {
+        "title": title_raw,
+        "slug": slug,
+        "value": value_str or "",
+        "rawValue": t.get("value"),  # raw number, not the "£100m"-style string -- CRM pipeline math needs a real number
+        "sector": sector or "",
+        "daysLeft": days_left,
+        "scoreSplit": score_split,
+    }
+    context_json = json.dumps(context, ensure_ascii=False)
+
+    return f"""\
 <div class="quiz-widget">
   <h3>Should You Bid on This One?</h3>
   <p class="quiz-sub">4 quick questions &rarr; your Bid Readiness Score</p>
@@ -576,22 +610,113 @@ QUIZ_WIDGET = """\
   <div class="quiz-result" id="quizResult">
     <div class="score-badge" id="quizScoreBadge">Bid Readiness: Strong</div>
     <p id="quizResultText"></p>
-    <a href="/contact.html" class="btn btn-white" style="display:block;color:var(--teal-dark)">Get a Free Bid Consultation</a>
+    <a href="#" id="quizServiceLink" style="display:block;font-size:12px;font-weight:700;color:rgba(255,255,255,.85);margin:4px 0 14px"></a>
+    <form id="quizEmailForm" onsubmit="return submitQuizLead(event)">
+      <input type="text" id="quizBotField" name="company" autocomplete="off" tabindex="-1" style="position:absolute;opacity:0;height:0;width:0;pointer-events:none" aria-hidden="true">
+      <input type="email" id="quizEmail" placeholder="you@company.com" required
+        style="width:100%;padding:10px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-family:inherit;font-size:13px;margin-bottom:8px;box-sizing:border-box">
+      <button type="submit" id="quizSubmitBtn" class="btn btn-white" style="display:block;width:100%;color:var(--teal-dark)">Get help with this bid</button>
+      <p id="quizEmailNote" style="font-size:11px;color:rgba(255,255,255,.6);margin-top:6px;min-height:14px"></p>
+    </form>
+    <div id="quizEmailSent" style="display:none;text-align:left;background:rgba(255,255,255,.1);border-radius:8px;padding:14px">
+      <strong style="color:#fff;font-size:13px">Thanks &mdash; we've got it.</strong>
+      <p style="color:rgba(255,255,255,.75);font-size:12px;margin-top:4px;line-height:1.5">One of our bid specialists will be in touch about this opportunity shortly.</p>
+    </div>
   </div>
 </div>
 <script>
-let quizScore = 0;
-function quizNext(step, points) {
-  quizScore += points;
-  document.querySelector('.quiz-step[data-step="'+step+'"]').classList.remove('active');
-  const dot = document.getElementById('qp'+step); if (dot) dot.classList.add('done');
-  if (step < 4) { document.querySelector('.quiz-step[data-step="'+(step+1)+'"]').classList.add('active'); return; }
-  const badge = document.getElementById('quizScoreBadge'), text = document.getElementById('quizResultText');
-  if (quizScore >= 9) { badge.textContent = 'Bid Readiness: Strong'; text.textContent = "You're in a good position to bid \\u2014 our bid writers can take the writing burden off your team."; }
-  else if (quizScore >= 5) { badge.textContent = 'Bid Readiness: Worth a Closer Look'; text.textContent = "There are some gaps, but they're not disqualifying. A free consultation can help you decide."; }
-  else { badge.textContent = 'Bid Readiness: Needs Support'; text.textContent = "This looks challenging on paper, but plenty of clients have won contracts like this. Talk to us first."; }
-  document.getElementById('quizResult').classList.add('active');
-}
+(function() {{
+  var QUIZ_CTX = {context_json};
+  var quizAnswers = [];
+
+  window.quizNext = function(step, points) {{
+    quizAnswers.push({{step: step, points: points}});
+    document.querySelector('.quiz-step[data-step="'+step+'"]').classList.remove('active');
+    var dot = document.getElementById('qp'+step); if (dot) dot.classList.add('done');
+    if (step < 4) {{ document.querySelector('.quiz-step[data-step="'+(step+1)+'"]').classList.add('active'); return; }}
+    showQuizResult();
+  }};
+
+  function showQuizResult() {{
+    var total = quizAnswers.reduce(function(s,a){{ return s+a.points; }}, 0);
+    var weakest = quizAnswers.reduce(function(m,a){{ return a.points < m.points ? a : m; }}, quizAnswers[0]);
+    var SERVICES = {{
+      1: {{name:'Bid Writing', url:'/bid-writing.html', why:"translating your real experience into evaluator-ready evidence"}},
+      3: {{name:'Bid Writing', url:'/bid-writing.html', why:"writing the submission itself, so inexperience with public-sector bids isn't the blocker"}},
+      2: {{name:'Bid Management', url:'/bid-management.html', why:"tracking every deadline and milestone so nothing slips"}},
+      4: {{name:'Bid Management', url:'/bid-management.html', why:"running the process so it doesn't eat your week"}}
+    }};
+    var service = SERVICES[weakest.step];
+    var tier, badge;
+    if (total >= 9) {{ tier = 'Strong'; badge = 'Bid Readiness: Strong'; }}
+    else if (total >= 5) {{ tier = 'Worth a Closer Look'; badge = 'Bid Readiness: Worth a Closer Look'; }}
+    else {{ tier = 'Needs Support'; badge = 'Bid Readiness: Needs Support'; }}
+
+    var msg;
+    if (tier === 'Strong') {{ msg = "You're in a strong position on " + QUIZ_CTX.title + ". "; }}
+    else if (tier === 'Worth a Closer Look') {{ msg = "There are a couple of gaps on " + QUIZ_CTX.title + ", but nothing disqualifying. "; }}
+    else {{ msg = QUIZ_CTX.title + " looks like a stretch on paper, but plenty of clients have won contracts like this. "; }}
+    msg += "The thing most worth sorting first is " + service.why + ".";
+    if (QUIZ_CTX.scoreSplit) {{ msg += " Worth knowing: this one is scored " + QUIZ_CTX.scoreSplit.replace(/\\.$/, '') + ", so that's where the marks are."; }}
+    if (QUIZ_CTX.daysLeft !== null && QUIZ_CTX.daysLeft >= 0 && QUIZ_CTX.daysLeft <= 10) {{
+      msg += " With " + QUIZ_CTX.daysLeft + " day" + (QUIZ_CTX.daysLeft === 1 ? '' : 's') + " left, speed matters more than perfection right now.";
+    }}
+
+    document.getElementById('quizScoreBadge').textContent = badge;
+    document.getElementById('quizResultText').textContent = msg;
+    var link = document.getElementById('quizServiceLink');
+    link.href = service.url;
+    link.textContent = 'See how ' + service.name + ' works \\u2192';
+    document.getElementById('quizResult').classList.add('active');
+
+    window.__quizLead = {{total: total, scoreTier: tier, weakestStep: weakest.step, recommendedService: service.name, answers: quizAnswers}};
+  }}
+
+  window.submitQuizLead = function(e) {{
+    e.preventDefault();
+    var email = document.getElementById('quizEmail').value.trim();
+    var bot = document.getElementById('quizBotField').value;
+    var btn = document.getElementById('quizSubmitBtn');
+    var note = document.getElementById('quizEmailNote');
+    if (bot) return false;
+    if (!email || email.indexOf('@') === -1) {{ note.textContent = 'Enter a valid email.'; note.style.color = '#f08080'; return false; }}
+    btn.disabled = true; btn.textContent = 'Sending\\u2026';
+    var lead = window.__quizLead || {{}};
+    fetch('/.netlify/functions/quiz-lead', {{
+      method: 'POST',
+      headers: {{'Content-Type': 'application/json'}},
+      body: JSON.stringify({{
+        email: email,
+        tenderTitle: QUIZ_CTX.title,
+        tenderSlug: QUIZ_CTX.slug,
+        tenderUrl: location.href,
+        sector: QUIZ_CTX.sector,
+        value: QUIZ_CTX.value,
+        rawValue: QUIZ_CTX.rawValue,
+        score: lead.total,
+        scoreTier: lead.scoreTier,
+        weakestStep: lead.weakestStep,
+        recommendedService: lead.recommendedService,
+        answers: lead.answers,
+        botField: bot
+      }})
+    }}).then(function(r) {{ return r.json(); }}).then(function(data) {{
+      if (data && data.ok) {{
+        document.getElementById('quizEmailForm').style.display = 'none';
+        document.getElementById('quizEmailSent').style.display = 'block';
+      }} else {{
+        note.textContent = 'Something went wrong \\u2014 try again, or email info@hawkeye-solutions.co.uk directly.';
+        note.style.color = '#f08080';
+        btn.disabled = false; btn.textContent = 'Get help with this bid';
+      }}
+    }}).catch(function() {{
+      note.textContent = 'Something went wrong \\u2014 try again, or email info@hawkeye-solutions.co.uk directly.';
+      note.style.color = '#f08080';
+      btn.disabled = false; btn.textContent = 'Get help with this bid';
+    }});
+    return false;
+  }};
+}})();
 </script>
 """
 
@@ -707,8 +832,8 @@ def build_page(t: dict, slug: str, is_closed: bool, buyer_others=None, sector_re
 
     # ── Referenced sources / domains ───────────────────────────────────────────
     domain_rows = "".join(
-        f'<li><a href="https://{esc(d)}" target="_blank" rel="noopener nofollow">{esc(d)}</a></li>'
-        for d in build_domains(t)
+        f'<li><a href="{esc(link)}" target="_blank" rel="noopener nofollow">{esc(d)}</a></li>'
+        for d, link in build_domains(t)
     )
     domains_card = f"""
 <div class="card">
@@ -727,7 +852,7 @@ def build_page(t: dict, slug: str, is_closed: bool, buyer_others=None, sector_re
   <a href="{CONTACT}" class="btn btn-white">Find Similar Opportunities</a>
 </div>"""
     else:
-        side_cta = QUIZ_WIDGET
+        side_cta = build_quiz_widget(t, slug, value, sector)
 
     # ── Sidebar: region map ─────────────────────────────────────────────────────
     map_card = ""
