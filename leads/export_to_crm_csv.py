@@ -23,7 +23,7 @@ OUTPUT_FILE = Path(__file__).parent / "crm_import_leads.csv"
 CSV_HEADERS = [
     "Company", "Contact Name", "Title", "Email", "Phone", "LinkedIn",
     "Location", "Company Size", "Website", "Industry", "Stage", "Source",
-    "Current Supplier", "Contract End", "Frameworks", "Tags",
+    "Current Supplier", "Contract End", "Frameworks", "Tags", "Notes",
 ]
 
 SIZE_BAND_TO_CRM = {
@@ -63,6 +63,10 @@ def main():
         tags = [f"tier-{lead['tier']}"]
         if lead["tier"] == 1:
             tags.append("framework")
+        notes = lead.get("notes") or ""
+        if lead.get("company_number"):
+            ch_link = f"Companies House: https://find-and-update.company-information.service.gov.uk/company/{lead['company_number']}"
+            notes = f"{notes}\n{ch_link}".strip()
         rows.append({
             "Company": lead["company_name"],
             "Contact Name": contact_name,
@@ -70,7 +74,7 @@ def main():
             "Email": lead["contact_email"],
             "Phone": lead["contact_phone"],
             "LinkedIn": lead.get("linkedin") or "",
-            "Location": lead.get("region") or "",
+            "Location": ", ".join(p for p in [lead.get("region"), lead.get("postal_code")] if p),
             "Company Size": SIZE_BAND_TO_CRM.get(lead.get("size_band"), ""),
             "Website": lead.get("website") or "",
             "Industry": "Recruitment & Staffing",
@@ -80,6 +84,7 @@ def main():
             "Contract End": "",
             "Frameworks": "|".join(lead.get("frameworks") or []),
             "Tags": "|".join(tags),
+            "Notes": notes,
         })
 
     with OUTPUT_FILE.open("w", newline="", encoding="utf-8") as f:

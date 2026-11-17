@@ -15,3 +15,7 @@ leads/crm_import_*.csv
 leads/scored_leads.json
 leads/enrich_directors_state.json
 leads/companies_house_state.json
+leads/website_enrichment.json
+leads/enrich_websites_state.json
+leads/award_notices.json
+leads/award_notices_state.json
