@@ -303,6 +303,8 @@ h1{font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:60
 .kp-list li:last-child{margin-bottom:0}
 .kp-list li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal-mid);margin-top:7px;flex-shrink:0}
 
+.who-note{background:var(--teal-light);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--teal-dark);line-height:1.6;margin-bottom:14px}
+
 .desc-text{font-size:14px;color:var(--text-muted);line-height:1.8;white-space:pre-wrap;word-break:break-word}
 .desc-toggle{background:none;border:none;color:var(--teal-mid);font-weight:700;font-size:13px;cursor:pointer;padding:10px 0 0;font-family:inherit}
 .desc-full{display:none}
@@ -515,6 +517,49 @@ def build_timeline_html(t: dict, now) -> str:
       <div class="tl-rel" style="color:{color}">{esc(human_relative(d, now))}</div>
     </div>""")
     return f'<div class="timeline">{"".join(nodes)}</div>'
+
+
+# ── Scope & eligibility card (award criteria, procedure, who can bid) ──────────
+
+# Real PCR2015/OJEU procedure classifications -- each has a distinct, well-
+# defined answer to "can I just submit a bid, or is there a gate first".
+# Only "open" and "selective" show up in the live dataset today, but "limited"
+# and "direct" are kept for completeness since they're valid OCDS values.
+PROCEDURE_ELIGIBILITY = {
+    "open":      "Open procedure — any supplier can submit a full tender directly. There is no pre-qualification stage to pass first.",
+    "selective": "Restricted procedure — suppliers must pass a pre-qualification (PQQ/SQ) stage before being invited to submit a full tender. You cannot submit a bid outright.",
+    "limited":   "Negotiated procedure — the buyer selects and negotiates with suppliers directly, typically after an initial evaluation stage.",
+    "direct":    "Direct award — the buyer has awarded this contract directly, without running a competitive tender.",
+}
+
+def build_details_card(t: dict, procedure: str) -> str:
+    """Surfaces the scope/eligibility facts that already exist in the scraped
+    data (award criteria, procedure type, CPV code) but weren't being shown
+    anywhere on the standalone tender page -- only used internally for the
+    quiz widget's personalisation. Mirrors the 'Tender Details' block already
+    shown in the search page's drawer, so the two stay consistent."""
+    award_text = (t.get("awardCriteriaDesc") or "").strip()
+    proc_type  = (t.get("procedureType") or "").strip().lower()
+    eligibility = PROCEDURE_ELIGIBILITY.get(proc_type, "")
+    cpv = t.get("cpvCode") or ""
+
+    if not (award_text or procedure or eligibility or cpv):
+        return ""
+
+    rows = ""
+    if procedure:
+        rows += f'<div class="fact-row"><span class="fact-label">Procedure</span><span class="fact-value">{esc(procedure)}</span></div>'
+    if award_text:
+        rows += f'<div class="fact-row"><span class="fact-label">Award Criteria</span><span class="fact-value">{esc(award_text)}</span></div>'
+    if cpv:
+        rows += f'<div class="fact-row"><span class="fact-label">CPV Code</span><span class="fact-value">{esc(cpv)}</span></div>'
+
+    return f"""
+<div class="card">
+  <h2>Scope &amp; Who Can Bid</h2>
+  {f'<div class="who-note">{eligibility}</div>' if eligibility else ''}
+  {rows}
+</div>"""
 
 
 # ── Rule-based key points (no AI -- built from fields we already have) ─────────
@@ -843,7 +888,8 @@ def build_page(t: dict, slug: str, is_closed: bool, buyer_others=None, sector_re
   <ul class="domain-list">{domain_rows}</ul>
 </div>"""
 
-    main_col = f"{kp_card}{desc_card}{lots_card}{docs_card}{domains_card}"
+    details_card = build_details_card(t, procedure)
+    main_col = f"{kp_card}{desc_card}{details_card}{lots_card}{docs_card}{domains_card}"
 
     # ── Sidebar: quiz (open) or closed-notice CTA ──────────────────────────────
     if is_closed:
