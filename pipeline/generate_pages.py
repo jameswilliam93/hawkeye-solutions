@@ -14,15 +14,17 @@ Usage:
 import argparse
 import json
 import re
+import shutil
 from datetime import datetime, timezone, timedelta
 from html import escape as esc
 from pathlib import Path
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 
-BASE_URL   = "https://hawkeye-solutions.co.uk"
-CONTACT    = "/contact.html"
-INPUT_FILE = Path("uk-tenders.json")
+BASE_URL          = "https://hawkeye-solutions.co.uk"
+CONTACT           = "/contact.html"
+INPUT_FILE        = Path("uk-tenders.json")
+CLEANUP_AFTER_DAYS = 30  # retire a tender's page once its deadline is this many days in the past
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -1064,8 +1066,10 @@ def main():
     data = json.loads(Path(args.input).read_text())
     out  = Path(args.output_dir)
     now  = datetime.now(timezone.utc)
+    cleanup_cutoff = now - timedelta(days=CLEANUP_AFTER_DAYS)
 
     skipped = 0
+    retired = 0
     seen_slugs: set[str] = set()
 
     # ── Pass 1: assign slugs, build buyer/sector indices ───────────────────────
@@ -1088,6 +1092,12 @@ def main():
                     dl = dl.replace(tzinfo=timezone.utc)
                 if dl < now:
                     is_closed = True
+                # A tender whose deadline is more than CLEANUP_AFTER_DAYS in the
+                # past is retired: don't (re)generate its page, and let the
+                # cleanup pass below remove it from disk if it already exists.
+                if dl < cleanup_cutoff:
+                    retired += 1
+                    continue
             except Exception:
                 pass
 
@@ -1140,10 +1150,47 @@ def main():
     sitemap_path = out / "sitemap.xml"
     sitemap_path.write_text(build_sitemap(sitemap_entries), encoding="utf-8")
 
+    # ── Pass 3: clean up retired tender pages still sitting on disk ────────────
+    # A directory under tenders/ that wasn't (re)written above is either a
+    # tender no longer in the feed, or one just excluded above as retired.
+    # Only remove it if its own previously-generated page confirms a deadline
+    # more than CLEANUP_AFTER_DAYS in the past — if we can't positively read
+    # a past deadline from it (no "expires" field, unparseable, or the
+    # deadline is still within the cutoff window) it's left alone untouched.
+    removed = 0
+    tenders_root = out / "tenders"
+    if tenders_root.is_dir():
+        for child in tenders_root.iterdir():
+            if not child.is_dir() or child.name in seen_slugs:
+                continue
+            existing_html = child / "index.html"
+            if not existing_html.exists():
+                continue
+            try:
+                text = existing_html.read_text(encoding="utf-8", errors="ignore")
+            except Exception:
+                continue
+            m = re.search(r'"expires":\s*"([^"]+)"', text)
+            if not m:
+                continue
+            try:
+                old_dl = datetime.fromisoformat(m.group(1).replace("Z", "+00:00"))
+                if old_dl.tzinfo is None:
+                    old_dl = old_dl.replace(tzinfo=timezone.utc)
+            except Exception:
+                continue
+            if old_dl < cleanup_cutoff:
+                shutil.rmtree(child)
+                removed += 1
+
     print(f"Generated {generated} tender pages → {out}/tenders/")
     print(f"Sitemap   → {sitemap_path}  ({len(sitemap_entries)} URLs)")
     if skipped:
         print(f"Skipped   {skipped} tenders (no title)")
+    if retired:
+        print(f"Retired   {retired} tenders from this run (deadline more than {CLEANUP_AFTER_DAYS} days past)")
+    if removed:
+        print(f"Removed   {removed} stale tender page(s) from disk (confirmed deadline more than {CLEANUP_AFTER_DAYS} days past)")
 
 
 if __name__ == "__main__":
