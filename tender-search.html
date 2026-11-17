@@ -309,6 +309,9 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:36px 5% 24px}
         <option value="100000">£100k+</option>
         <option value="500000">£500k+</option>
         <option value="1000000">£1m+</option>
+        <option value="10000000">£10m+</option>
+        <option value="50000000">£50m+</option>
+        <option value="100000000">£100m+</option>
       </select>
     </div>
     <div class="filter-group">
@@ -570,6 +573,7 @@ function fixUrl(url) {
 
 function formatValue(amount) {
   if (amount == null || amount === '') return null;
+  if (amount >= 1_000_000_000) { const b = amount/1_000_000_000; return `£${b%1===0?b.toFixed(0):b.toFixed(1)}bn`; }
   if (amount >= 1_000_000) { const m = amount/1_000_000; return `£${m%1===0?m.toFixed(0):m.toFixed(1)}m`; }
   if (amount >= 1_000) return `£${(amount/1_000).toFixed(0)}k`;
   return `£${Number(amount).toLocaleString('en-GB')}`;
@@ -841,7 +845,7 @@ function renderPage(reset) {
     return;
   }
   grid.insertAdjacentHTML('beforeend', filtered.slice(shown, shown+PAGE_SIZE).map(buildCard).join(''));
-  shown = grid.querySelectorAll('.card').length;
+  shown = grid.querySelectorAll('.row').length;
   const remaining = filtered.length - shown;
   if (remaining > 0) {
     loadMoreWrap.style.display = 'block';
