@@ -77,6 +77,8 @@ def fmt_value(amount, currency: str = "GBP") -> str:
     try:
         v = float(amount)
         symbol = "£" if currency == "GBP" else currency + " "
+        if v >= 1_000_000_000:
+            return f"{symbol}{v/1_000_000_000:.1f}bn"
         if v >= 1_000_000:
             return f"{symbol}{v/1_000_000:.1f}m"
         if v >= 1_000:
@@ -115,6 +117,7 @@ def meta_description(t: dict) -> str:
 NAV = """\
 <nav>
   <a href="/" class="nav-logo">
+    <img src="/logo.png" alt="Hawkeye Solutions" height="36" style="display:block">
     <span class="nav-brand">Hawkeye Solutions</span>
   </a>
   <div class="nav-links">
@@ -193,13 +196,22 @@ CSS = """\
   --steel:#1c3d4f;--white:#fff;--off-white:#f7fbfc;
   --text:#1a2e35;--text-muted:#4a6572;--border:#d8ecf0;
   --urgent:#c0392b;--warning:#b7670a;--safe:#1a7a50;
+  --font-display:'Source Serif 4',Georgia,'Times New Roman',serif;
 }
 body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:var(--white)}
 a{text-decoration:none;color:inherit}
 
+::selection{background:var(--teal-mid);color:var(--white)}
+:focus-visible{outline:2px solid var(--teal-mid);outline-offset:2px}
+html{scrollbar-color:var(--teal-mid) var(--off-white)}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:var(--off-white)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:20px;border:3px solid var(--off-white)}
+::-webkit-scrollbar-thumb:hover{background:var(--teal-mid)}
+
 nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:12px}
-.nav-brand{color:var(--white);font-size:18px;font-weight:700}
+.nav-brand{font-family:var(--font-display);color:var(--white);font-size:18px;font-weight:600}
 .nav-links{display:flex;gap:28px}
 .nav-links a{color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;transition:color .2s}
 .nav-links a:hover,.nav-links a.active{color:var(--white)}
@@ -218,8 +230,13 @@ nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify
 
 .wrap{max-width:1180px;margin:0 auto;padding:0 5%}
 
-.hero{background:linear-gradient(135deg,var(--steel) 0%,var(--teal-dark) 55%,var(--teal) 100%);padding:36px 0 30px}
-.hero-inner{max-width:1180px;margin:0 auto;padding:0 5%}
+.hero{background:var(--steel);padding:30px 0 0;position:relative;overflow:hidden}
+.hero::before{
+  content:'';position:absolute;top:-18%;right:-6%;width:420px;height:420px;
+  background:url('/logo.png') no-repeat center/contain;
+  opacity:0.1;filter:grayscale(1) brightness(2.4);
+}
+.hero-inner{max-width:1180px;margin:0 auto;padding:0 5% 26px;position:relative;z-index:1}
 .breadcrumb{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .breadcrumb a{color:rgba(255,255,255,0.6);transition:color .15s}
 .breadcrumb a:hover{color:var(--white)}
@@ -227,11 +244,11 @@ nav{background:var(--steel);padding:0 5%;display:flex;align-items:center;justify
 .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
 .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .hero-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
-.badge-live{background:rgba(110,220,140,.2);color:#8fe3a8}
-.badge-closed{background:rgba(200,80,80,.2);color:#f08080}
+.badge-live{background:rgba(143,205,217,.2);color:#8fcdd9}
+.badge-closed{background:rgba(224,110,100,.2);color:#e8a39c}
 .badge-sector{background:rgba(255,255,255,.14);color:rgba(255,255,255,.85)}
 .badge-region{background:rgba(255,255,255,.14);color:rgba(255,255,255,.85)}
-h1{font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--white);line-height:1.22;text-wrap:balance;max-width:780px}
+h1{font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:600;color:var(--white);line-height:1.28;text-wrap:balance;max-width:780px}
 .hero-buyer{font-size:15px;color:rgba(255,255,255,.75);margin-top:8px}
 .hero-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
 .hero-actions .btn{white-space:nowrap}
@@ -249,11 +266,11 @@ h1{font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--white);line-height
 .btn-secondary{background:transparent;border:1.5px solid var(--teal-mid);color:var(--teal-dark)}
 .btn-secondary:hover{background:var(--teal-light)}
 
-/* At-a-glance row */
-.glance{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:-22px auto 0;max-width:1180px;padding:0 5%;position:relative;z-index:2}
-.gcard{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:11px 14px;box-shadow:0 4px 14px rgba(20,60,70,.07)}
-.gcard .g-label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.gcard .g-value{font-size:15px;font-weight:800;color:var(--steel);line-height:1.25}
+/* At-a-glance row — lives inside the hero, not floating cards on top of it */
+.glance{display:flex;gap:28px;flex-wrap:wrap;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.14)}
+.gcard{display:flex;flex-direction:column;gap:2px}
+.gcard .g-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:.05em}
+.gcard .g-value{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--white);line-height:1.25}
 
 .map-widget{text-align:center}
 .map-widget svg{max-width:150px;margin:0 auto 6px;display:block}
@@ -267,16 +284,16 @@ h1{font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--white);line-height
 .tl-node{flex:1;text-align:center;position:relative;padding:0 4px}
 .tl-dot{width:14px;height:14px;border-radius:50%;margin:0 auto 10px;position:relative;z-index:1;border:3px solid var(--white)}
 .tl-label{font-size:11px;font-weight:700;color:var(--steel);text-transform:uppercase;letter-spacing:.3px}
-.tl-date{font-size:13px;font-weight:700;color:var(--text);margin-top:3px}
+.tl-date{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--text);margin-top:3px}
 .tl-rel{font-size:11px;font-weight:600;margin-top:2px}
 
 /* Main grid */
 .content-grid{display:grid;grid-template-columns:1fr 320px;gap:32px;margin-top:36px;padding-bottom:48px}
 .card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:20px}
-.card h2{font-size:15px;font-weight:700;color:var(--steel);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.card h2{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--steel);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 
-.kp-card{background:var(--teal-light);border:1px solid #c9e4ea}
-.kp-card h2{border-bottom-color:#c9e4ea}
+.kp-card{background:var(--teal-light);border:1px solid var(--border)}
+.kp-card h2{border-bottom-color:var(--border)}
 .kp-list{list-style:none}
 .kp-list li{display:flex;gap:10px;font-size:14px;color:var(--steel);line-height:1.5;margin-bottom:10px;font-weight:500}
 .kp-list li:last-child{margin-bottom:0}
@@ -286,6 +303,8 @@ h1{font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--white);line-height
 .desc-toggle{background:none;border:none;color:var(--teal-mid);font-weight:700;font-size:13px;cursor:pointer;padding:10px 0 0;font-family:inherit}
 .desc-full{display:none}
 .desc-full.open{display:block}
+.lots-extra{display:none}
+.lots-extra.open{display:block}
 .desc-short.hidden{display:none}
 
 .domain-list{list-style:none}
@@ -295,7 +314,7 @@ h1{font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--white);line-height
 .lot{background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;gap:10px}
 .lot-title{font-size:13px;font-weight:700;color:var(--steel)}
 .lot-desc{font-size:12px;color:var(--text-muted);margin-top:4px;line-height:1.6}
-.lot-val{font-size:13px;font-weight:800;color:var(--teal-dark);flex-shrink:0}
+.lot-val{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--teal-dark);flex-shrink:0;font-variant-numeric:tabular-nums}
 .doc-link{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border:1px solid var(--border);border-radius:7px;margin-bottom:6px;font-size:13px;color:var(--teal-dark);background:var(--white);word-break:break-word}
 .doc-link:hover{background:var(--teal-light)}
 
@@ -313,15 +332,15 @@ h1{font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--white);line-height
 .rel-arrow{color:var(--teal-mid);font-weight:700;flex-shrink:0;margin-top:1px}
 .rel-empty{font-size:12.5px;color:var(--text-muted)}
 
-.cta-card{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));border-radius:12px;padding:22px;margin-bottom:20px;text-align:center}
-.cta-card h3{color:var(--white);font-size:16px;font-weight:800;margin-bottom:8px}
+.cta-card{background:var(--steel);border-top:3px solid var(--teal-mid);border-radius:12px;padding:22px;margin-bottom:20px;text-align:center}
+.cta-card h3{font-family:var(--font-display);color:var(--white);font-size:17px;font-weight:600;margin-bottom:8px}
 .cta-card p{color:rgba(255,255,255,.82);font-size:13px;line-height:1.6;margin-bottom:16px}
 .cta-card .btn{display:block;width:100%;margin-bottom:8px}
 
 /* Sidebar quiz widget */
-.quiz-widget{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));border-radius:12px;padding:20px;margin-bottom:20px;text-align:center;transition:transform .2s ease,box-shadow .2s ease;transform-origin:top center}
-.quiz-widget:hover{transform:scale(1.035);box-shadow:0 10px 28px rgba(14,74,87,.28)}
-.quiz-widget h3{color:var(--white);font-size:15px;font-weight:800;margin-bottom:4px}
+.quiz-widget{background:var(--steel);border-top:3px solid var(--teal-mid);border-radius:12px;padding:20px;margin-bottom:20px;text-align:center;transition:box-shadow .2s ease}
+.quiz-widget:hover{box-shadow:0 10px 28px rgba(14,74,87,.2)}
+.quiz-widget h3{font-family:var(--font-display);color:var(--white);font-size:16px;font-weight:600;margin-bottom:4px}
 .quiz-widget .quiz-sub{color:rgba(255,255,255,.82);font-size:12px;margin-bottom:14px}
 .quiz-widget .quiz-progress{display:flex;gap:5px;justify-content:center;margin-bottom:14px}
 .quiz-widget .quiz-progress span{width:20px;height:3px;border-radius:2px;background:rgba(255,255,255,.3)}
@@ -337,8 +356,8 @@ h1{font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--white);line-height
 .quiz-widget .score-badge{display:inline-block;background:rgba(255,255,255,.18);color:var(--white);font-weight:800;font-size:11px;padding:5px 12px;border-radius:16px;margin-bottom:10px}
 .quiz-widget .quiz-result p{font-size:12px;color:rgba(255,255,255,.88);line-height:1.6;margin-bottom:14px}
 
-.cta-banner{background:linear-gradient(135deg,var(--teal-dark),var(--teal-mid));padding:50px 5%;text-align:center}
-.cta-banner h2{font-size:24px;font-weight:800;color:var(--white);margin-bottom:8px}
+.cta-banner{background:var(--steel);border-top:3px solid var(--teal-mid);padding:50px 5%;text-align:center}
+.cta-banner h2{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--white);margin-bottom:8px}
 .cta-banner p{font-size:14px;color:rgba(255,255,255,.8);margin-bottom:20px}
 
 footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
@@ -351,7 +370,7 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
 @media(max-width:900px){
   nav .nav-links{display:none}
   .hamburger{display:flex}
-  .glance{grid-template-columns:repeat(2,1fr);margin-top:16px}
+  .glance{gap:18px 28px}
   .content-grid{grid-template-columns:1fr}
   .timeline{flex-wrap:wrap;gap:16px 0}
   .tl-node{flex:0 0 50%}
@@ -644,20 +663,28 @@ def build_page(t: dict, slug: str, is_closed: bool, buyer_others=None, sector_re
     else:
         desc_card = ""
 
-    # ── Lots ───────────────────────────────────────────────────────────────────
+    # ── Lots (collapsed past the first 8, same pattern as the description) ─────
     lots_card = ""
     if lots:
-        lot_items = ""
-        for lot in lots:
+        def _lot_html(lot):
             lv = fmt_value(lot.get("value"), lot.get("currency", "GBP"))
             lt = esc(lot.get("title") or f"Lot {lot.get('id','')}")
             ld = esc((lot.get("description") or "")[:200])
-            lot_items += f"""
+            return f"""
 <div class="lot"><div><div class="lot-title">{lt}</div>{f'<div class="lot-desc">{ld}</div>' if ld else ''}</div>{f'<div class="lot-val">{lv}</div>' if lv else ''}</div>"""
+        LOTS_VISIBLE = 8
+        shown_lots = "".join(_lot_html(l) for l in lots[:LOTS_VISIBLE])
+        extra_lots = "".join(_lot_html(l) for l in lots[LOTS_VISIBLE:])
+        lots_toggle = (
+            f"""<button class="desc-toggle" onclick="var e=this.previousElementSibling,open=e.classList.toggle('open');this.textContent=open?'Show fewer lots':'Show all {len(lots)} lots';">Show all {len(lots)} lots</button>"""
+            if extra_lots else ""
+        )
         lots_card = f"""
 <div class="card">
   <h2>Lots ({len(lots)})</h2>
-  {lot_items}
+  {shown_lots}
+  {f'<div class="lots-extra">{extra_lots}</div>' if extra_lots else ''}
+  {lots_toggle}
 </div>"""
 
     # ── Documents ──────────────────────────────────────────────────────────────
@@ -813,6 +840,9 @@ def build_page(t: dict, slug: str, is_closed: bool, buyer_others=None, sector_re
 <link rel="canonical" href="{esc(page_url)}">
 <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
 <link rel="shortcut icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
 <meta property="og:title" content="{esc(title_raw)}">
 <meta property="og:description" content="{esc(meta_desc)}">
 <meta property="og:url" content="{esc(page_url)}">
@@ -841,10 +871,10 @@ def build_page(t: dict, slug: str, is_closed: bool, buyer_others=None, sector_re
         <div class="hero-nav">{prev_html}{next_html}<a onclick="navigator.clipboard&&navigator.clipboard.writeText(location.href);this.textContent='Copied!';return false;">Share</a></div>
       </div>
     </div>
+    {glance_html}
   </div>
 </div>
 
-{glance_html}
 {timeline_section}
 
 <div class="wrap content-grid">
