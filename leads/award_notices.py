@@ -38,8 +38,15 @@ MONTH_DELAY   = 5
 RECRUITMENT_CPV_PREFIX = "796"  # 79600000-79699999, same mapping the main pipeline uses
 
 OUTPUT_FILE = Path(__file__).parent / "award_notices.json"
+NEW_LEADS_FILE = Path(__file__).parent / "new_award_leads.json"  # just this run's deltas
 STATE_FILE  = Path(__file__).parent / "award_notices_state.json"
 LOG_FILE    = Path(__file__).parent / "award_notices.log"
+
+# CCS/GCA frameworks already scraped (see ccs_frameworks.py) or checked and
+# ruled out (no public supplier list). A tender_id outside this set spotted
+# in a NEW award is worth a human look — might be a framework we haven't
+# found yet.
+KNOWN_FRAMEWORK_IDS = {"RM6277", "RM6290", "RM6376", "RM6288", "RM6281"}
 
 logging.basicConfig(
     level=logging.INFO,
@@ -144,6 +151,7 @@ def extract_award_leads(release: dict) -> list[dict]:
             "award_date": release.get("date", ""),
             "notice_url": notice_url,
             "ocid": release.get("ocid", ""),
+            "tender_id": tender.get("id", ""),  # often a framework reference, e.g. "RM6281"
         })
     return leads
 
@@ -162,6 +170,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--months", type=int, default=24)
     parser.add_argument("--fresh", action="store_true")
+    parser.add_argument("--refresh-recent", type=int, default=2,
+                         help="re-check the last N months even if marked done, to catch notices "
+                              "published after a previous run already closed out that month "
+                              "(default 2 — set to 0 for pure resume-only behaviour)")
     args = parser.parse_args()
 
     now = datetime.now(timezone.utc)
@@ -169,7 +181,13 @@ def main():
     chunks = month_ranges(start, now)
 
     state = {"done_months": [], "leads_by_supplier": {}} if args.fresh else load_state()
+    if args.refresh_recent:
+        recent_keys = {(now.replace(day=1) - timedelta(days=30 * i)).strftime("%Y-%m") for i in range(args.refresh_recent + 1)}
+        state["done_months"] = [m for m in state["done_months"] if m not in recent_keys]
     done = set(state["done_months"])
+
+    before = dict(state["leads_by_supplier"])  # snapshot — used to find this run's new leads
+    new_framework_ids = set()
 
     for date_from, date_to in chunks:
         key = date_from[:7]
@@ -185,6 +203,9 @@ def main():
                 if not existing or lead["award_date"] > existing["award_date"]:
                     state["leads_by_supplier"][sid] = lead
                     found_this_month += 1
+                tid = lead.get("tender_id", "")
+                if tid and tid.upper() not in KNOWN_FRAMEWORK_IDS and not tid.upper().startswith("RM6277") and not tid.upper().startswith("RM6290") and not tid.upper().startswith("RM6376"):
+                    new_framework_ids.add(tid)
         state["done_months"].append(key)
         save_state(state)
         log.info("  %s: %d releases scanned, %d recruitment award leads found/updated", key, len(releases), found_this_month)
@@ -194,6 +215,13 @@ def main():
     OUTPUT_FILE.write_text(json.dumps(leads, indent=2))
     with_email = sum(1 for l in leads if l["contact_email"])
     log.info("Done. %d unique recruitment-contract winners written to %s (%d with an email)", len(leads), OUTPUT_FILE, with_email)
+
+    new_leads = [l for sid, l in state["leads_by_supplier"].items() if sid not in before]
+    NEW_LEADS_FILE.write_text(json.dumps(new_leads, indent=2))
+    log.info("%d of those are new since the last run — written to %s", len(new_leads), NEW_LEADS_FILE)
+
+    if new_framework_ids:
+        log.warning("Unfamiliar tender/framework reference(s) seen in award notices, worth a look: %s", ", ".join(sorted(new_framework_ids)))
 
 
 if __name__ == "__main__":
