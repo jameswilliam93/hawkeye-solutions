@@ -267,6 +267,110 @@ function getInitials(name) {
 
 var docIcon = '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>';
 
+/* ── Per-post SEO: canonical/OG/Twitter + BlogPosting/FAQPage schema ──
+   This page renders entirely client-side, so these have to be set after
+   the post loads rather than baked into the HTML. FAQPage schema is only
+   emitted when the rendered body actually contains "Q: ... <br>A: ..."
+   paragraphs (the convention used in the FAQ section of posts that have
+   one) — posts without that pattern simply get no FAQPage block. */
+
+function stripTags(html) {
+  var d = document.createElement('div');
+  d.innerHTML = html;
+  return (d.textContent || d.innerText || '').trim();
+}
+
+function extractFaqPairs() {
+  var pairs = [];
+  document.querySelectorAll('.post-body p').forEach(function(p) {
+    var html = p.innerHTML;
+    if (!/^\s*<strong>\s*Q:/i.test(html)) return;
+    var parts = html.split(/<br\s*\/?>/i);
+    if (parts.length < 2) return;
+    var q = stripTags(parts[0]).replace(/^Q:\s*/i, '').trim();
+    var a = stripTags(parts[1]).replace(/^A:\s*/i, '').trim();
+    if (q && a) pairs.push({ q: q, a: a });
+  });
+  return pairs;
+}
+
+function setMeta(attr, key, content) {
+  var el = document.querySelector('meta[' + attr + '="' + key + '"]');
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attr, key);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
+}
+
+function injectJsonLd(id, data) {
+  var existing = document.getElementById(id);
+  if (existing) existing.remove();
+  var s = document.createElement('script');
+  s.type = 'application/ld+json';
+  s.id = id;
+  s.textContent = JSON.stringify(data);
+  document.head.appendChild(s);
+}
+
+function injectPostSEO(post) {
+  var pageUrl = 'https://hawkeye-solutions.co.uk/blog-post.html?slug=' + encodeURIComponent(post.slug || '');
+  var title = post.title || 'Blog Post';
+  var desc = post.excerpt || '';
+  var image = 'https://hawkeye-solutions.co.uk/logo.png';
+
+  var canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.rel = 'canonical';
+    document.head.appendChild(canonical);
+  }
+  canonical.href = pageUrl;
+
+  var metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc && desc) metaDesc.setAttribute('content', desc);
+
+  setMeta('property', 'og:type', 'article');
+  setMeta('property', 'og:site_name', 'Hawkeye Solutions');
+  setMeta('property', 'og:title', title);
+  setMeta('property', 'og:description', desc);
+  setMeta('property', 'og:url', pageUrl);
+  setMeta('property', 'og:image', image);
+  setMeta('name', 'twitter:card', 'summary');
+  setMeta('name', 'twitter:title', title);
+  setMeta('name', 'twitter:description', desc);
+  setMeta('name', 'twitter:image', image);
+
+  injectJsonLd('ld-blogposting', {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": title,
+    "description": desc,
+    "url": pageUrl,
+    "datePublished": post.date || '',
+    "dateModified": post.date || '',
+    "author": { "@type": "Person", "name": post.author_name || "Hawkeye Solutions" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Hawkeye Solutions",
+      "logo": { "@type": "ImageObject", "url": image }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": pageUrl }
+  });
+
+  var faqPairs = extractFaqPairs();
+  if (faqPairs.length) {
+    injectJsonLd('ld-faqpage', {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqPairs.map(function(p) {
+        return { "@type": "Question", "name": p.q, "acceptedAnswer": { "@type": "Answer", "text": p.a } };
+      })
+    });
+  }
+}
+
 function renderPost(post, allPosts) {
   var slug = post.slug || '';
   var related = allPosts.filter(function(p){ return (p.slug||p.title) !== (post.slug||post.title) && p.status !== 'draft'; }).slice(0,3);
@@ -374,9 +478,12 @@ function renderPost(post, allPosts) {
       '<p class="subtitle">Further reading from the Hawkeye team</p>' +
       '<div class="articles-grid">'+(moreHTML||'<p style="color:var(--text-muted);font-size:14px">More articles coming soon.</p>')+'</div>' +
     '</div>';
+
+  injectPostSEO(post);
 }
 
 function renderError() {
+  setMeta('name', 'robots', 'noindex, follow');
   document.getElementById('breadcrumb-title').textContent = 'Post not found';
   document.getElementById('page-content').innerHTML =
     '<div class="error-state">' +
