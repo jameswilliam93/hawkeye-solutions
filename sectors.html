@@ -42,6 +42,17 @@
   "areaServed": "United Kingdom"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Do you only work with recruitment and IT consultancy businesses?", "acceptedAnswer": {"@type": "Answer", "text": "Those are our two core specialisms, but we have also written winning bids across utilities, NHS, local government, construction, events, financial services, charities, defence and transport. If your sector is not listed here, get in touch and we will give you an honest view of whether and how we can help."}},
+    {"@type": "Question", "name": "Which public sector frameworks do you have the most experience with?", "acceptedAnswer": {"@type": "Answer", "text": "Crown Commercial Service frameworks, DOS 7 and G-Cloud, NHS workforce and digital frameworks, and local authority recruitment and services contracts."}},
+    {"@type": "Question", "name": "Do I need to be an existing client to ask about a sector you cover?", "acceptedAnswer": {"@type": "Answer", "text": "No, a first conversation is always free. Tell us about your opportunity and we will tell you honestly whether and how we can help."}}
+  ]
+}
+</script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{
@@ -132,6 +143,18 @@
   .ac-box span{font-size:11px;font-weight:700;color:var(--text-muted);text-align:center;line-height:1.4}
   .section-title{font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--steel);margin-bottom:14px;line-height:1.2}
   .section-desc{font-size:16px;color:var(--text-muted);line-height:1.75;max-width:580px;margin:0 auto}
+
+  /* FAQ */
+  .faq-list{max-width:820px;margin:0 auto}
+  .faq-item{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
+  .faq-q{width:100%;background:var(--white);border:none;text-align:left;padding:0;font-family:inherit;cursor:pointer;display:block;transition:background 0.15s}
+  .faq-q:hover{background:var(--teal-light)}
+  .faq-q.open{background:var(--teal-light)}
+  .faq-q h3{font-size:15px;font-weight:600;color:var(--steel);padding:18px 52px 18px 22px;position:relative;margin:0;line-height:1.4}
+  .faq-q h3::after{content:'+';position:absolute;right:20px;top:50%;transform:translateY(-50%);width:22px;height:22px;background:var(--teal-mid);border-radius:50%;color:var(--white);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:22px;text-align:center;transition:transform 0.2s}
+  .faq-q.open h3::after{content:'x';font-size:13px}
+  .faq-a{display:none;padding:0 22px 18px;font-size:14px;color:var(--text-muted);line-height:1.8}
+  .faq-a.open{display:block}
 
   /* CTA */
   .cta-section{background:var(--steel);border-top:3px solid var(--teal-mid);padding:80px 5%;text-align:center}
@@ -543,6 +566,25 @@
   </div>
 </div>
 
+<!-- FAQ -->
+<div class="all-clients" style="padding-bottom:70px">
+  <h2 class="section-title">Sectors, frequently asked questions</h2>
+  <div class="faq-list" style="text-align:left;margin-top:36px">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><h3>Do you only work with recruitment and IT consultancy businesses?</h3></button>
+      <div class="faq-a">Those are our two core specialisms, but we have also written winning bids across utilities, NHS, local government, construction, events, financial services, charities, defence and transport. If your sector is not listed here, get in touch and we will give you an honest view of whether and how we can help.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><h3>Which public sector frameworks do you have the most experience with?</h3></button>
+      <div class="faq-a">Crown Commercial Service frameworks, DOS 7 and G-Cloud, NHS workforce and digital frameworks, and local authority recruitment and services contracts.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><h3>Do I need to be an existing client to ask about a sector you cover?</h3></button>
+      <div class="faq-a">No, a first conversation is always free. Tell us about your opportunity and we will tell you honestly whether and how we can help.</div>
+    </div>
+  </div>
+</div>
+
 <!-- CTA -->
 <div class="cta-section">
   <h2>Work with specialists who know your market</h2>
@@ -595,6 +637,15 @@ function toggleMenu(){
   var open=menu.classList.contains('open');
   if(open){menu.classList.remove('open');btn.classList.remove('open');btn.setAttribute('aria-expanded','false');}
   else{menu.classList.add('open');btn.classList.add('open');btn.setAttribute('aria-expanded','true');}
+}
+function toggleFaq(btn){
+  var answer=btn.nextElementSibling;
+  var isOpen=btn.classList.contains('open');
+  document.querySelectorAll('.faq-q.open').forEach(function(q){
+    q.classList.remove('open');
+    q.nextElementSibling.classList.remove('open');
+  });
+  if(!isOpen){btn.classList.add('open');answer.classList.add('open');}
 }
 
 // Highlight active pill on scroll
