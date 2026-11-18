@@ -112,6 +112,20 @@ def award_note(a: dict) -> str:
     return f'Won a live award: "{a["tender_title"]}" — {a["buyer"]} ({a["award_date"][:10]})'
 
 
+def award_site_info(award: dict, website_by_domain: dict, email: str) -> tuple[str, str, str]:
+    """Same domain-from-email + scrape lookup Tier 1 already gets, applied to
+    award-notice leads too — the reason this award-win contact, besides the
+    award itself, might also have a specialism blurb and a bonus phone."""
+    domain = domain_from_email(email)
+    site = website_by_domain.get(domain) if domain else None
+    if not site or not site.get("fetched_ok"):
+        return "", "", ""
+    website = domain
+    notes = site.get("meta_description") or site.get("title") or ""
+    phone = clean_phone(site["extra_phones"][0]) if site.get("extra_phones") else ""
+    return website, notes, phone
+
+
 def merge_ccs_suppliers(ccs_all: list[dict]) -> list[dict]:
     active = [s for s in ccs_all if s["status"] == "ACTIVE"]
     groups: dict[str, list[dict]] = {}
@@ -240,8 +254,10 @@ def main():
         website, notes, email, phone = "", "", "", ""
         if promoted:
             email = clean_email(award["contact_email"])
-            website = award.get("website", "")
-            notes = award_note(award)
+            bonus_website, bonus_notes, bonus_phone = award_site_info(award, website_by_domain, email)
+            website = award.get("website", "") or bonus_website
+            notes = f"{award_note(award)}\n{bonus_notes}".strip() if bonus_notes else award_note(award)
+            phone = bonus_phone
         elif guess and guess.get("fetched_ok"):
             website = guess.get("domain", "")
             notes = guess.get("meta_description") or guess.get("title") or ""
@@ -272,6 +288,8 @@ def main():
         email = clean_email(a.get("contact_email"))
         if not email:
             continue  # no name and no usable email — nothing to contact, would be dropped at export anyway
+        bonus_website, bonus_notes, bonus_phone = award_site_info(a, website_by_domain, email)
+        notes = f"{award_note(a)}\n{bonus_notes}".strip() if bonus_notes else award_note(a)
         leads.append({
             "company_name": a["supplier_name"],
             "company_number": "",
@@ -280,13 +298,13 @@ def main():
             "size_band": None,
             "contact_name": "",
             "contact_email": email,
-            "contact_phone": "",
-            "website": a.get("website", ""),
+            "contact_phone": bonus_phone,
+            "website": a.get("website", "") or bonus_website,
             "linkedin": "",
             "frameworks": [],
             "region": a.get("locality", ""),
             "postal_code": a.get("postal_code", ""),
-            "notes": award_note(a),
+            "notes": notes,
         })
         standalone_added += 1
 

@@ -29,6 +29,18 @@
   "description": "Specialist bid writing and tender management services for UK recruitment and IT consultancy businesses."
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "What does Hawkeye Solutions do?", "acceptedAnswer": {"@type": "Answer", "text": "We are a UK bid writing and tender management company, specialising in public sector recruitment and IT consultancy contracts. We offer bid writing, bid management, bid consultancy and review, and bid writing training."}},
+    {"@type": "Question", "name": "What is your success rate?", "acceptedAnswer": {"@type": "Answer", "text": "85%+ across the bids we write, having secured 200+ contracts worth over £500m combined, with 10+ years of experience in public sector procurement."}},
+    {"@type": "Question", "name": "Do you offer a free consultation?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, every engagement starts with a free, no-obligation consultation. We will give you an honest assessment of your opportunity before you commit to anything."}},
+    {"@type": "Question", "name": "How much does it cost?", "acceptedAnswer": {"@type": "Answer", "text": "Every service is quoted as a fixed fee upfront, tailored to the size and complexity of your tender. There are no day rates or open-ended billing."}}
+  ]
+}
+</script>
 <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="shortcut icon" href="/favicon.ico" />
@@ -517,6 +529,18 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
 .specialist-name{font-size:15px;font-weight:700;color:var(--steel);margin-bottom:2px}
 .specialist-role{font-size:12px;color:var(--text-muted);line-height:1.4}
 
+/* ── FAQ ── */
+.faq-list{max-width:820px}
+.faq-item{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.faq-q{width:100%;background:var(--white);border:none;text-align:left;padding:0;font-family:inherit;cursor:pointer;display:block;transition:background 0.15s var(--ease-out)}
+@media(hover:hover)and(pointer:fine){.faq-q:hover{background:var(--teal-light)}}
+.faq-q.open{background:var(--teal-light)}
+.faq-q h3{font-size:15px;font-weight:600;color:var(--steel);padding:18px 52px 18px 22px;position:relative;margin:0;line-height:1.4}
+.faq-q h3::after{content:'+';position:absolute;right:20px;top:50%;transform:translateY(-50%);width:22px;height:22px;background:var(--teal-mid);border-radius:50%;color:var(--white);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:22px;text-align:center;transition:transform 0.2s var(--ease-out)}
+.faq-q.open h3::after{content:'x';font-size:13px}
+.faq-a{display:none;padding:0 22px 18px;font-size:14px;color:var(--text-muted);line-height:1.8}
+.faq-a.open{display:block}
+
 /* ── Reduced motion ── */
 @media(prefers-reduced-motion:reduce){
   .hero h1,.hero-sub,.hero-desc,.hero-btns{animation:none;opacity:1;transform:none}
@@ -776,6 +800,29 @@ footer{background:var(--steel);color:rgba(255,255,255,0.6);padding:44px 5% 28px}
     <div class="testi-card reveal" data-d="3"><p class="testi-quote">"Hawkeye managed our entire G-Cloud 14 submission from start to finish. We had six services to list and a tight deadline. They delivered everything on time and all six were accepted. Exceptional service throughout."</p><div class="testi-author">Head of Sales</div><div class="testi-role">IT Services Provider, Leeds</div><a href="/sectors.html" class="testi-sector-link">See our sectors</a></div>
   </div>
 </section>
+<section>
+  <div class="section-header reveal">
+    <div class="section-title">Frequently Asked Questions</div>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item reveal" data-d="1">
+      <button class="faq-q" onclick="toggleFaq(this)"><h3>What does Hawkeye Solutions do?</h3></button>
+      <div class="faq-a">We are a UK bid writing and tender management company, specialising in public sector recruitment and IT consultancy contracts. We offer bid writing, bid management, bid consultancy and review, and bid writing training.</div>
+    </div>
+    <div class="faq-item reveal" data-d="2">
+      <button class="faq-q" onclick="toggleFaq(this)"><h3>What is your success rate?</h3></button>
+      <div class="faq-a">85%+ across the bids we write, having secured 200+ contracts worth over £500m combined, with 10+ years of experience in public sector procurement.</div>
+    </div>
+    <div class="faq-item reveal" data-d="3">
+      <button class="faq-q" onclick="toggleFaq(this)"><h3>Do you offer a free consultation?</h3></button>
+      <div class="faq-a">Yes, every engagement starts with a free, no-obligation consultation. We will give you an honest assessment of your opportunity before you commit to anything.</div>
+    </div>
+    <div class="faq-item reveal" data-d="4">
+      <button class="faq-q" onclick="toggleFaq(this)"><h3>How much does it cost?</h3></button>
+      <div class="faq-a">Every service is quoted as a fixed fee upfront, tailored to the size and complexity of your tender. There are no day rates or open-ended billing.</div>
+    </div>
+  </div>
+</section>
 <div class="cta-banner">
   <h2 class="reveal">Ready to win your next contract?</h2>
   <p class="reveal" data-d="2">Book a free, no-obligation consultation with our team today.</p>
@@ -840,6 +887,16 @@ function closeMobileMenu(){
   document.getElementById('hamburger-btn').setAttribute('aria-expanded','false');
 }
 function mobileNav(page){closeMobileMenu();showPage(page);}
+
+function toggleFaq(btn){
+  var answer=btn.nextElementSibling;
+  var isOpen=btn.classList.contains('open');
+  document.querySelectorAll('.faq-q.open').forEach(function(q){
+    q.classList.remove('open');
+    q.nextElementSibling.classList.remove('open');
+  });
+  if(!isOpen){btn.classList.add('open');answer.classList.add('open');}
+}
 
 function openAdmin(){document.getElementById('admin-overlay').classList.add('open');if(adminLoggedIn)showManageScreen();else showLoginScreen();}
 function closeAdmin(){document.getElementById('admin-overlay').classList.remove('open');}

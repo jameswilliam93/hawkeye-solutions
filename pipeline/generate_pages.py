@@ -74,7 +74,7 @@ def deadline_class(days: int | None) -> str:
 
 
 def fmt_value(amount, currency: str = "GBP") -> str:
-    if amount is None:
+    if not amount:  # None, 0, or "" — a genuine £0 contract value isn't meaningful to show
         return ""
     try:
         v = float(amount)
@@ -416,6 +416,29 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
 .footer-col a:hover{color:var(--white)}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:16px;font-size:12px;display:flex;justify-content:space-between;max-width:1180px;margin:0 auto}
 
+/* ── Hub pages (sector / region tender listings) ── */
+.hub-intro{font-size:14.5px;color:var(--text-muted);line-height:1.8;max-width:760px;margin-bottom:8px}
+.hub-count{font-size:13px;color:rgba(255,255,255,.6);margin-top:10px}
+.hub-wrap{max-width:1180px;margin:0 auto;padding:36px 5% 56px}
+.hub-nav-links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px}
+.hub-nav-pill{font-size:12.5px;font-weight:600;color:var(--teal-dark);background:var(--teal-light);border:1px solid var(--border);border-radius:20px;padding:6px 14px;transition:background .15s}
+.hub-nav-pill:hover{background:#d9eef3}
+.hub-nav-pill.active{background:var(--teal-dark);color:var(--white)}
+.hub-list{display:flex;flex-direction:column;border-top:1px solid var(--border)}
+.hub-row{display:flex;gap:18px;align-items:center;padding:16px 4px;border-bottom:1px solid var(--border);transition:background .15s}
+.hub-row:hover{background:var(--off-white)}
+.hub-row-main{flex:1;min-width:0}
+.hub-row-title{font-size:14.5px;font-weight:700;color:var(--steel);line-height:1.4;display:block;margin-bottom:3px}
+.hub-row-meta{font-size:12.5px;color:var(--text-muted)}
+.hub-row-side{flex-shrink:0;display:flex;align-items:center;gap:16px;text-align:right}
+.hub-row-value{font-family:var(--font-display);font-size:14.5px;font-weight:600;color:var(--teal-dark);white-space:nowrap}
+.hub-row-deadline{font-size:12px;font-weight:700;white-space:nowrap}
+.hub-row-deadline.urgent{color:var(--urgent)}
+.hub-row-deadline.warning{color:var(--warning)}
+.hub-row-deadline.safe{color:var(--safe)}
+.hub-empty{padding:40px 0;text-align:center;color:var(--text-muted);font-size:14px}
+.hub-empty a{color:var(--teal-mid);font-weight:600}
+
 @media(max-width:900px){
   nav .nav-links{display:none}
   .hamburger{display:flex}
@@ -426,6 +449,8 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
   .footer-grid{grid-template-columns:1fr 1fr}
   .footer-bottom{flex-direction:column;gap:8px;text-align:center}
   .hero-actions{align-items:flex-start}
+  .hub-row{flex-direction:column;align-items:flex-start;gap:6px}
+  .hub-row-side{width:100%;justify-content:space-between}
 }
 """
 
@@ -465,6 +490,55 @@ def to_broad_region(specific: str) -> str:
     if "wales" in s: return "Wales"
     if "ireland" in s: return "Northern Ireland"
     return ""
+
+BROAD_REGION_ORDER = [
+    "North East", "North West", "Yorkshire & The Humber",
+    "East Midlands", "West Midlands", "East of England",
+    "London", "South East", "South West",
+    "Wales", "Scotland", "Northern Ireland",
+]
+
+
+# ── Marketed-sector hubs ─────────────────────────────────────────────────────
+# Hawkeye markets itself around a specific set of sectors (see sectors.html),
+# not the raw ~43-category CPV taxonomy the pipeline tags each tender with.
+# This maps the raw `sector` field into those marketed sectors so hub pages
+# stay aligned with the business's actual positioning rather than exposing
+# thin pages for categories (Mining, Chemicals, ...) that aren't a specialism.
+
+MARKETED_SECTORS = [
+    {"key": "recruitment", "name": "Recruitment & Staffing",
+     "intro": "Public sector recruitment tendering is one of the most competitive landscapes in UK procurement. Browse live opportunities across temporary and permanent recruitment, managed service contracts, executive search and neutral vendor frameworks."},
+    {"key": "it", "name": "IT Consultancy & Technology",
+     "intro": "The public sector is one of the UK's largest buyers of technology consultancy. Browse live opportunities across G-Cloud, DOS 7, Crown Commercial Service and Digital Marketplace routes."},
+    {"key": "utilities", "name": "Utilities & Energy",
+     "intro": "Utilities buyers run some of the most demanding procurement processes in the UK, with complex supply chain requirements and multi-year contract values. Browse live opportunities across water, gas, electricity and environmental services."},
+    {"key": "nhs", "name": "NHS & Health",
+     "intro": "The NHS is one of the most active public sector procurement bodies in the UK. Browse live opportunities across workforce frameworks, medical supplies, laboratory services and health technology."},
+    {"key": "councils", "name": "Local Government & Councils",
+     "intro": "Local authorities are prolific buyers of professional services and operational support. Browse live public administration opportunities from councils across England."},
+    {"key": "construction", "name": "Construction & Infrastructure",
+     "intro": "Construction and infrastructure tendering spans major capital programmes, built environment contracts and specialist consultancy. Browse live opportunities across construction works, architecture & engineering and construction materials."},
+    {"key": "events", "name": "Events & Hospitality",
+     "intro": "Events and hospitality tendering requires demonstrating operational delivery, logistics management and compliance at scale. Browse live opportunities across event management, hospitality and venue services."},
+]
+MARKETED_SECTOR_BY_KEY = {s["key"]: s for s in MARKETED_SECTORS}
+
+MARKETED_SECTOR_MAP = {
+    "Recruitment & Staffing": "recruitment",
+    "IT Services": "it", "IT Consultancy": "it", "Software": "it", "IT Hardware": "it",
+    "Energy": "utilities", "Environmental Services": "utilities",
+    "Health & Social Care": "nhs", "Medical Supplies": "nhs", "Laboratory Equipment": "nhs",
+    "Public Administration": "councils",
+    "Construction Works": "construction", "Construction Materials": "construction",
+    "Architecture & Engineering": "construction", "Works": "construction", "Industrial Machinery": "construction",
+    "Events & Conferences": "events", "Hospitality": "events", "Recreation & Culture": "events",
+}
+
+def to_marketed_sector(raw_sector: str) -> str:
+    """Raw CPV sector -> marketed sector key, or '' if it doesn't map to one
+    of Hawkeye's marketed specialisms."""
+    return MARKETED_SECTOR_MAP.get(raw_sector, "")
 
 _TILES = [
     ("Scotland",1,0,3),("Northern Ireland",0,1,1),("North West",1,1,1),("North East",3,1,1),
@@ -1098,10 +1172,16 @@ def build_page(t: dict, slug: str, is_closed: bool, buyer_others=None, sector_re
 
     sector_card_related = ""
     if sector_related is not None:
+        marketed_key = to_marketed_sector(sector)
+        view_all_link = (
+            f'<a href="/tenders/sector/{marketed_key}/" style="display:block;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--teal-mid)">View all {esc(MARKETED_SECTOR_BY_KEY[marketed_key]["name"])} tenders &rarr;</a>'
+            if marketed_key else ""
+        )
         sector_card_related = f"""
 <div class="card">
   <h2 style="font-size:13px">Related in {esc(sector)}</h2>
   <div class="rel-tenders">{_rel_rows(sector_related)}</div>
+  {view_all_link}
 </div>"""
 
     side_col = f"{side_cta}{map_card}{buyer_card}{buyer_card_related}{sector_card_related}"
@@ -1228,18 +1308,165 @@ if (ham && mob) {{
 
 
 
+# ── Hub pages (sector / region tender listings) ─────────────────────────────
+
+def build_hub_row(row: dict) -> str:
+    days = days_until(row.get("deadline", ""))
+    dl_class = deadline_class(days)
+    dl_label = (
+        "Deadline passed" if days is not None and days < 0 else
+        "Closes today" if days == 0 else
+        "1 day left" if days == 1 else
+        f"{days} days left" if days is not None else "Open deadline"
+    )
+    val = fmt_value(row.get("value"), row.get("currency", "GBP"))
+    meta_bits = [row.get("buyer", "")]
+    if row.get("location"):
+        meta_bits.append(row["location"])
+    meta = " &middot; ".join(esc(b) for b in meta_bits if b)
+    return f"""\
+<a class="hub-row" href="/tenders/{esc(row['slug'])}/">
+  <div class="hub-row-main">
+    <span class="hub-row-title">{esc(row['title'])}</span>
+    <span class="hub-row-meta">{meta}</span>
+  </div>
+  <div class="hub-row-side">
+    {f'<span class="hub-row-value">{esc(val)}</span>' if val else ''}
+    <span class="hub-row-deadline {dl_class}">{esc(dl_label)}</span>
+  </div>
+</a>"""
+
+
+def build_hub_page(hub_type: str, slug: str, name: str, intro: str, rows: list[dict],
+                    sibling_links: list[tuple[str, str]]) -> str:
+    """hub_type: 'sector' or 'region'. sibling_links: [(name, slug), ...] for
+    the other hubs of the same type, rendered as a cross-link pill row."""
+    page_url = f"{BASE_URL}/tenders/{hub_type}/{slug}/"
+    crumb_label = "Sector" if hub_type == "sector" else "Region"
+    title = f"{name} Tenders | UK Public Sector {crumb_label} Hub | Hawkeye Solutions"
+    if len(title) > 65:
+        title = f"{name} Tenders | Hawkeye Solutions"
+    meta_desc = f"{len(rows)} live UK public sector {name} tender{'s' if len(rows) != 1 else ''} — updated daily. {intro}"[:300]
+
+    rows_sorted = sorted(rows, key=lambda r: (r.get("deadline") or "9999"))
+    list_html = (
+        "".join(build_hub_row(r) for r in rows_sorted)
+        if rows_sorted else
+        f'<div class="hub-empty">No live {esc(name)} tenders right now &mdash; <a href="{CONTACT}">get in touch</a> and we will help you find the right opportunity, or check back soon.</div>'
+    )
+
+    sibling_type_label = "sector" if hub_type == "sector" else "region"
+    siblings_html = "".join(
+        f'<a class="hub-nav-pill" href="/tenders/{hub_type}/{s_slug}/">{esc(s_name)}</a>'
+        for s_name, s_slug in sibling_links
+    )
+
+    jsonld = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": title,
+        "description": meta_desc,
+        "url": page_url,
+        "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL + "/"},
+                {"@type": "ListItem", "position": 2, "name": "Tender Search", "item": BASE_URL + "/tender-search.html"},
+                {"@type": "ListItem", "position": 3, "name": name, "item": page_url},
+            ],
+        },
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": len(rows_sorted),
+            "itemListElement": [
+                {"@type": "ListItem", "position": i + 1, "url": f"{BASE_URL}/tenders/{r['slug']}/"}
+                for i, r in enumerate(rows_sorted[:50])
+            ],
+        },
+    }
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{esc(title)}</title>
+<meta name="description" content="{esc(meta_desc)}">
+<link rel="canonical" href="{esc(page_url)}">
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hawkeye Solutions">
+<meta property="og:title" content="{esc(title)}">
+<meta property="og:description" content="{esc(meta_desc)}">
+<meta property="og:url" content="{esc(page_url)}">
+<meta property="og:image" content="{BASE_URL}/logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{esc(title)}">
+<meta name="twitter:description" content="{esc(meta_desc)}">
+<meta name="twitter:image" content="{BASE_URL}/logo.png">
+<script type="application/ld+json">{json.dumps(jsonld, ensure_ascii=False)}</script>
+<style>{CSS}</style>
+</head>
+<body>
+{NAV}
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="/">Home</a><span>&rsaquo;</span>
+      <a href="/tender-search.html">Tender Search</a><span>&rsaquo;</span>
+      <span style="color:rgba(255,255,255,0.85)">{esc(name)}</span>
+    </div>
+    <h1>{esc(name)} Tenders</h1>
+    <div class="hub-count">{len(rows_sorted)} live opportunit{'y' if len(rows_sorted) == 1 else 'ies'} &middot; updated daily</div>
+  </div>
+</div>
+
+<div class="hub-wrap">
+  <p class="hub-intro" style="margin:28px 0 24px">{esc(intro)}</p>
+  <div class="hub-list">{list_html}</div>
+  {f'<div class="hub-nav-links" style="margin-top:36px"><span style="font-size:12.5px;font-weight:700;color:var(--steel);width:100%;margin-bottom:6px">Browse other {sibling_type_label}s</span>{siblings_html}</div>' if siblings_html else ''}
+</div>
+
+<div class="cta-banner">
+  <h2>Found a {esc(name)} Tender You Want to Win?</h2>
+  <p>Hawkeye Solutions specialises in {esc(name.lower())} bid writing, with an 85%+ success rate across public sector contracts.</p>
+  <a href="/contact.html" class="btn btn-white">Get a Free Consultation</a>
+</div>
+
+{FOOTER}
+
+<script>
+const ham = document.getElementById('ham');
+const mob = document.getElementById('mob');
+if (ham && mob) {{
+  ham.addEventListener('click', () => {{
+    ham.classList.toggle('open');
+    mob.classList.toggle('open');
+  }});
+}}
+</script>
+</body>
+</html>"""
+
+
 # ── Sitemap builder ────────────────────────────────────────────────────────────
 
-def build_sitemap(entries: list[tuple[str, str]]) -> str:
+def build_sitemap(entries: list[tuple[str, str, str, str]]) -> str:
+    """entries: (url_path relative to BASE_URL, lastmod, changefreq, priority)"""
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     urls  = "\n".join(
         f"  <url>\n"
-        f"    <loc>{BASE_URL}/tenders/{slug}/</loc>\n"
+        f"    <loc>{BASE_URL}/{path}</loc>\n"
         f"    <lastmod>{lastmod or today}</lastmod>\n"
-        f"    <changefreq>weekly</changefreq>\n"
-        f"    <priority>0.7</priority>\n"
+        f"    <changefreq>{changefreq}</changefreq>\n"
+        f"    <priority>{priority}</priority>\n"
         f"  </url>"
-        for slug, lastmod in entries
+        for path, lastmod, changefreq, priority in entries
     )
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -1269,6 +1496,8 @@ def main():
     entries = []  # (tender, slug, is_closed)
     buyer_index: dict[str, list[tuple[str, str, str]]] = {}
     sector_index: dict[str, list[tuple[str, str, str]]] = {}
+    marketed_sector_index: dict[str, list[dict]] = {}
+    region_index: dict[str, list[dict]] = {}
 
     for t in data:
         title = t.get("title", "").strip()
@@ -1312,9 +1541,24 @@ def main():
         if sector:
             sector_index.setdefault(sector, []).append(row)
 
+        # Hub indices only take genuinely live tenders — a sector/region hub
+        # is meant to showcase current opportunities, not ones past deadline.
+        if not is_closed:
+            broad_region = to_broad_region(t.get("region", ""))
+            hub_row = {
+                "title": title, "slug": slug, "buyer": buyer,
+                "deadline": deadline, "value": t.get("value"), "currency": t.get("currency", "GBP"),
+                "location": broad_region or (t.get("region", "") if t.get("region", "") not in ("", "UK") else ""),
+            }
+            marketed_key = to_marketed_sector(sector)
+            if marketed_key:
+                marketed_sector_index.setdefault(marketed_key, []).append(hub_row)
+            if broad_region:
+                region_index.setdefault(broad_region, []).append(hub_row)
+
     # ── Pass 2: build + write each page ─────────────────────────────────────────
     generated = 0
-    sitemap_entries: list[tuple[str, str]] = []
+    sitemap_entries: list[tuple[str, str, str, str]] = []
 
     for i, (t, slug, is_closed) in enumerate(entries):
         buyer  = t.get("buyer", "")
@@ -1336,8 +1580,35 @@ def main():
         (page_dir / "index.html").write_text(html, encoding="utf-8")
 
         published = (t.get("published") or "")[:10]
-        sitemap_entries.append((slug, published))
+        sitemap_entries.append((f"tenders/{slug}/", published, "weekly", "0.7"))
         generated += 1
+
+    # ── Pass 2.5: build sector / region hub pages ───────────────────────────────
+    today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    hubs_generated = 0
+
+    for ms in MARKETED_SECTORS:
+        key, name, intro = ms["key"], ms["name"], ms["intro"]
+        rows = marketed_sector_index.get(key, [])
+        siblings = [(o["name"], o["key"]) for o in MARKETED_SECTORS if o["key"] != key]
+        hub_dir = out / "tenders" / "sector" / key
+        hub_dir.mkdir(parents=True, exist_ok=True)
+        html = build_hub_page("sector", key, name, intro, rows, siblings)
+        (hub_dir / "index.html").write_text(html, encoding="utf-8")
+        sitemap_entries.append((f"tenders/sector/{key}/", today_str, "daily", "0.6"))
+        hubs_generated += 1
+
+    for region_name in BROAD_REGION_ORDER:
+        region_key = slugify(region_name)
+        rows = region_index.get(region_name, [])
+        siblings = [(r, slugify(r)) for r in BROAD_REGION_ORDER if r != region_name]
+        hub_dir = out / "tenders" / "region" / region_key
+        hub_dir.mkdir(parents=True, exist_ok=True)
+        intro = f"Live UK public sector tenders based in {region_name}, across all sectors, updated daily from Find a Tender."
+        html = build_hub_page("region", region_key, region_name, intro, rows, siblings)
+        (hub_dir / "index.html").write_text(html, encoding="utf-8")
+        sitemap_entries.append((f"tenders/region/{region_key}/", today_str, "daily", "0.6"))
+        hubs_generated += 1
 
     # Write sitemap
     sitemap_path = out / "sitemap.xml"
@@ -1377,6 +1648,7 @@ def main():
                 removed += 1
 
     print(f"Generated {generated} tender pages → {out}/tenders/")
+    print(f"Generated {hubs_generated} hub pages → {out}/tenders/sector/, {out}/tenders/region/")
     print(f"Sitemap   → {sitemap_path}  ({len(sitemap_entries)} URLs)")
     if skipped:
         print(f"Skipped   {skipped} tenders (no title)")

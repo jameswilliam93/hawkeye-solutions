@@ -101,6 +101,11 @@
   .loading{text-align:center;padding:80px 20px;color:var(--text-muted)}
   .loading-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--teal-mid);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
   @keyframes spin{to{transform:rotate(360deg)}}
+  .browse-hubs{margin-bottom:36px}
+  .browse-hubs h2{font-size:13px;font-weight:700;color:var(--steel);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+  .browse-pills{display:flex;flex-wrap:wrap;gap:8px}
+  .browse-pill{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--white);color:var(--text-muted);transition:all 0.2s}
+  .browse-pill:hover{background:var(--teal-dark);color:var(--white);border-color:var(--teal-dark)}
   .pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:36px;flex-wrap:wrap}
   .page-btn{padding:8px 16px;border-radius:7px;font-size:14px;font-weight:600;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;transition:all 0.2s}
   .page-btn:hover{background:var(--teal-light);border-color:var(--teal-mid);color:var(--teal-dark)}
@@ -149,6 +154,35 @@
 </div>
 
 <section>
+  <div class="browse-hubs">
+    <h2>Browse by Sector</h2>
+    <div class="browse-pills">
+      <a href="/tenders/sector/recruitment/" class="browse-pill">Recruitment &amp; Staffing</a>
+      <a href="/tenders/sector/it/" class="browse-pill">IT Consultancy</a>
+      <a href="/tenders/sector/utilities/" class="browse-pill">Utilities &amp; Energy</a>
+      <a href="/tenders/sector/nhs/" class="browse-pill">NHS &amp; Health</a>
+      <a href="/tenders/sector/councils/" class="browse-pill">Local Government</a>
+      <a href="/tenders/sector/construction/" class="browse-pill">Construction</a>
+      <a href="/tenders/sector/events/" class="browse-pill">Events &amp; Hospitality</a>
+    </div>
+  </div>
+  <div class="browse-hubs">
+    <h2>Browse by Region</h2>
+    <div class="browse-pills">
+      <a href="/tenders/region/north-east/" class="browse-pill">North East</a>
+      <a href="/tenders/region/north-west/" class="browse-pill">North West</a>
+      <a href="/tenders/region/yorkshire-the-humber/" class="browse-pill">Yorkshire &amp; The Humber</a>
+      <a href="/tenders/region/east-midlands/" class="browse-pill">East Midlands</a>
+      <a href="/tenders/region/west-midlands/" class="browse-pill">West Midlands</a>
+      <a href="/tenders/region/east-of-england/" class="browse-pill">East of England</a>
+      <a href="/tenders/region/london/" class="browse-pill">London</a>
+      <a href="/tenders/region/south-east/" class="browse-pill">South East</a>
+      <a href="/tenders/region/south-west/" class="browse-pill">South West</a>
+      <a href="/tenders/region/wales/" class="browse-pill">Wales</a>
+      <a href="/tenders/region/scotland/" class="browse-pill">Scotland</a>
+      <a href="/tenders/region/northern-ireland/" class="browse-pill">Northern Ireland</a>
+    </div>
+  </div>
   <div class="search-bar">
     <input type="text" id="search-input" placeholder="Search tenders..." oninput="filterTenders()" style="max-width:260px;flex:none">
     <div class="filter-btns">
