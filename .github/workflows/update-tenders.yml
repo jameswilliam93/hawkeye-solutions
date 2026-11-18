@@ -31,7 +31,7 @@ jobs:
         run: |
           git config user.name "hawkeye-tender-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add uk-tenders.json tenders sitemap.xml pipeline_state.json
+          git add uk-tenders.json tenders internal sitemap.xml pipeline_state.json
           if git diff --cached --quiet; then
             echo "No tender changes today."
           else

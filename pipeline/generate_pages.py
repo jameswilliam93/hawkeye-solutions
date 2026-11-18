@@ -1454,6 +1454,195 @@ if (ham && mob) {{
 </html>"""
 
 
+# ── Priority indexing worklist (internal tool, not for public indexing) ─────
+# Google's "Request Indexing" button has a soft ~10/day quota per property.
+# This page ranks live high-value tenders into three tiers so James can spend
+# that quota on what matters most: Recruitment & IT first (core specialisms),
+# then the other marketed sectors, then everything else - largest value first
+# within each tier. Deliberately excluded from the sitemap and marked
+# noindex: it's a business-ops tool built from already-public tender data,
+# not content meant to rank itself.
+
+MIN_PRIORITY_VALUE = 1_000_000
+
+PRIORITY_CSS = """\
+.pw-wrap{max-width:980px;margin:0 auto;padding:36px 5% 56px}
+.pw-note{background:var(--teal-light);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-size:13.5px;color:var(--teal-dark);line-height:1.7;margin-bottom:32px}
+.pw-tier{margin-bottom:40px}
+.pw-tier h2{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--steel);margin-bottom:4px}
+.pw-count{font-size:14px;font-weight:400;color:var(--text-muted)}
+.pw-sub{font-size:13px;color:var(--text-muted);margin-bottom:16px}
+.pw-list{display:flex;flex-direction:column;border-top:1px solid var(--border)}
+.pw-row{display:flex;gap:18px;align-items:center;padding:14px 4px;border-bottom:1px solid var(--border)}
+.pw-row-main{flex:1;min-width:0}
+.pw-title{font-size:14px;font-weight:700;color:var(--steel);line-height:1.4;display:block;margin-bottom:3px}
+.pw-title:hover{color:var(--teal-mid)}
+.pw-meta{font-size:12px;color:var(--text-muted)}
+.pw-url{font-family:monospace;font-size:11px;color:var(--teal-mid);word-break:break-all;margin-top:3px;cursor:text;user-select:all}
+.pw-row-side{flex-shrink:0;display:flex;align-items:center;gap:14px}
+.pw-value{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--teal-dark);white-space:nowrap}
+.pw-copy{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:700;border:1px solid var(--teal-mid);background:var(--white);color:var(--teal-dark);cursor:pointer;white-space:nowrap}
+.pw-copy:hover{background:var(--teal-light)}
+.pw-copy.failed{border-color:var(--urgent);color:var(--urgent)}
+.pw-done-btn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:700;border:1px solid var(--safe);background:var(--white);color:var(--safe);cursor:pointer;white-space:nowrap}
+.pw-done-btn:hover{background:#e8f7f0}
+.pw-row.pw-hidden{display:none}
+.pw-empty{padding:30px 0;text-align:center;color:var(--text-muted);font-size:13.5px}
+.pw-reset-line{font-size:12px;color:var(--text-muted);margin-top:10px}
+.pw-reset-line button{background:none;border:none;color:var(--teal-mid);font-weight:700;cursor:pointer;font-size:12px;padding:0;font-family:inherit;text-decoration:underline}
+@media(max-width:700px){.pw-row{flex-direction:column;align-items:flex-start;gap:8px}.pw-row-side{width:100%;justify-content:space-between}}
+"""
+
+
+def build_priority_row(t: dict, slug: str) -> str:
+    val = fmt_value(t.get("value"), t.get("currency", "GBP"))
+    days = days_until(t.get("deadline", ""))
+    days_label = f"{days}d left" if days is not None and days >= 0 else "deadline TBC"
+    page_url = f"{BASE_URL}/tenders/{slug}/"
+    sector = t.get("sector", "") or "—"
+    return f"""\
+<div class="pw-row" data-key="{esc(slug)}">
+  <div class="pw-row-main">
+    <a class="pw-title" href="{esc(page_url)}" target="_blank" rel="noopener">{esc(t.get('title', ''))}</a>
+    <div class="pw-meta">{esc(t.get('buyer', ''))} &middot; {esc(sector)} &middot; {esc(days_label)}</div>
+    <div class="pw-url">{esc(page_url)}</div>
+  </div>
+  <div class="pw-row-side">
+    <span class="pw-value">{esc(val)}</span>
+    <button class="pw-copy" onclick="copyPwUrl(this,'{esc(page_url)}')">Copy URL</button>
+    <button class="pw-done-btn" onclick="markPwDone(this)">&#10003; Done</button>
+  </div>
+</div>"""
+
+
+def build_priority_tier(tier_id: str, title: str, subtitle: str, rows: list[tuple[dict, str]]) -> str:
+    rows_sorted = sorted(rows, key=lambda r: -(r[0].get("value") or 0))
+    body = "".join(build_priority_row(t, slug) for t, slug in rows_sorted) or '<div class="pw-empty">Nothing in this tier right now.</div>'
+    return f"""
+<section class="pw-tier" id="{esc(tier_id)}">
+  <h2>{esc(title)} <span class="pw-count" data-total="{len(rows_sorted)}">({len(rows_sorted)})</span></h2>
+  <p class="pw-sub">{esc(subtitle)}</p>
+  <div class="pw-list">{body}</div>
+</section>"""
+
+
+def build_priority_page(tier1: list, tier2: list, tier3: list) -> str:
+    total = len(tier1) + len(tier2) + len(tier3)
+    body = (
+        build_priority_tier(
+            "tier1", "Tier 1 — Recruitment & IT Consultancy", "Core specialisms. Work through these first.", tier1
+        )
+        + build_priority_tier(
+            "tier2", "Tier 2 — Other Marketed Sectors",
+            "Utilities, NHS, Councils, Construction, Events. Once Tier 1 is clear.",
+            tier2,
+        )
+        + build_priority_tier(
+            "tier3", "Tier 3 — Everything Else", "Largest value first. Once Tiers 1 and 2 are clear.", tier3
+        )
+    )
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Priority Indexing Worklist — Internal</title>
+<meta name="robots" content="noindex, nofollow">
+<style>{CSS}{PRIORITY_CSS}</style>
+</head>
+<body>
+{NAV}
+
+<div class="hero" style="padding-bottom:26px">
+  <div class="hero-inner">
+    <h1>Priority Indexing Worklist</h1>
+    <div class="hub-count">{total} tenders &ge; {fmt_value(MIN_PRIORITY_VALUE)} &middot; regenerated daily</div>
+  </div>
+</div>
+
+<div class="pw-wrap">
+  <p class="pw-note">Internal tool — not indexed. Use Google Search Console's URL Inspection tool to manually "Request Indexing" for up to ~10 URLs/day: copy a URL here, paste it into the inspection search bar, then request indexing. Click "Done" once submitted — it's remembered on this device, so it stays hidden next time you load the page. Work Tier 1 to zero before moving to Tier 2, then Tier 3.
+  <span class="pw-reset-line" id="pw-reset-line" style="display:none">&mdash; <span id="pw-done-count">0</span> marked done on this device. <button onclick="resetPwDone()">Reset all</button></span>
+  </p>
+  {body}
+</div>
+
+{FOOTER}
+
+<script>
+const ham = document.getElementById('ham');
+const mob = document.getElementById('mob');
+if (ham && mob) {{
+  ham.addEventListener('click', () => {{
+    ham.classList.toggle('open');
+    mob.classList.toggle('open');
+  }});
+}}
+
+function copyPwUrl(btn, url) {{
+  const done = () => {{ btn.textContent = 'Copied'; btn.classList.remove('failed'); setTimeout(() => btn.textContent = 'Copy URL', 1500); }};
+  const failed = () => {{ btn.textContent = 'Select URL below'; btn.classList.add('failed'); setTimeout(() => {{ btn.textContent = 'Copy URL'; btn.classList.remove('failed'); }}, 2000); }};
+  if (navigator.clipboard && navigator.clipboard.writeText) {{
+    navigator.clipboard.writeText(url).then(done).catch(failed);
+  }} else {{
+    failed();
+  }}
+}}
+
+/* Mark-as-done tracking — per-device, via localStorage. A row marked done
+   here stays hidden on this browser even after tomorrow's regenerated page
+   loads fresh data, since it's keyed by the tender's stable slug rather than
+   anything server-rendered. */
+const PW_STORAGE_KEY = 'hawkeye_priority_done';
+
+function pwLoadDone() {{
+  try {{ return new Set(JSON.parse(localStorage.getItem(PW_STORAGE_KEY) || '[]')); }}
+  catch (e) {{ return new Set(); }}
+}}
+function pwSaveDone(set) {{
+  try {{ localStorage.setItem(PW_STORAGE_KEY, JSON.stringify([...set])); }} catch (e) {{}}
+}}
+function pwUpdateCounts() {{
+  document.querySelectorAll('.pw-tier').forEach(tier => {{
+    const countEl = tier.querySelector('.pw-count');
+    const remaining = tier.querySelectorAll('.pw-row:not(.pw-hidden)').length;
+    if (countEl) countEl.textContent = '(' + remaining + ' remaining of ' + countEl.dataset.total + ')';
+  }});
+  const doneSet = pwLoadDone();
+  const countBadge = document.getElementById('pw-done-count');
+  const resetLine = document.getElementById('pw-reset-line');
+  if (countBadge) countBadge.textContent = doneSet.size;
+  if (resetLine) resetLine.style.display = doneSet.size ? 'inline' : 'none';
+}}
+function markPwDone(btn) {{
+  const row = btn.closest('.pw-row');
+  const key = row.dataset.key;
+  const doneSet = pwLoadDone();
+  doneSet.add(key);
+  pwSaveDone(doneSet);
+  row.classList.add('pw-hidden');
+  pwUpdateCounts();
+}}
+function resetPwDone() {{
+  if (!confirm('Un-hide all tenders marked done on this device?')) return;
+  pwSaveDone(new Set());
+  document.querySelectorAll('.pw-row.pw-hidden').forEach(r => r.classList.remove('pw-hidden'));
+  pwUpdateCounts();
+}}
+(function pwApplyDoneOnLoad() {{
+  const doneSet = pwLoadDone();
+  if (doneSet.size) {{
+    document.querySelectorAll('.pw-row').forEach(row => {{
+      if (doneSet.has(row.dataset.key)) row.classList.add('pw-hidden');
+    }});
+  }}
+  pwUpdateCounts();
+}})();
+</script>
+</body>
+</html>"""
+
+
 # ── Sitemap builder ────────────────────────────────────────────────────────────
 
 def build_sitemap(entries: list[tuple[str, str, str, str]]) -> str:
@@ -1562,6 +1751,9 @@ def main():
     today_utc = now.strftime("%Y-%m-%d")
     yesterday_utc = (now - timedelta(days=1)).strftime("%Y-%m-%d")
     indexnow_urls: list[str] = []  # new/changed URLs to push to IndexNow this run
+    priority_tier1: list = []  # (t, slug) — Recruitment & IT, >= MIN_PRIORITY_VALUE
+    priority_tier2: list = []  # (t, slug) — other marketed sectors
+    priority_tier3: list = []  # (t, slug) — everything else
 
     for i, (t, slug, is_closed) in enumerate(entries):
         buyer  = t.get("buyer", "")
@@ -1587,6 +1779,15 @@ def main():
         if published in (today_utc, yesterday_utc):
             indexnow_urls.append(f"{BASE_URL}/tenders/{slug}/")
         generated += 1
+
+        if not is_closed and (t.get("value") or 0) >= MIN_PRIORITY_VALUE:
+            marketed_key = to_marketed_sector(sector)
+            if marketed_key in ("recruitment", "it"):
+                priority_tier1.append((t, slug))
+            elif marketed_key:
+                priority_tier2.append((t, slug))
+            else:
+                priority_tier3.append((t, slug))
 
     # ── Pass 2.5: build sector / region hub pages ───────────────────────────────
     today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -1627,6 +1828,13 @@ def main():
     indexnow_path = out / "indexnow_urls.txt"
     indexnow_path.write_text("\n".join(indexnow_urls), encoding="utf-8")
 
+    # Internal priority-indexing worklist — not in the sitemap, noindex'd.
+    priority_dir = out / "internal" / "priority-tenders"
+    priority_dir.mkdir(parents=True, exist_ok=True)
+    (priority_dir / "index.html").write_text(
+        build_priority_page(priority_tier1, priority_tier2, priority_tier3), encoding="utf-8"
+    )
+
     # ── Pass 3: clean up retired tender pages still sitting on disk ────────────
     # A directory under tenders/ that wasn't (re)written above is either a
     # tender no longer in the feed, or one just excluded above as retired.
@@ -1664,6 +1872,8 @@ def main():
     print(f"Generated {hubs_generated} hub pages → {out}/tenders/sector/, {out}/tenders/region/")
     print(f"Sitemap   → {sitemap_path}  ({len(sitemap_entries)} URLs)")
     print(f"IndexNow  → {indexnow_path}  ({len(indexnow_urls)} URLs to submit)")
+    print(f"Priority worklist → {priority_dir}/index.html  "
+          f"(tier1={len(priority_tier1)}, tier2={len(priority_tier2)}, tier3={len(priority_tier3)})")
     if skipped:
         print(f"Skipped   {skipped} tenders (no title)")
     if retired:

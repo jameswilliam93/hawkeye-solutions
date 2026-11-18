@@ -1,32 +1,42 @@
 User-agent: *
 Allow: /
+Disallow: /internal/
 
 User-agent: GPTBot
 Allow: /
+Disallow: /internal/
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /internal/
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /internal/
 
 User-agent: Claude-Web
 Allow: /
+Disallow: /internal/
 
 User-agent: anthropic-ai
 Allow: /
+Disallow: /internal/
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /internal/
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /internal/
 
 User-agent: CCBot
 Allow: /
+Disallow: /internal/
 
 User-agent: Bytespider
 Allow: /
+Disallow: /internal/
 
 Sitemap: https://hawkeye-solutions.co.uk/sitemap.xml
 Sitemap: https://hawkeye-solutions.co.uk/sitemap-pages.xml
