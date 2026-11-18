@@ -1022,6 +1022,12 @@ def build_page(t: dict, slug: str, is_closed: bool, buyer_others=None, sector_re
 <meta property="og:description" content="{esc(meta_desc)}">
 <meta property="og:url" content="{esc(page_url)}">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Hawkeye Solutions">
+<meta property="og:image" content="{BASE_URL}/logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{esc(title_raw)}">
+<meta name="twitter:description" content="{esc(meta_desc)}">
+<meta name="twitter:image" content="{BASE_URL}/logo.png">
 <script type="application/ld+json">{json.dumps(jsonld, ensure_ascii=False)}</script>
 <style>{CSS}</style>
 </head>

@@ -61,10 +61,25 @@
   </url>
 
   <url>
-    <loc>https://hawkeye-solutions.co.uk/bid-training.html</loc>
+    <loc>https://hawkeye-solutions.co.uk/bid-training.htm</loc>
     <lastmod>2026-05-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
+  </url>
+
+  <!-- Company pages -->
+  <url>
+    <loc>https://hawkeye-solutions.co.uk/about.html</loc>
+    <lastmod>2026-05-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://hawkeye-solutions.co.uk/contact.html</loc>
+    <lastmod>2026-05-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 
 </urlset>

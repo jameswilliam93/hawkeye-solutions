@@ -1,0 +1,24 @@
+# Hawkeye Solutions
+
+> Hawkeye Solutions is a UK bid writing and tender management company. We write, manage, review and train businesses on public sector tenders, with specialist expertise in the recruitment and staffing sector and IT consultancy frameworks (G-Cloud, DOS 7, Crown Commercial Service).
+
+Hawkeye Solutions helps recruitment agencies and IT consultancies win UK public sector contracts. Core services: full bid writing, bid management (pipeline and deadline coordination), bid consultancy and review (improving client-drafted bids against scoring criteria), and in-house bid writing training. The company also publishes a free, daily-updated board of live UK public sector tenders sourced from Find a Tender (GOV.UK).
+
+Contact: 0330 223 8040 · info@hawkeye-solutions.co.uk · https://hawkeye-solutions.co.uk/contact.html
+
+## Services
+
+- [Bid Writing](https://hawkeye-solutions.co.uk/bid-writing.html): End-to-end written tender submissions, from win strategy to final draft.
+- [Bid Management](https://hawkeye-solutions.co.uk/bid-management.html): Coordinating the bid pipeline, deadlines, stakeholders and quality assurance.
+- [Bid Consultancy & Review](https://hawkeye-solutions.co.uk/bid-consultancy.html): Reviewing and strengthening client-written draft bids against scoring criteria.
+- [Bid Writing Training](https://hawkeye-solutions.co.uk/bid-training.htm): In-house training programmes to build client bid-writing capability.
+- [Sectors We Cover](https://hawkeye-solutions.co.uk/sectors.html): Recruitment & staffing, IT consultancy, utilities, NHS, local government, construction, events and more.
+
+## Live tenders
+
+- [Live Tender Search](https://hawkeye-solutions.co.uk/tender-search.html): Searchable, filterable board of live UK public sector tenders, updated daily.
+- Individual tender notices are published as static pages under /tenders/ and listed in /sitemap.xml.
+
+## About
+
+- [About Us](https://hawkeye-solutions.co.uk/about.html): Company background, timeline and team (Philip Pitt, founder; James Pitt, business development).
