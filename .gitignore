@@ -1,5 +1,6 @@
 pipeline.log
 backfill_progress.json
+indexnow_urls.txt
 __pycache__/
 *.pyc
 .DS_Store

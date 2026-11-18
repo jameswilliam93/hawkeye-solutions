@@ -38,3 +38,8 @@ jobs:
             git commit -m "Daily tender update ($(date -u +%Y-%m-%d))"
             git push
           fi
+
+      - name: Submit new/changed URLs to IndexNow
+        if: always()
+        continue-on-error: true
+        run: python pipeline/submit_indexnow.py

@@ -1559,6 +1559,9 @@ def main():
     # ── Pass 2: build + write each page ─────────────────────────────────────────
     generated = 0
     sitemap_entries: list[tuple[str, str, str, str]] = []
+    today_utc = now.strftime("%Y-%m-%d")
+    yesterday_utc = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+    indexnow_urls: list[str] = []  # new/changed URLs to push to IndexNow this run
 
     for i, (t, slug, is_closed) in enumerate(entries):
         buyer  = t.get("buyer", "")
@@ -1581,6 +1584,8 @@ def main():
 
         published = (t.get("published") or "")[:10]
         sitemap_entries.append((f"tenders/{slug}/", published, "weekly", "0.7"))
+        if published in (today_utc, yesterday_utc):
+            indexnow_urls.append(f"{BASE_URL}/tenders/{slug}/")
         generated += 1
 
     # ── Pass 2.5: build sector / region hub pages ───────────────────────────────
@@ -1596,6 +1601,7 @@ def main():
         html = build_hub_page("sector", key, name, intro, rows, siblings)
         (hub_dir / "index.html").write_text(html, encoding="utf-8")
         sitemap_entries.append((f"tenders/sector/{key}/", today_str, "daily", "0.6"))
+        indexnow_urls.append(f"{BASE_URL}/tenders/sector/{key}/")
         hubs_generated += 1
 
     for region_name in BROAD_REGION_ORDER:
@@ -1608,11 +1614,18 @@ def main():
         html = build_hub_page("region", region_key, region_name, intro, rows, siblings)
         (hub_dir / "index.html").write_text(html, encoding="utf-8")
         sitemap_entries.append((f"tenders/region/{region_key}/", today_str, "daily", "0.6"))
+        indexnow_urls.append(f"{BASE_URL}/tenders/region/{region_key}/")
         hubs_generated += 1
 
     # Write sitemap
     sitemap_path = out / "sitemap.xml"
     sitemap_path.write_text(build_sitemap(sitemap_entries), encoding="utf-8")
+
+    # Manifest of URLs to push to IndexNow this run (new/changed tenders + all
+    # hubs, since hub *content* changes daily even though their URL doesn't).
+    # Consumed by pipeline/submit_indexnow.py as a separate, non-fatal step.
+    indexnow_path = out / "indexnow_urls.txt"
+    indexnow_path.write_text("\n".join(indexnow_urls), encoding="utf-8")
 
     # ── Pass 3: clean up retired tender pages still sitting on disk ────────────
     # A directory under tenders/ that wasn't (re)written above is either a
@@ -1650,6 +1663,7 @@ def main():
     print(f"Generated {generated} tender pages → {out}/tenders/")
     print(f"Generated {hubs_generated} hub pages → {out}/tenders/sector/, {out}/tenders/region/")
     print(f"Sitemap   → {sitemap_path}  ({len(sitemap_entries)} URLs)")
+    print(f"IndexNow  → {indexnow_path}  ({len(indexnow_urls)} URLs to submit)")
     if skipped:
         print(f"Skipped   {skipped} tenders (no title)")
     if retired:
