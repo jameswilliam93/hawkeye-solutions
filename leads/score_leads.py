@@ -36,7 +36,9 @@ Usage:
 """
 
 import json
+import re
 from pathlib import Path
+from urllib.parse import unquote
 
 CCS_FILE      = Path(__file__).parent / "ccs_frameworks.json"
 CH_FILE       = Path(__file__).parent / "companies_house.json"
@@ -57,8 +59,37 @@ TIER3_BANDS = {"micro", "large", "unknown", "unknown-full"}
 EXCLUDED_BANDS = {"dormant"}
 
 
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+EXCEL_ERRORS = {"#n/a", "#ref!", "#value!", "#null!", "#div/0!", "#name?", "#num!"}
+
+
+def clean_email(value: str) -> str:
+    """Two real sources of garbage found in practice: a source spreadsheet
+    with a literal Excel error value ("#N/A") in its Email column, and a
+    company's own broken mailto: link pointing at a bare domain or a first
+    name instead of an actual address. Neither looks like an email, so
+    don't trust anything that isn't shaped like one."""
+    v = (value or "").strip()
+    if not v or v.lower() in EXCEL_ERRORS:
+        return ""
+    return v if EMAIL_RE.match(v) else ""
+
+
+def first_valid_email(values: list[str]) -> str:
+    for v in values:
+        cleaned = clean_email(v)
+        if cleaned:
+            return cleaned
+    return ""
+
+
+def clean_phone(value: str) -> str:
+    return unquote((value or "").strip())
+
+
 def domain_from_email(email: str) -> str:
-    if not email or "@" not in email:
+    email = clean_email(email)
+    if not email:
         return ""
     domain = email.split("@", 1)[1].strip().lower()
     return "" if domain in FREE_EMAIL_DOMAINS else domain
@@ -97,8 +128,8 @@ def merge_ccs_suppliers(ccs_all: list[dict]) -> list[dict]:
             "company_name": first_nonempty([s["trading_name"] for s in group]),
             "company_number": first_nonempty([s["company_number"] for s in group]),
             "contact_name": first_nonempty([s["contact_name"] for s in group]),
-            "contact_email": first_nonempty([s["contact_email"] for s in group]),
-            "contact_phone": first_nonempty([s["contact_phone"] for s in group]),
+            "contact_email": first_valid_email([s["contact_email"] for s in group]),
+            "contact_phone": first_nonempty([clean_phone(s["contact_phone"]) for s in group]),
             "website": first_nonempty([s.get("website", "") for s in group]),
             "linkedin": first_nonempty([s.get("linkedin", "") for s in group]),
             "frameworks": sorted(set(frameworks)),
@@ -154,7 +185,7 @@ def main():
         if site and site.get("fetched_ok"):
             notes = site.get("meta_description") or site.get("title") or ""
             if not phone and site.get("extra_phones"):
-                phone = site["extra_phones"][0]
+                phone = clean_phone(site["extra_phones"][0])
             enriched_count += 1
         award_bit = award_note_for_ccs.get(normalise_name(s["company_name"]))
         if award_bit:
@@ -208,16 +239,15 @@ def main():
         guess = domain_guesses.get(c["company_number"]) if not promoted else None
         website, notes, email, phone = "", "", "", ""
         if promoted:
-            email = award["contact_email"]
+            email = clean_email(award["contact_email"])
             website = award.get("website", "")
             notes = award_note(award)
         elif guess and guess.get("fetched_ok"):
             website = guess.get("domain", "")
             notes = guess.get("meta_description") or guess.get("title") or ""
-            if guess.get("extra_emails"):
-                email = guess["extra_emails"][0]
+            email = first_valid_email(guess.get("extra_emails") or [])
             if guess.get("extra_phones"):
-                phone = guess["extra_phones"][0]
+                phone = clean_phone(guess["extra_phones"][0])
             counts["tier2_domain_matched"] = counts.get("tier2_domain_matched", 0) + 1
 
         leads.append({
@@ -239,8 +269,9 @@ def main():
 
     standalone_added = 0
     for a in standalone_awards:
-        if not a.get("contact_email"):
-            continue  # no name and no email — nothing to contact, would be dropped at export anyway
+        email = clean_email(a.get("contact_email"))
+        if not email:
+            continue  # no name and no usable email — nothing to contact, would be dropped at export anyway
         leads.append({
             "company_name": a["supplier_name"],
             "company_number": "",
@@ -248,7 +279,7 @@ def main():
             "tier": 1,
             "size_band": None,
             "contact_name": "",
-            "contact_email": a["contact_email"],
+            "contact_email": email,
             "contact_phone": "",
             "website": a.get("website", ""),
             "linkedin": "",
