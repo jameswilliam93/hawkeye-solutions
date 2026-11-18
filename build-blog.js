@@ -7,14 +7,38 @@ const outputHtmlDir = path.join(__dirname, 'blog');
 const sitemapPath   = path.join(__dirname, 'sitemap-blog.xml');
 const baseUrl       = 'https://hawkeye-solutions.co.uk';
 
+// This script's own source (_blog/*.md) is one way posts get into
+// blog-data.json, but it isn't the only one -- posts can also be written
+// straight into blog-data.json by hand (see blog.html/blog-post.html,
+// which read it directly and don't require _blog at all). This build runs
+// on every single deploy regardless of what the commit actually touched,
+// so if _blog is empty this must never blindly overwrite blog-data.json
+// with [] -- that would silently delete real, hand-written content on the
+// next unrelated push. Only ever write an empty result if there wasn't
+// anything there already.
+function writeJsonUnlessWouldEraseContent(filePath, posts) {
+  if (posts.length === 0 && fs.existsSync(filePath)) {
+    try {
+      const existing = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      if (Array.isArray(existing) && existing.length > 0) {
+        console.log(`  _blog produced 0 posts -- leaving the existing ${path.basename(filePath)} (${existing.length} post(s)) untouched`);
+        return;
+      }
+    } catch {
+      // Existing file isn't valid JSON -- fall through and overwrite it below.
+    }
+  }
+  fs.writeFileSync(filePath, JSON.stringify(posts, null, 2));
+}
+
 // ── Ensure /blog/ output directory exists ─────────────────────────────────
 if (!fs.existsSync(outputHtmlDir)) {
   fs.mkdirSync(outputHtmlDir, { recursive: true });
 }
 
 if (!fs.existsSync(blogDir)) {
-  console.log('No _blog directory found, creating empty outputs');
-  fs.writeFileSync(outputJson, JSON.stringify([], null, 2));
+  console.log('No _blog directory found');
+  writeJsonUnlessWouldEraseContent(outputJson, []);
   fs.writeFileSync(sitemapPath, buildSitemapXml([]));
   process.exit(0);
 }
@@ -484,7 +508,7 @@ for (const post of posts) {
 }
 
 // Write blog-data.json
-fs.writeFileSync(outputJson, JSON.stringify(posts, null, 2));
+writeJsonUnlessWouldEraseContent(outputJson, posts);
 
 // Write sitemap-blog.xml
 fs.writeFileSync(sitemapPath, buildSitemapXml(posts));
