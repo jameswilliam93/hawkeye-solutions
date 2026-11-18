@@ -246,6 +246,29 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
 .footer-col a:hover{color:var(--white)}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:16px;font-size:12px;display:flex;justify-content:space-between;max-width:1180px;margin:0 auto}
 
+/* ── Hub pages (sector / region tender listings) ── */
+.hub-intro{font-size:14.5px;color:var(--text-muted);line-height:1.8;max-width:760px;margin-bottom:8px}
+.hub-count{font-size:13px;color:rgba(255,255,255,.6);margin-top:10px}
+.hub-wrap{max-width:1180px;margin:0 auto;padding:36px 5% 56px}
+.hub-nav-links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px}
+.hub-nav-pill{font-size:12.5px;font-weight:600;color:var(--teal-dark);background:var(--teal-light);border:1px solid var(--border);border-radius:20px;padding:6px 14px;transition:background .15s}
+.hub-nav-pill:hover{background:#d9eef3}
+.hub-nav-pill.active{background:var(--teal-dark);color:var(--white)}
+.hub-list{display:flex;flex-direction:column;border-top:1px solid var(--border)}
+.hub-row{display:flex;gap:18px;align-items:center;padding:16px 4px;border-bottom:1px solid var(--border);transition:background .15s}
+.hub-row:hover{background:var(--off-white)}
+.hub-row-main{flex:1;min-width:0}
+.hub-row-title{font-size:14.5px;font-weight:700;color:var(--steel);line-height:1.4;display:block;margin-bottom:3px}
+.hub-row-meta{font-size:12.5px;color:var(--text-muted)}
+.hub-row-side{flex-shrink:0;display:flex;align-items:center;gap:16px;text-align:right}
+.hub-row-value{font-family:var(--font-display);font-size:14.5px;font-weight:600;color:var(--teal-dark);white-space:nowrap}
+.hub-row-deadline{font-size:12px;font-weight:700;white-space:nowrap}
+.hub-row-deadline.urgent{color:var(--urgent)}
+.hub-row-deadline.warning{color:var(--warning)}
+.hub-row-deadline.safe{color:var(--safe)}
+.hub-empty{padding:40px 0;text-align:center;color:var(--text-muted);font-size:14px}
+.hub-empty a{color:var(--teal-mid);font-weight:600}
+
 @media(max-width:900px){
   nav .nav-links{display:none}
   .hamburger{display:flex}
@@ -256,6 +279,8 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
   .footer-grid{grid-template-columns:1fr 1fr}
   .footer-bottom{flex-direction:column;gap:8px;text-align:center}
   .hero-actions{align-items:flex-start}
+  .hub-row{flex-direction:column;align-items:flex-start;gap:6px}
+  .hub-row-side{width:100%;justify-content:space-between}
 }
 </style>
 </head>
@@ -605,6 +630,7 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
 <div class="card">
   <h2 style="font-size:13px">Related in Other Services</h2>
   <div class="rel-tenders"><a class="rel-tender" href="/tenders/uk-space-agency-strategic-support-to-the-international-chart-07bd85/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">UK Space Agency- Strategic Support to the International Charter: Space and Major Disasters</span><span class="rel-meta">Department for Science, Innovation &amp; Technology</span></span></a><a class="rel-tender" href="/tenders/equality-diversion-and-inclusion-membership-07bd4e/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">Equality Diversion and Inclusion Membership</span><span class="rel-meta">Yorkshire Ambulance Service NHS Trust</span></span></a><a class="rel-tender" href="/tenders/voluntary-community-infrastructure-support-service-06c881/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">Voluntary &amp; Community Infrastructure Support Service</span><span class="rel-meta">Swindon Borough Council</span></span></a><a class="rel-tender" href="/tenders/community-health-improvement-and-lifestyle-service-07bafd/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">Community Health Improvement and Lifestyle Service</span><span class="rel-meta">NHS Coventry and Warwickshire Integrated Care Board</span></span></a></div>
+  
 </div></div>
 </div>
 

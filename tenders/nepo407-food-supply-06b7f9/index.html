@@ -246,6 +246,29 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
 .footer-col a:hover{color:var(--white)}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:16px;font-size:12px;display:flex;justify-content:space-between;max-width:1180px;margin:0 auto}
 
+/* ── Hub pages (sector / region tender listings) ── */
+.hub-intro{font-size:14.5px;color:var(--text-muted);line-height:1.8;max-width:760px;margin-bottom:8px}
+.hub-count{font-size:13px;color:rgba(255,255,255,.6);margin-top:10px}
+.hub-wrap{max-width:1180px;margin:0 auto;padding:36px 5% 56px}
+.hub-nav-links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px}
+.hub-nav-pill{font-size:12.5px;font-weight:600;color:var(--teal-dark);background:var(--teal-light);border:1px solid var(--border);border-radius:20px;padding:6px 14px;transition:background .15s}
+.hub-nav-pill:hover{background:#d9eef3}
+.hub-nav-pill.active{background:var(--teal-dark);color:var(--white)}
+.hub-list{display:flex;flex-direction:column;border-top:1px solid var(--border)}
+.hub-row{display:flex;gap:18px;align-items:center;padding:16px 4px;border-bottom:1px solid var(--border);transition:background .15s}
+.hub-row:hover{background:var(--off-white)}
+.hub-row-main{flex:1;min-width:0}
+.hub-row-title{font-size:14.5px;font-weight:700;color:var(--steel);line-height:1.4;display:block;margin-bottom:3px}
+.hub-row-meta{font-size:12.5px;color:var(--text-muted)}
+.hub-row-side{flex-shrink:0;display:flex;align-items:center;gap:16px;text-align:right}
+.hub-row-value{font-family:var(--font-display);font-size:14.5px;font-weight:600;color:var(--teal-dark);white-space:nowrap}
+.hub-row-deadline{font-size:12px;font-weight:700;white-space:nowrap}
+.hub-row-deadline.urgent{color:var(--urgent)}
+.hub-row-deadline.warning{color:var(--warning)}
+.hub-row-deadline.safe{color:var(--safe)}
+.hub-empty{padding:40px 0;text-align:center;color:var(--text-muted);font-size:14px}
+.hub-empty a{color:var(--teal-mid);font-weight:600}
+
 @media(max-width:900px){
   nav .nav-links{display:none}
   .hamburger{display:flex}
@@ -256,6 +279,8 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
   .footer-grid{grid-template-columns:1fr 1fr}
   .footer-bottom{flex-direction:column;gap:8px;text-align:center}
   .hero-actions{align-items:flex-start}
+  .hub-row{flex-direction:column;align-items:flex-start;gap:6px}
+  .hub-row-side{width:100%;justify-content:space-between}
 }
 </style>
 </head>
@@ -374,7 +399,7 @@ Products </div></div><div class="lot-val">£32.0m</div></div>
   <div class="lots-extra">
 <div class="lot"><div><div class="lot-title">Organic Milk</div><div class="lot-desc">Supply and delivery of milk and dairy products required by Contracting Authorities in the Tees Valley. Products may include organic milk and other organic dairy products. Suppliers appointed to this L</div></div><div class="lot-val">£1.0m</div></div>
 <div class="lot"><div><div class="lot-title">Meal Concepts &amp; Food to Go</div><div class="lot-desc">Supply and delivery of concept-based meal solutions and ready-to-eat products that may be used by Contracting Authorities to support catering, hospitality, retail, education or leisure requirements. S</div></div><div class="lot-val">£18.0m</div></div>
-<div class="lot"><div><div class="lot-title">Exception and Contingent Arrangements</div><div class="lot-desc">All awarded Suppliers across the Framework Lots 1 - 4 will be automatically awarded to Lot 6. Suppliers may be utilised to protect supply where a Supplier in another Lot is unable to meet a Contractin</div></div><div class="lot-val">£0</div></div></div>
+<div class="lot"><div><div class="lot-title">Exception and Contingent Arrangements</div><div class="lot-desc">All awarded Suppliers across the Framework Lots 1 - 4 will be automatically awarded to Lot 6. Suppliers may be utilised to protect supply where a Supplier in another Lot is unable to meet a Contractin</div></div></div></div>
   <button class="desc-toggle" onclick="var e=this.previousElementSibling,open=e.classList.toggle('open');this.textContent=open?'Show fewer lots':'Show all 11 lots';">Show all 11 lots</button>
 </div>
 <div class="card">
@@ -449,7 +474,7 @@ Products </div></div><div class="lot-val">£32.0m</div></div>
 </div>
 <script>
 (function() {
-  var QUIZ_CTX = {"title": "NEPO407 - Food Supply", "slug": "nepo407-food-supply-06b7f9", "value": "£200.0m", "rawValue": 200000000, "sector": "Food & Beverages", "daysLeft": 19, "scoreSplit": ""};
+  var QUIZ_CTX = {"title": "NEPO407 - Food Supply", "slug": "nepo407-food-supply-06b7f9", "value": "£200.0m", "rawValue": 200000000, "sector": "Food & Beverages", "daysLeft": 18, "scoreSplit": ""};
   var quizAnswers = [];
 
   window.quizNext = function(step, points) {
@@ -624,6 +649,7 @@ Products </div></div><div class="lot-val">£32.0m</div></div>
 <div class="card">
   <h2 style="font-size:13px">Related in Food &amp; Beverages</h2>
   <div class="rel-tenders"><a class="rel-tender" href="/tenders/procurement-coffee-and-vending-equipment-consumables-mainten-079056/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">Procurement Coffee and Vending Equipment, Consumables, Maintenance Services and a Replenishing Service for Coffee and Vending machines</span><span class="rel-meta">Velindre University NHS Trust</span></span></a><a class="rel-tender" href="/tenders/catering-tender-aylesford-school-warwick-07b995/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">Catering Tender Aylesford School Warwick</span><span class="rel-meta">AYLESFORD SCHOOL WARWICK</span></span></a><a class="rel-tender" href="/tenders/university-of-york-ambient-chilled-frozen-fresh-meat-and-non-07b401/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">University of York Ambient, Chilled, Frozen, Fresh Meat and Non-Food</span><span class="rel-meta">University Of York</span></span></a><a class="rel-tender" href="/tenders/catering-tender-blue-coat-cofe-academy-0790a2/"><span class="rel-arrow">&rsaquo;</span><span><span class="rel-title">Catering Tender - Blue Coat CofE Academy</span><span class="rel-meta">BLUE COAT CHURCH OF ENGLAND ACADEMY (WALSALL) TRUST</span></span></a></div>
+  
 </div></div>
 </div>
 
