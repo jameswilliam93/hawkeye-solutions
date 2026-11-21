@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write  # needed for Workload Identity Federation's OIDC token exchange
 
 jobs:
   update:
@@ -43,3 +44,16 @@ jobs:
         if: always()
         continue-on-error: true
         run: python pipeline/submit_indexnow.py
+
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        if: always()
+        continue-on-error: true
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/594848353509/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+          service_account: 'search-console-indexer@project-e1107499-38e5-46df-b15.iam.gserviceaccount.com'
+
+      - name: Resubmit sitemap to Google Search Console
+        if: always()
+        continue-on-error: true
+        run: python pipeline/submit_search_console.py
