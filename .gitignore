@@ -23,3 +23,8 @@ leads/award_notices_state.json
 leads/domain_guesses.json
 leads/guess_domains_state.json
 leads/new_award_leads.json
+leads/buyer_records.json
+leads/buyer_records_raw.jsonl
+leads/buyer_records_entities.json
+leads/buyer_records_fetch_state.json
+leads/buyer_records_resolve_state.json
