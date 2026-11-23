@@ -11,7 +11,10 @@ Usage:
     python3 generate_pages.py --output-dir /path/to/github/repo
 """
 
+from __future__ import annotations
+
 import argparse
+import gzip
 import json
 import re
 import shutil
@@ -25,6 +28,7 @@ BASE_URL          = "https://hawkeye-solutions.co.uk"
 CONTACT           = "/contact.html"
 INPUT_FILE        = Path("uk-tenders.json")
 CLEANUP_AFTER_DAYS = 30  # retire a tender's page once its deadline is this many days in the past
+BUYER_RECORDS_FILE = Path("pipeline/buyer_records_slim.json.gz")  # cut-down, committed copy written by leads/buyer_records.py build
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -304,6 +308,31 @@ h1{font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:60
 .kp-list li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--teal-mid);margin-top:7px;flex-shrink:0}
 
 .who-note{background:var(--teal-light);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--teal-dark);line-height:1.6;margin-bottom:14px}
+
+.btr-headline{background:var(--teal-light);border-radius:10px;padding:18px 20px;margin-bottom:20px}
+.btr-headline-stat{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--teal-dark);margin-bottom:4px;line-height:1}
+.btr-headline-text{font-size:13.5px;color:var(--steel);line-height:1.6}
+.btr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.btr-stat{background:var(--white);padding:14px 10px;text-align:center}
+.btr-stat-label{font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px}
+.btr-stat-val{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--steel)}
+.btr-count{font-size:13.5px;color:var(--text-muted);margin-bottom:22px;line-height:1.6}
+.btr-count strong{color:var(--steel)}
+.btr-rank-title{font-size:13px;font-weight:700;color:var(--steel);margin-bottom:14px}
+.btr-rank{display:flex;flex-direction:column;gap:14px;margin-bottom:18px}
+.btr-rank-row{display:grid;grid-template-columns:1fr auto;gap:3px 12px;align-items:center}
+.btr-rank-name{font-size:13.5px;font-weight:600;color:var(--steel);display:flex;align-items:center;gap:6px}
+.btr-sme-tag{font-size:9.5px;font-weight:700;letter-spacing:.3px;color:var(--teal-dark);background:var(--teal-light);border-radius:8px;padding:1px 6px}
+.btr-rank-meta{font-size:12px;color:var(--text-muted);white-space:nowrap}
+.btr-bar-track{grid-column:1/-1;height:7px;background:var(--off-white);border-radius:5px;overflow:hidden}
+.btr-bar-fill{height:100%;background:var(--teal-mid);border-radius:5px}
+.btr-scope-note{font-size:12.5px;color:var(--text-muted);margin:-4px 0 12px}
+.btr-source{font-size:11.5px;color:var(--text-muted);margin:12px 0 0}
+.btr-note{font-size:12px;color:var(--text-muted);line-height:1.65;border-top:1px solid var(--border);padding-top:14px;margin-bottom:14px}
+.btr-trend{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--steel);background:var(--off-white);border-radius:8px;padding:11px 14px;line-height:1.5}
+.btr-trend-arrow{font-weight:700;font-size:14px;flex-shrink:0}
+.btr-trend-arrow.down{color:#b7670a}
+.btr-trend-arrow.up{color:#1a7a50}
 
 .desc-text{font-size:14px;color:var(--text-muted);line-height:1.8;white-space:pre-wrap;word-break:break-word}
 .desc-toggle{background:none;border:none;color:var(--teal-mid);font-weight:700;font-size:13px;cursor:pointer;padding:10px 0 0;font-family:inherit}
@@ -676,6 +705,270 @@ def build_details_card(t: dict, procedure: str) -> str:
   <h2>Scope &amp; Who Can Bid</h2>
   {f'<div class="who-note">{eligibility}</div>' if eligibility else ''}
   {rows}
+</div>"""
+
+
+# ── Buyer's Track Record card (sourced from leads/buyer_records.py's output) ───
+#
+# Matching logic (buyer_key normalization, CPV-prefix rollup depths) is kept in
+# sync by hand with leads/buyer_records.py's normalize_buyer_key/pick_cpv_group
+# -- duplicated rather than imported across the pipeline/leads boundary, same
+# pattern as SIZE_BAND being copied into buyer_records.py from companies_house.py.
+
+_BTR_LEGAL_SUFFIXES = re.compile(
+    r"\b(limited|ltd|llp|plc|cic|llc|incorporated|inc|the|and|co|company|group|holdings?)\b",
+    re.IGNORECASE,
+)
+_BTR_PUNCT = re.compile(r"[^\w\s]")
+_BTR_CPV_DEPTHS = (8, 6, 4, 2)
+_BTR_RANK_VISIBLE = 10
+_BTR_ALL_CATEGORIES = "*"  # must match ALL_CATEGORIES in leads/buyer_records.py
+
+
+def _btr_normalize_buyer_key(name: str) -> str:
+    n = name.lower()
+    n = _BTR_PUNCT.sub(" ", n)
+    n = _BTR_LEGAL_SUFFIXES.sub(" ", n)
+    n = re.sub(r"\s+", " ", n).strip()
+    return n
+
+
+_BTR_RECORDS_CACHE: dict[str, list[dict]] | None = None
+_BTR_VARIANTS_CACHE: dict[str, set[str]] | None = None
+
+
+def get_buyer_records_index() -> dict[str, list[dict]]:
+    """Loaded once per run, not once per tender."""
+    global _BTR_RECORDS_CACHE
+    if _BTR_RECORDS_CACHE is None:
+        by_key: dict[str, list[dict]] = {}
+        if BUYER_RECORDS_FILE.exists():
+            records = json.loads(gzip.decompress(BUYER_RECORDS_FILE.read_bytes()))
+            for r in records:
+                by_key.setdefault(r["buyer_key"], []).append(r)
+        _BTR_RECORDS_CACHE = by_key
+    return _BTR_RECORDS_CACHE
+
+
+# Name variants that are the SAME organisation written differently:
+#   "UK Research & Innovation (UKRI)"            -> drop bracketed asides
+#   "The Minister for the Cabinet Office acting through Crown Commercial Service"
+#                                                -> the body actually buying
+#   "Milton Keynes City Council" / "Oldham Metropolitan Borough Council"
+#                                                -> "<place> council"
+_BTR_COUNCIL_TYPE = re.compile(r"\b(metropolitan borough|royal borough|city|borough|district|county)\b(?= council\b)")
+
+
+def _btr_strip_safe_brackets(name: str) -> str:
+    """Drop a bracketed aside ONLY when it's an abbreviation of the same body
+    ("(UKRI)", "(GLA)", "(IDeA)") or a trading name ("(t/a ...)"). Anything else
+    stays, because it can name a genuinely different organisation:
+    "Hanover (Scotland) Housing Association" is not "Hanover Housing Association"."""
+    def repl(m: re.Match) -> str:
+        inner = m.group(1).strip()
+        if inner.lower().startswith("t/a "):
+            return " "
+        if " " not in inner and len(inner) <= 10 and sum(ch.isupper() for ch in inner) >= 2:
+            return " "
+        return m.group(0)
+    return re.sub(r"\(([^)]*)\)", repl, name or "")
+
+
+def _btr_variant_key(name: str) -> str:
+    n = _btr_strip_safe_brackets(name)
+    n = re.sub(r"^.*\bacting (?:through|by|via)\s+", "", n, flags=re.IGNORECASE)
+    k = _btr_normalize_buyer_key(n)
+    k = _BTR_COUNCIL_TYPE.sub(" ", k)
+    return re.sub(r"\s+", " ", k).strip()
+
+
+def _btr_variants() -> dict[str, set[str]]:
+    global _BTR_VARIANTS_CACHE
+    if _BTR_VARIANTS_CACHE is None:
+        v: dict[str, set[str]] = {}
+        for key, recs in get_buyer_records_index().items():
+            v.setdefault(_btr_variant_key(recs[0]["buyer_name"]), set()).add(key)
+        _BTR_VARIANTS_CACHE = v
+    return _BTR_VARIANTS_CACHE
+
+
+def match_buyer_key(buyer: str) -> tuple[str | None, str]:
+    """Returns (buyer_key, how). Exact normalised match first; otherwise the
+    variant form, accepted ONLY when it points at exactly one known buyer --
+    if two different organisations collapse to the same variant (e.g. a city
+    council and a county council of the same place) we show nothing rather
+    than risk crediting one buyer with another's history."""
+    idx = get_buyer_records_index()
+    key = _btr_normalize_buyer_key(buyer or "")
+    if key and key in idx:
+        return key, "exact"
+    candidates = _btr_variants().get(_btr_variant_key(buyer or ""), set())
+    if len(candidates) == 1:
+        return next(iter(candidates)), "variant"
+    return None, "ambiguous" if candidates else "none"
+
+
+def find_buyer_record(t: dict, buyer_records_by_key: dict[str, list[dict]] | None = None) -> dict | None:
+    """Most specific record we can stand behind for this tender:
+      1. this buyer + the tender's own CPV category (finest depth first)
+      2. this buyer across ALL their contracts (clearly labelled as such)
+    Never infers a category: no CPV code on the tender -> buyer-wide only."""
+    idx = buyer_records_by_key if buyer_records_by_key is not None else get_buyer_records_index()
+    key, _ = match_buyer_key(t.get("buyer") or "")
+    candidates = idx.get(key) if key else None
+    if not candidates:
+        return None
+    cpv = (t.get("cpvCode") or "").strip()
+    if cpv:
+        for depth in _BTR_CPV_DEPTHS:
+            prefix = cpv[:depth]
+            for r in candidates:
+                if r["category_cpv_prefix"] == prefix:
+                    return r
+    for r in candidates:
+        if r["category_cpv_prefix"] == _BTR_ALL_CATEGORIES:
+            return r
+    return None
+
+
+def fmt_money_short(amount) -> str:
+    if amount is None:
+        return "&mdash;"
+    if amount >= 1_000_000:
+        return f"&pound;{amount/1_000_000:.1f}m"
+    if amount >= 1_000:
+        return f"&pound;{amount/1_000:.0f}k"
+    return f"&pound;{amount:.0f}"
+
+
+def _btr_headline(r: dict, scope: str) -> tuple[str, str]:
+    """(big stat, sentence). Wording follows what the numbers actually show --
+    never claims "dominated" for a field that's genuinely spread out."""
+    n = r["total_suppliers"]
+    suppliers = r["suppliers"]
+    if r["valued_awards"] and r["total_value_amount"]:
+        top_n = min(3, n)
+        share = sum((s["share_of_value"] or 0) for s in suppliers[:top_n]) * 100
+        top_txt = "top three" if top_n == 3 else f"top {top_n}"
+        if n <= 3:
+            lead = f"A closed field &mdash; only {n} suppliers have won"
+            return f"{n}", f"{lead} {scope}."
+        if share >= 70:
+            lead = "Dominated by a handful"
+        elif share >= 40:
+            lead = "Concentrated at the top"
+        else:
+            lead = "A spread-out field"
+        return (f"{share:.0f}%",
+                f"{lead} &mdash; {share:.0f}% of the money {scope} went to the {top_txt} of {n} suppliers who have won.")
+    # No disclosed values at all: talk about contract counts, never "0%".
+    return f"{n}", f"{n} different suppliers have won {scope}. This buyer didn't publish contract values, so shares of the money aren't available."
+
+
+def build_buyer_record_card(t: dict) -> str:
+    """Conditionally rendered -- omitted entirely when we have no record we can
+    stand behind for this buyer, same pattern as Scope & Who Can Bid being
+    omitted when there's no data. Single-supplier records are never shown."""
+    r = find_buyer_record(t)
+    if not r or r["total_suppliers"] < 2:
+        return ""
+
+    buyer_wide = r["category_cpv_prefix"] == _BTR_ALL_CATEGORIES
+    label = r.get("category_label") or ""
+    if buyer_wide:
+        scope = "across all of this buyer's contracts"
+        count_phrase = f"<strong>{r['total_awards']}</strong> contracts in total"
+        title_note = '<p class="btr-scope-note">Across all of this buyer&rsquo;s past contracts, not just this type of work.</p>'
+    elif label:
+        scope = f"on this buyer&rsquo;s {esc(label)} contracts"
+        count_phrase = f"<strong>{r['total_awards']} {esc(label)}</strong> contracts"
+        title_note = ""
+    else:
+        scope = "on this buyer&rsquo;s contracts of this kind"
+        count_phrase = f"<strong>{r['total_awards']}</strong> contracts of this kind"
+        title_note = ""
+
+    stat, headline = _btr_headline(r, scope)
+    suppliers = r["suppliers"]
+
+    def rank_row(name: str, sme: bool, wins: int, valued_wins: int, share, typical) -> str:
+        sme_tag = '<span class="btr-sme-tag">SME</span>' if sme else ""
+        win_text = f"{wins} win{'s' if wins != 1 else ''}"
+        # valued_wins == 0: none of these awards disclosed a value, so a "0%"
+        # would misread as "won nothing" rather than "value unknown".
+        if not valued_wins or share is None:
+            share_pct = 0
+            meta_text = f"{win_text} &middot; value not disclosed"
+        else:
+            share_pct = min(100, round(share * 100))
+            pct_text = "&lt;1%" if share_pct == 0 else f"{share_pct}%"
+            meta_text = f"{pct_text} &middot; {win_text}"
+            if typical is not None:
+                meta_text += f" &middot; typically {fmt_money_short(typical)}"
+        return f"""
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">{name}{sme_tag}</span>
+      <span class="btr-rank-meta">{meta_text}</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:{share_pct}%"></div></div>
+    </div>"""
+
+    rank_rows = "".join(
+        rank_row(esc(s["display_name"]), bool(s["is_sme"]), s["wins"], s["valued_wins"],
+                 s["share_of_value"], s["typical_value"])
+        for s in suppliers[:_BTR_RANK_VISIBLE]
+    )
+    others = r.get("others")
+    if others:
+        rank_rows += rank_row(
+            f"Others ({others['count']} supplier{'s' if others['count'] != 1 else ''})",
+            False, others["wins"], 1 if others["share_of_value"] else 0, others["share_of_value"], None,
+        )
+
+    new = r["new_suppliers_last_12m"]
+    if new:
+        trend_arrow, trend_class = "&uarr;", "up"
+        shown = ", ".join(esc(x) for x in new[:3])
+        more = f" and {len(new) - 3} more" if len(new) > 3 else ""
+        trend_text = f"New in the last 12 months: {shown}{more}."
+    else:
+        trend_arrow, trend_class = "&darr;", "down"
+        trend_text = f"No new supplier in the last 12 months &mdash; all {r['total_suppliers']} of the firms winning here had won before."
+
+    year = (r.get("earliest_award_date") or "")[:4]
+    stats_row = ""
+    if r["value_min"] is not None:
+        stats_row = f"""
+  <div class="btr-stats">
+    <div class="btr-stat"><div class="btr-stat-label">Lowest</div><div class="btr-stat-val">{fmt_money_short(r['value_min'])}</div></div>
+    <div class="btr-stat"><div class="btr-stat-label">Typical</div><div class="btr-stat-val">{fmt_money_short(r['value_mid'])}</div></div>
+    <div class="btr-stat"><div class="btr-stat-label">Highest</div><div class="btr-stat-val">{fmt_money_short(r['value_max'])}</div></div>
+  </div>"""
+    money_note = (
+        '<p class="btr-note">Share of the money, not of the contracts &mdash; the two differ, and the gap is what says whether the field is crowded or merely tiered.</p>'
+        if r["valued_awards"] else ""
+    )
+
+    return f"""
+<div class="card">
+  <h2>This Buyer's Track Record</h2>
+  {title_note}
+  <div class="btr-headline">
+    <div class="btr-headline-stat">{stat}</div>
+    <div class="btr-headline-text">{headline}</div>
+  </div>
+{stats_row}
+  <p class="btr-count">They have awarded {count_phrase}{f' since <strong>{esc(year)}</strong>' if year else ''}.</p>
+
+  <p class="btr-rank-title">Who wins the money</p>
+  <div class="btr-rank">{rank_rows}</div>
+
+  {money_note}
+
+  <div class="btr-trend">
+    <span class="btr-trend-arrow {trend_class}">{trend_arrow}</span>
+    <span>{trend_text}</span>
+  </div>
+  <p class="btr-source">Based on past award notices published on Contracts Finder.</p>
 </div>"""
 
 
@@ -1104,7 +1397,8 @@ def build_page(t: dict, slug: str, is_closed: bool, buyer_others=None, sector_re
 </div>"""
 
     details_card = build_details_card(t, procedure)
-    main_col = f"{kp_card}{desc_card}{details_card}{lots_card}{docs_card}{domains_card}"
+    buyer_record_card = build_buyer_record_card(t)
+    main_col = f"{kp_card}{desc_card}{details_card}{buyer_record_card}{lots_card}{docs_card}{domains_card}"
 
     # ── Sidebar: quiz (open) or closed-notice CTA ──────────────────────────────
     if is_closed:
