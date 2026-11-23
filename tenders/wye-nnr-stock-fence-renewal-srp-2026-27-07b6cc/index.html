@@ -135,6 +135,31 @@ h1{font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:60
 
 .who-note{background:var(--teal-light);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--teal-dark);line-height:1.6;margin-bottom:14px}
 
+.btr-headline{background:var(--teal-light);border-radius:10px;padding:18px 20px;margin-bottom:20px}
+.btr-headline-stat{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--teal-dark);margin-bottom:4px;line-height:1}
+.btr-headline-text{font-size:13.5px;color:var(--steel);line-height:1.6}
+.btr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.btr-stat{background:var(--white);padding:14px 10px;text-align:center}
+.btr-stat-label{font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px}
+.btr-stat-val{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--steel)}
+.btr-count{font-size:13.5px;color:var(--text-muted);margin-bottom:22px;line-height:1.6}
+.btr-count strong{color:var(--steel)}
+.btr-rank-title{font-size:13px;font-weight:700;color:var(--steel);margin-bottom:14px}
+.btr-rank{display:flex;flex-direction:column;gap:14px;margin-bottom:18px}
+.btr-rank-row{display:grid;grid-template-columns:1fr auto;gap:3px 12px;align-items:center}
+.btr-rank-name{font-size:13.5px;font-weight:600;color:var(--steel);display:flex;align-items:center;gap:6px}
+.btr-sme-tag{font-size:9.5px;font-weight:700;letter-spacing:.3px;color:var(--teal-dark);background:var(--teal-light);border-radius:8px;padding:1px 6px}
+.btr-rank-meta{font-size:12px;color:var(--text-muted);white-space:nowrap}
+.btr-bar-track{grid-column:1/-1;height:7px;background:var(--off-white);border-radius:5px;overflow:hidden}
+.btr-bar-fill{height:100%;background:var(--teal-mid);border-radius:5px}
+.btr-scope-note{font-size:12.5px;color:var(--text-muted);margin:-4px 0 12px}
+.btr-source{font-size:11.5px;color:var(--text-muted);margin:12px 0 0}
+.btr-note{font-size:12px;color:var(--text-muted);line-height:1.65;border-top:1px solid var(--border);padding-top:14px;margin-bottom:14px}
+.btr-trend{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--steel);background:var(--off-white);border-radius:8px;padding:11px 14px;line-height:1.5}
+.btr-trend-arrow{font-weight:700;font-size:14px;flex-shrink:0}
+.btr-trend-arrow.down{color:#b7670a}
+.btr-trend-arrow.up{color:#1a7a50}
+
 .desc-text{font-size:14px;color:var(--text-muted);line-height:1.8;white-space:pre-wrap;word-break:break-word}
 .desc-toggle{background:none;border:none;color:var(--teal-mid);font-weight:700;font-size:13px;cursor:pointer;padding:10px 0 0;font-family:inherit}
 .desc-full{display:none}
@@ -322,7 +347,7 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
     </div>
     <div class="hero-top">
       <div>
-        <div class="hero-badges"><span class="hero-badge badge-live">Live</span><span class="hero-badge badge-sector">Construction Works</span><span class="hero-badge badge-region">South East</span></div>
+        <div class="hero-badges"><span class="hero-badge badge-closed">Closed</span><span class="hero-badge badge-sector">Construction Works</span><span class="hero-badge badge-region">South East</span></div>
         <h1>Wye NNR Stock Fence Renewal (SRP) 2026-27</h1>
         <div class="hero-buyer">Natural England &middot; Published 12 Nov 2026</div>
       </div>
@@ -349,19 +374,19 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
       <div class="tl-dot" style="background:var(--text-muted);"></div>
       <div class="tl-label">Published</div>
       <div class="tl-date">12 Nov 2026</div>
-      <div class="tl-rel" style="color:var(--text-muted)">10 days ago</div>
+      <div class="tl-rel" style="color:var(--text-muted)">11 days ago</div>
+    </div>
+    <div class="tl-node">
+      <div class="tl-dot" style="background:#999;"></div>
+      <div class="tl-label">Closes</div>
+      <div class="tl-date">22 Nov 2026</div>
+      <div class="tl-rel" style="color:#999">1 day ago</div>
     </div>
     <div class="tl-node">
       <div class="tl-dot" style="background:var(--teal-dark);box-shadow:0 0 0 4px rgba(26,107,124,.15);"></div>
       <div class="tl-label">Today</div>
-      <div class="tl-date">22 Nov 2026</div>
+      <div class="tl-date">23 Nov 2026</div>
       <div class="tl-rel" style="color:var(--teal-dark)">Today</div>
-    </div>
-    <div class="tl-node">
-      <div class="tl-dot" style="background:#c0392b;"></div>
-      <div class="tl-label">Closes</div>
-      <div class="tl-date">22 Nov 2026</div>
-      <div class="tl-rel" style="color:#c0392b">Today</div>
     </div></div>
 </div>
 
@@ -383,6 +408,87 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
   <div class="fact-row"><span class="fact-label">Procedure</span><span class="fact-value">Below threshold - open competition</span></div><div class="fact-row"><span class="fact-label">CPV Code</span><span class="fact-value">45342000</span></div>
 </div>
 <div class="card">
+  <h2>This Buyer's Track Record</h2>
+  <p class="btr-scope-note">Across all of this buyer&rsquo;s past contracts, not just this type of work.</p>
+  <div class="btr-headline">
+    <div class="btr-headline-stat">36%</div>
+    <div class="btr-headline-text">A spread-out field &mdash; 36% of the money across all of this buyer's contracts went to the top three of 131 suppliers who have won.</div>
+  </div>
+
+  <div class="btr-stats">
+    <div class="btr-stat"><div class="btr-stat-label">Lowest</div><div class="btr-stat-val">&pound;4k</div></div>
+    <div class="btr-stat"><div class="btr-stat-label">Typical</div><div class="btr-stat-val">&pound;20k</div></div>
+    <div class="btr-stat"><div class="btr-stat-label">Highest</div><div class="btr-stat-val">&pound;775k</div></div>
+  </div>
+  <p class="btr-count">They have awarded <strong>189</strong> contracts in total since <strong>2022</strong>.</p>
+
+  <p class="btr-rank-title">Who wins the money</p>
+  <div class="btr-rank">
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">A E YATES LIMITED</span>
+      <span class="btr-rank-meta">19% &middot; 2 wins &middot; typically &pound;775k</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:19%"></div></div>
+    </div>
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">ESRI (UK) LIMITED</span>
+      <span class="btr-rank-meta">10% &middot; 2 wins &middot; typically &pound;400k</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:10%"></div></div>
+    </div>
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">AECOM LIMITED</span>
+      <span class="btr-rank-meta">7% &middot; 5 wins &middot; typically &pound;117k</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:7%"></div></div>
+    </div>
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">RSK ADAS LIMITED</span>
+      <span class="btr-rank-meta">6% &middot; 3 wins &middot; typically &pound;163k</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:6%"></div></div>
+    </div>
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">RS Aqua Limited</span>
+      <span class="btr-rank-meta">5% &middot; 1 win &middot; typically &pound;400k</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:5%"></div></div>
+    </div>
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">APEM LIMITED</span>
+      <span class="btr-rank-meta">4% &middot; 6 wins &middot; typically &pound;70k</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:4%"></div></div>
+    </div>
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">ICF CONSULTING SERVICES LIMITED</span>
+      <span class="btr-rank-meta">4% &middot; 1 win &middot; typically &pound;308k</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:4%"></div></div>
+    </div>
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">PROMAR INTERNATIONAL LIMITED</span>
+      <span class="btr-rank-meta">3% &middot; 4 wins &middot; typically &pound;66k</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:3%"></div></div>
+    </div>
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">BOWLAND ECOLOGY LIMITED</span>
+      <span class="btr-rank-meta">3% &middot; 3 wins &middot; typically &pound;76k</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:3%"></div></div>
+    </div>
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">JEREMY BENN ASSOCIATES LIMITED</span>
+      <span class="btr-rank-meta">2% &middot; 5 wins &middot; typically &pound;29k</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:2%"></div></div>
+    </div>
+    <div class="btr-rank-row">
+      <span class="btr-rank-name">Others (121 suppliers)</span>
+      <span class="btr-rank-meta">38% &middot; 157 wins</span>
+      <div class="btr-bar-track"><div class="btr-bar-fill" style="width:38%"></div></div>
+    </div></div>
+
+  <p class="btr-note">Share of the money, not of the contracts &mdash; the two differ, and the gap is what says whether the field is crowded or merely tiered.</p>
+
+  <div class="btr-trend">
+    <span class="btr-trend-arrow up">&uarr;</span>
+    <span>New in the last 12 months: Harper Adams University.</span>
+  </div>
+  <p class="btr-source">Based on past award notices published on Contracts Finder.</p>
+</div>
+<div class="card">
   <h2>Lots (1)</h2>
   
 <div class="lot"><div><div class="lot-title">Lot 1</div></div><div class="lot-val">£22k</div></div>
@@ -397,228 +503,12 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
   <h2>Referenced Sources</h2>
   <ul class="domain-list"><li><a href="https://www.find-tender.service.gov.uk/Notice/Attachment/A-25363" target="_blank" rel="noopener nofollow">find-tender.service.gov.uk</a></li><li><a href="https://naturalengland.org.uk" target="_blank" rel="noopener nofollow">naturalengland.org.uk</a></li></ul>
 </div></div>
-  <div><div class="quiz-widget">
-  <h3>Should You Bid on This One?</h3>
-  <p class="quiz-sub">4 quick questions &rarr; your Bid Readiness Score</p>
-  <div class="quiz-progress"><span id="qp1" class="done"></span><span id="qp2"></span><span id="qp3"></span><span id="qp4"></span></div>
-  <div class="quiz-step active" data-step="1"><div class="q-text">Delivered a similar contract before?</div>
-    <div class="quiz-options"><button onclick="quizNext(1,3)">Yes, multiple times</button><button onclick="quizNext(1,2)">Once or twice</button><button onclick="quizNext(1,0)">Not yet</button></div></div>
-  <div class="quiz-step" data-step="2"><div class="q-text">Could you deliver within the timeframe?</div>
-    <div class="quiz-options"><button onclick="quizNext(2,3)">Yes, comfortably</button><button onclick="quizNext(2,2)">It'd be tight</button><button onclick="quizNext(2,0)">Unsure</button></div></div>
-  <div class="quiz-step" data-step="3"><div class="q-text">Written a public-sector bid before?</div>
-    <div class="quiz-options"><button onclick="quizNext(3,3)">Yes, and won</button><button onclick="quizNext(3,2)">Yes, not won yet</button><button onclick="quizNext(3,0)">Never</button></div></div>
-  <div class="quiz-step" data-step="4"><div class="q-text">Time to dedicate before the deadline?</div>
-    <div class="quiz-options"><button onclick="quizNext(4,3)">Plenty</button><button onclick="quizNext(4,2)">Some, but tight</button><button onclick="quizNext(4,0)">Very little</button></div></div>
-  <div class="quiz-result" id="quizResult">
-    <div class="score-badge" id="quizScoreBadge">Bid Readiness: Strong</div>
-    <p id="quizResultText"></p>
-
-    <div id="quizGate">
-      <p class="gate-label" id="quizGateLabel">Want your personalised Bid Readiness Card?</p>
-      <form id="quizEmailForm" onsubmit="return submitQuizLead(event)">
-        <input type="text" id="quizBotField" name="company" autocomplete="off" tabindex="-1" style="position:absolute;opacity:0;height:0;width:0;pointer-events:none" aria-hidden="true">
-        <input type="email" id="quizEmail" placeholder="you@company.com" required
-          style="width:100%;padding:10px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-family:inherit;font-size:13px;margin-bottom:8px;box-sizing:border-box">
-        <button type="submit" id="quizSubmitBtn" class="btn btn-white" style="display:block;width:100%;color:var(--teal-dark)">Email me my result</button>
-        <p id="quizEmailNote" style="font-size:11px;color:rgba(255,255,255,.6);margin-top:6px;min-height:14px"></p>
-      </form>
-    </div>
-
-    <!-- Small, permanent confirmation left in the sidebar once the overlay has been seen -->
-    <div id="quizSentNote" style="display:none;text-align:left;background:rgba(255,255,255,.08);border-radius:8px;padding:12px 14px">
-      <p style="font-size:12px;color:rgba(255,255,255,.8);margin:0;line-height:1.5">&#10003; Got it. <a href="#" id="quizReopenLink" style="color:#fff;font-weight:700;text-decoration:underline">View it again</a></p>
-    </div>
-  </div>
+  <div>
+<div class="cta-card">
+  <h3>This tender has closed</h3>
+  <p>We can help you find and win similar contracts.</p>
+  <a href="/contact.html" class="btn btn-white">Find Similar Opportunities</a>
 </div>
-
-<!-- The payoff moment: a centered overlay, not boxed into the sidebar's width -->
-<div id="rcOverlay" class="rc-overlay" style="display:none">
-  <div class="rc-overlay-inner">
-    <button type="button" class="rc-close" id="rcClose" aria-label="Close">&times;</button>
-
-    <!-- Strong / Worth a Closer Look -->
-    <div id="rcCard" class="rc-card" style="display:none">
-      <div class="rc-head">
-        <div class="rc-brand"><span class="dot"></span><span>Hawkeye Solutions</span></div>
-        <div class="rc-eyebrow">Bid Readiness Score</div>
-        <div class="rc-score" id="rcScoreWord">Strong</div>
-        <div class="rc-score-sub" id="rcScoreSub">9 / 12 points</div>
-        <div class="rc-title" id="rcTitle"></div>
-        <div class="rc-chips" id="rcChips"></div>
-        <div class="rc-stats" id="rcStats"></div>
-      </div>
-      <div class="rc-foot">
-        <p class="rc-foot-text">This has been logged against your details. If anything here is worth a conversation, just get in touch, we read every message personally.</p>
-      </div>
-    </div>
-
-    <!-- Needs Support -- a note, not a score -->
-    <div id="rcNote" class="rc-note" style="display:none">
-      <strong>Thanks &mdash; that's genuinely useful context.</strong>
-      <p class="rc-note-text" id="rcNoteText"></p>
-    </div>
-  </div>
-</div>
-<script>
-(function() {
-  var QUIZ_CTX = {"title": "Wye NNR Stock Fence Renewal (SRP) 2026-27", "slug": "wye-nnr-stock-fence-renewal-srp-2026-27-07b6cc", "value": "£22k", "rawValue": 21650, "sector": "Construction Works", "daysLeft": 0, "scoreSplit": ""};
-  var quizAnswers = [];
-
-  window.quizNext = function(step, points) {
-    quizAnswers.push({step: step, points: points});
-    document.querySelector('.quiz-step[data-step="'+step+'"]').classList.remove('active');
-    var dot = document.getElementById('qp'+step); if (dot) dot.classList.add('done');
-    if (step < 4) { document.querySelector('.quiz-step[data-step="'+(step+1)+'"]').classList.add('active'); return; }
-    showQuizResult();
-  };
-
-  function showQuizResult() {
-    var total = quizAnswers.reduce(function(s,a){ return s+a.points; }, 0);
-    var weakest = quizAnswers.reduce(function(m,a){ return a.points < m.points ? a : m; }, quizAnswers[0]);
-    var SERVICES = {
-      1: {name:'Bid Writing', why:"translating your real experience into evaluator-ready evidence"},
-      3: {name:'Bid Writing', why:"writing the submission itself, so inexperience with public-sector bids isn't the blocker"},
-      2: {name:'Bid Management', why:"tracking every deadline and milestone so nothing slips"},
-      4: {name:'Bid Management', why:"running the process so it doesn't eat your week"}
-    };
-    var service = SERVICES[weakest.step];
-    var tier, badge;
-    if (total >= 9) { tier = 'Strong'; badge = 'Bid Readiness: Strong'; }
-    else if (total >= 5) { tier = 'Worth a Closer Look'; badge = 'Bid Readiness: Worth a Closer Look'; }
-    else { tier = 'Needs Support'; badge = 'Bid Readiness: Needs Support'; }
-
-    var msg;
-    if (tier === 'Strong') { msg = "You're in a strong position on " + QUIZ_CTX.title + ". "; }
-    else if (tier === 'Worth a Closer Look') { msg = "There are a couple of gaps on " + QUIZ_CTX.title + ", but nothing disqualifying. "; }
-    else { msg = QUIZ_CTX.title + " looks like a stretch on paper, but plenty of clients have won contracts like this. "; }
-    msg += "The thing most worth sorting first is " + service.why + ".";
-    if (QUIZ_CTX.scoreSplit) { msg += " Worth knowing: this one is scored " + QUIZ_CTX.scoreSplit.replace(/\.$/, '') + ", so that's where the marks are."; }
-    if (QUIZ_CTX.daysLeft !== null && QUIZ_CTX.daysLeft >= 0 && QUIZ_CTX.daysLeft <= 10) {
-      msg += " With " + QUIZ_CTX.daysLeft + " day" + (QUIZ_CTX.daysLeft === 1 ? '' : 's') + " left, speed matters more than perfection right now.";
-    }
-
-    document.getElementById('quizScoreBadge').textContent = badge;
-    document.getElementById('quizResultText').textContent = msg;
-    document.getElementById('quizResult').classList.add('active');
-
-    // The ask after the free result changes with the tier -- a card is
-    // something worth keeping, so it's only offered when the score actually
-    // earns it. A weak score gets a straight, specific note instead.
-    var gateLabel = document.getElementById('quizGateLabel');
-    gateLabel.textContent = (tier === 'Needs Support')
-      ? 'Want the specific breakdown of what to fix first?'
-      : 'Want your personalised Bid Readiness Card?';
-
-    var noteText;
-    if (tier === 'Strong') {
-      noteText = "Based on your answers, " + QUIZ_CTX.title + " plays to real strengths you already have. The main thing left is " + service.why + ", nothing more fundamental than that.";
-    } else if (tier === 'Worth a Closer Look') {
-      noteText = "Nothing here rules you out of " + QUIZ_CTX.title + ", but " + service.why + " is the gap most likely to cost marks if it's left unaddressed.";
-    } else {
-      noteText = "The honest read on " + QUIZ_CTX.title + " is that " + service.why + " is the real gap, not your fit for the work itself. That's exactly the kind of thing we help close, often faster than people expect.";
-    }
-
-    window.__quizLead = {
-      total: total, scoreTier: tier, weakestStep: weakest.step,
-      recommendedService: service.name, answers: quizAnswers, noteText: noteText
-    };
-  }
-
-  function openOverlay() {
-    document.getElementById('rcOverlay').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
-  function closeOverlay() {
-    document.getElementById('rcOverlay').style.display = 'none';
-    document.body.style.overflow = '';
-  }
-  window.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeOverlay(); });
-
-  function revealResult() {
-    var lead = window.__quizLead || {};
-    document.getElementById('quizGate').style.display = 'none';
-    document.getElementById('quizSentNote').style.display = 'block';
-
-    if (lead.scoreTier === 'Needs Support') {
-      document.getElementById('rcNoteText').textContent = lead.noteText || '';
-      document.getElementById('rcNote').style.display = 'block';
-      openOverlay();
-      return;
-    }
-
-    var scoreWord = lead.scoreTier === 'Strong' ? 'Strong' : 'Worth a Closer Look';
-    document.getElementById('rcScoreWord').textContent = scoreWord;
-    document.getElementById('rcScoreSub').textContent = lead.total + ' / 12 points';
-    document.getElementById('rcTitle').textContent = QUIZ_CTX.title;
-
-    var chips = document.getElementById('rcChips');
-    chips.innerHTML = '';
-    if (QUIZ_CTX.sector) chips.innerHTML += '<span class="rc-chip">' + QUIZ_CTX.sector + '</span>';
-
-    var stats = document.getElementById('rcStats');
-    stats.innerHTML =
-      '<div class="rc-stat"><div class="rc-stat-label">Est. Value</div><div class="rc-stat-val">' + (QUIZ_CTX.value || 'Not stated') + '</div></div>' +
-      '<div class="rc-stat"><div class="rc-stat-label">Closes In</div><div class="rc-stat-val">' + (QUIZ_CTX.daysLeft != null ? QUIZ_CTX.daysLeft + ' days' : '\u2014') + '</div></div>';
-
-    document.getElementById('rcCard').style.display = 'block';
-    openOverlay();
-  }
-
-  document.getElementById('rcClose').addEventListener('click', closeOverlay);
-  document.getElementById('rcOverlay').addEventListener('click', function(e) {
-    if (e.target.id === 'rcOverlay') closeOverlay();
-  });
-  document.getElementById('quizReopenLink').addEventListener('click', function(e) {
-    e.preventDefault();
-    openOverlay();
-  });
-
-  window.submitQuizLead = function(e) {
-    e.preventDefault();
-    var email = document.getElementById('quizEmail').value.trim();
-    var bot = document.getElementById('quizBotField').value;
-    var btn = document.getElementById('quizSubmitBtn');
-    var note = document.getElementById('quizEmailNote');
-    if (bot) return false;
-    if (!email || email.indexOf('@') === -1) { note.textContent = 'Enter a valid email.'; note.style.color = '#f08080'; return false; }
-    btn.disabled = true; btn.textContent = 'Sending\u2026';
-    var lead = window.__quizLead || {};
-    fetch('/.netlify/functions/quiz-lead', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: email,
-        tenderTitle: QUIZ_CTX.title,
-        tenderSlug: QUIZ_CTX.slug,
-        tenderUrl: location.href,
-        sector: QUIZ_CTX.sector,
-        value: QUIZ_CTX.value,
-        rawValue: QUIZ_CTX.rawValue,
-        score: lead.total,
-        scoreTier: lead.scoreTier,
-        weakestStep: lead.weakestStep,
-        recommendedService: lead.recommendedService,
-        answers: lead.answers,
-        botField: bot
-      })
-    }).then(function(r) { return r.json(); }).then(function(data) {
-      if (data && data.ok) {
-        revealResult();
-      } else {
-        note.textContent = 'Something went wrong \u2014 try again, or email info@hawkeye-solutions.co.uk directly.';
-        note.style.color = '#f08080';
-        btn.disabled = false; btn.textContent = 'Email me my result';
-      }
-    }).catch(function() {
-      note.textContent = 'Something went wrong \u2014 try again, or email info@hawkeye-solutions.co.uk directly.';
-      note.style.color = '#f08080';
-      btn.disabled = false; btn.textContent = 'Email me my result';
-    });
-    return false;
-  };
-})();
-</script>
-
 <div class="card map-widget">
   <svg viewBox="0 0 164 206" width="100%" height="100%"><rect x="42" y="0" width="122" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>Scotland</title></rect><text x="103.0" y="22.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">Scotland</text><rect x="0" y="42" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>Northern Ireland</title></rect><text x="19.0" y="64.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">N.I.</text><rect x="42" y="42" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>North West</title></rect><text x="61.0" y="64.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">N.West</text><rect x="126" y="42" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>North East</title></rect><text x="145.0" y="64.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">N.East</text><rect x="84" y="84" width="80" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>Yorkshire &amp; The Humber</title></rect><text x="124.0" y="106.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">Yorks.</text><rect x="0" y="126" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>Wales</title></rect><text x="19.0" y="148.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">Wales</text><rect x="42" y="126" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>West Midlands</title></rect><text x="61.0" y="148.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">W.Mid.</text><rect x="84" y="126" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>East Midlands</title></rect><text x="103.0" y="148.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">E.Mid.</text><rect x="126" y="126" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>East of England</title></rect><text x="145.0" y="148.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">E.Eng.</text><rect x="0" y="168" width="80" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>South West</title></rect><text x="40.0" y="190.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">S.West</text><rect x="84" y="168" width="38" height="38" rx="6" fill="var(--off-white)" stroke="var(--border)" stroke-width="1.5"><title>London</title></rect><text x="103.0" y="190.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--text-muted)">London</text><rect x="126" y="168" width="38" height="38" rx="6" fill="var(--teal-mid)" stroke="var(--teal-dark)" stroke-width="1.5"><title>South East</title></rect><text x="145.0" y="190.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">S.East</text></svg>
   <div class="map-cap">Delivered in South East</div>

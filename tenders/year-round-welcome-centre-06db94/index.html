@@ -135,6 +135,31 @@ h1{font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:60
 
 .who-note{background:var(--teal-light);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--teal-dark);line-height:1.6;margin-bottom:14px}
 
+.btr-headline{background:var(--teal-light);border-radius:10px;padding:18px 20px;margin-bottom:20px}
+.btr-headline-stat{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--teal-dark);margin-bottom:4px;line-height:1}
+.btr-headline-text{font-size:13.5px;color:var(--steel);line-height:1.6}
+.btr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.btr-stat{background:var(--white);padding:14px 10px;text-align:center}
+.btr-stat-label{font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px}
+.btr-stat-val{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--steel)}
+.btr-count{font-size:13.5px;color:var(--text-muted);margin-bottom:22px;line-height:1.6}
+.btr-count strong{color:var(--steel)}
+.btr-rank-title{font-size:13px;font-weight:700;color:var(--steel);margin-bottom:14px}
+.btr-rank{display:flex;flex-direction:column;gap:14px;margin-bottom:18px}
+.btr-rank-row{display:grid;grid-template-columns:1fr auto;gap:3px 12px;align-items:center}
+.btr-rank-name{font-size:13.5px;font-weight:600;color:var(--steel);display:flex;align-items:center;gap:6px}
+.btr-sme-tag{font-size:9.5px;font-weight:700;letter-spacing:.3px;color:var(--teal-dark);background:var(--teal-light);border-radius:8px;padding:1px 6px}
+.btr-rank-meta{font-size:12px;color:var(--text-muted);white-space:nowrap}
+.btr-bar-track{grid-column:1/-1;height:7px;background:var(--off-white);border-radius:5px;overflow:hidden}
+.btr-bar-fill{height:100%;background:var(--teal-mid);border-radius:5px}
+.btr-scope-note{font-size:12.5px;color:var(--text-muted);margin:-4px 0 12px}
+.btr-source{font-size:11.5px;color:var(--text-muted);margin:12px 0 0}
+.btr-note{font-size:12px;color:var(--text-muted);line-height:1.65;border-top:1px solid var(--border);padding-top:14px;margin-bottom:14px}
+.btr-trend{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--steel);background:var(--off-white);border-radius:8px;padding:11px 14px;line-height:1.5}
+.btr-trend-arrow{font-weight:700;font-size:14px;flex-shrink:0}
+.btr-trend-arrow.down{color:#b7670a}
+.btr-trend-arrow.up{color:#1a7a50}
+
 .desc-text{font-size:14px;color:var(--text-muted);line-height:1.8;white-space:pre-wrap;word-break:break-word}
 .desc-toggle{background:none;border:none;color:var(--teal-mid);font-weight:700;font-size:13px;cursor:pointer;padding:10px 0 0;font-family:inherit}
 .desc-full{display:none}
@@ -349,12 +374,12 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
       <div class="tl-dot" style="background:var(--text-muted);"></div>
       <div class="tl-label">Published</div>
       <div class="tl-date">12 Nov 2026</div>
-      <div class="tl-rel" style="color:var(--text-muted)">10 days ago</div>
+      <div class="tl-rel" style="color:var(--text-muted)">11 days ago</div>
     </div>
     <div class="tl-node">
       <div class="tl-dot" style="background:var(--teal-dark);box-shadow:0 0 0 4px rgba(26,107,124,.15);"></div>
       <div class="tl-label">Today</div>
-      <div class="tl-date">22 Nov 2026</div>
+      <div class="tl-date">23 Nov 2026</div>
       <div class="tl-rel" style="color:var(--teal-dark)">Today</div>
     </div>
     <div class="tl-node">
@@ -457,7 +482,7 @@ footer{background:var(--steel);color:rgba(255,255,255,.6);padding:36px 5% 24px}
 </div>
 <script>
 (function() {
-  var QUIZ_CTX = {"title": "Year-round Welcome Centre", "slug": "year-round-welcome-centre-06db94", "value": "", "rawValue": null, "sector": "Health & Social Care", "daysLeft": 21, "scoreSplit": "70% quality and 30% price"};
+  var QUIZ_CTX = {"title": "Year-round Welcome Centre", "slug": "year-round-welcome-centre-06db94", "value": "", "rawValue": null, "sector": "Health & Social Care", "daysLeft": 20, "scoreSplit": "70% quality and 30% price"};
   var quizAnswers = [];
 
   window.quizNext = function(step, points) {
