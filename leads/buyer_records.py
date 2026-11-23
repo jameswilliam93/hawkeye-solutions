@@ -35,7 +35,10 @@ disk and can be re-run any time, instantly, as the aggregation logic is
 tuned — it never calls either API.
 """
 
+from __future__ import annotations
+
 import argparse
+import gzip
 import json
 import logging
 import re
@@ -495,6 +498,44 @@ def cmd_resolve(args):
 
 MIN_AWARDS_FOR_CATEGORY = 5
 CPV_DEPTHS = (8, 6, 4, 2)
+ALL_CATEGORIES = "*"  # category_cpv_prefix marker for a buyer-wide record
+
+# Cut-down copy of the build output that IS committed, so the daily GitHub
+# Action's page generator can see it (the full buyer_records.json is 80MB+ and
+# gitignored). Only what the card renders: top N suppliers, the rest folded
+# into one "others" summary.
+SLIM_FILE = HERE.parent / "pipeline" / "buyer_records_slim.json.gz"
+SLIM_TOP_SUPPLIERS = 10
+SLIM_SUPPLIER_FIELDS = ("display_name", "wins", "valued_wins", "is_sme", "share_of_value", "typical_value")
+SLIM_RECORD_FIELDS = (
+    "buyer_key", "buyer_name", "category_cpv_prefix", "category_cpv_depth", "category_label",
+    "sector", "total_awards", "total_suppliers", "total_value_amount", "valued_awards",
+    "value_min", "value_mid", "value_max", "earliest_award_date", "new_suppliers_last_12m",
+)
+
+
+def export_slim(records: list[dict]) -> None:
+    slim = []
+    for r in records:
+        if r["total_suppliers"] < 2:
+            continue  # the card never renders these
+        s = {k: r[k] for k in SLIM_RECORD_FIELDS}
+        top = r["suppliers"][:SLIM_TOP_SUPPLIERS]
+        rest = r["suppliers"][SLIM_TOP_SUPPLIERS:]
+        s["suppliers"] = [{k: sup[k] for k in SLIM_SUPPLIER_FIELDS} for sup in top]
+        if rest:
+            s["others"] = {
+                "count": len(rest),
+                "wins": sum(x["wins"] for x in rest),
+                "share_of_value": round(sum(x["share_of_value"] or 0 for x in rest), 4)
+                                  if any(x["valued_wins"] for x in rest) else None,
+            }
+        slim.append(s)
+    payload = json.dumps(slim, separators=(",", ":")).encode()
+    # mtime=0 keeps the bytes identical across rebuilds of unchanged data, so
+    # git doesn't see a "change" every time build is re-run.
+    SLIM_FILE.write_bytes(gzip.compress(payload, compresslevel=9, mtime=0))
+    log.info("Slim export: %d records -> %s (%.1f MB)", len(slim), SLIM_FILE, SLIM_FILE.stat().st_size / 1e6)
 
 
 def normalize_buyer_key(name: str) -> str:
@@ -534,6 +575,26 @@ def dedupe_rows(rows: list[dict]) -> list[dict]:
     return list(latest.values())
 
 
+# Free-text the buyer typed into the supplier field instead of a real winner
+# ("N/A", "Various", "Not awarded", "Please see attachment", "test supplier
+# only"). Left in, these show up on the card ranked as if they were firms.
+_PLACEHOLDER_SUPPLIER = re.compile(
+    r"please|\bsee\b|various|multiple supplier|several supplier|list of|not (yet )?(known|awarded|applicable)"
+    r"|^\W*$|^n/?a$|^tb[cd]\b|^none$|^unknown|^test\b|^suppliers?$|^\d+ suppliers",
+    re.IGNORECASE,
+)
+_REAL_COMPANY_SUFFIX = re.compile(r"\b(ltd|limited|plc|llp|lp|inc|cic|llc)\.?\s*$", re.IGNORECASE)
+
+
+def is_placeholder_supplier(name: str) -> bool:
+    n = (name or "").strip()
+    if not n:
+        return True
+    # A registered-company suffix means it's a real firm, even if its name
+    # happens to trip a pattern (e.g. "Testing Circle Ltd").
+    return bool(_PLACEHOLDER_SUPPLIER.search(n)) and not _REAL_COMPANY_SUFFIX.search(n)
+
+
 def pick_cpv_group(buyer_rows: list[dict]) -> dict[str, list[dict]]:
     """For one buyer's rows, cluster by CPV prefix at the finest depth that
     still gives each group >= MIN_AWARDS_FOR_CATEGORY awards (counting each
@@ -568,10 +629,15 @@ def pick_cpv_group(buyer_rows: list[dict]) -> dict[str, list[dict]]:
 # handful of placeholder rows don't drag the min/typical-value figures down
 # to near-zero.
 MIN_SENSIBLE_VALUE = 100
+# Above this a single award's stated value is overwhelmingly a framework
+# ceiling or a data-entry error (real examples: £120bn from a borough council,
+# £72bn single-supplier CCS frameworks) — treat it as undisclosed rather than
+# let it dominate every share and value figure.
+MAX_SENSIBLE_VALUE = 1_000_000_000
 
 
 def sensible_value(amount):
-    return amount if amount is not None and amount >= MIN_SENSIBLE_VALUE else None
+    return amount if amount is not None and MIN_SENSIBLE_VALUE <= amount < MAX_SENSIBLE_VALUE else None
 
 
 # Free-text buyer-entered award dates occasionally contain outright garbage —
@@ -613,8 +679,20 @@ def build_record(buyer_name: str, buyer_key: str, cpv_prefix: str, rows: list[di
     cpv_desc_counts: dict[str, int] = defaultdict(int)
     sector_counts: dict[str, int] = defaultdict(int)
 
+    # A notice naming several winners is almost always a framework/DPS, and its
+    # stated value is the ceiling for the WHOLE arrangement, repeated against
+    # every supplier — not money any one of them was paid. Crediting each
+    # supplier with it produced shares over 100% (e.g. ten firms each "winning"
+    # a £37bn NHS framework). Such awards still count as wins, but their value
+    # is treated as not attributable.
+    suppliers_per_notice: dict[str, set] = defaultdict(set)
+    for r in rows:
+        suppliers_per_notice[r["ocid"]].add(normalize_name(r["supplier_name"]))
+
     for (ocid, award_id), award_rows in by_award.items():
         value = sensible_value(award_rows[0]["value_amount"])
+        if len(suppliers_per_notice[ocid]) > 1:
+            value = None
         date = sensible_date(award_rows[0]["award_date"], award_rows[0]["release_date"], now)
         cpv_desc_counts[award_rows[0]["cpv_description"]] += 1
         sector_counts[award_rows[0]["sector"]] += 1
@@ -625,6 +703,8 @@ def build_record(buyer_name: str, buyer_key: str, cpv_prefix: str, rows: list[di
         supplier_ids_this_award = set()
         for r in award_rows:
             cid, cname, size_band, is_sme = resolve_supplier(entities, r)
+            if cid in supplier_ids_this_award:
+                continue  # same firm listed twice on one award — count it once
             supplier_ids_this_award.add(cid)
             s = supplier_stats.setdefault(cid, {
                 "canonical_id": cid, "display_name": cname, "wins": 0,
@@ -658,14 +738,24 @@ def build_record(buyer_name: str, buyer_key: str, cpv_prefix: str, rows: list[di
         s["share_of_count"] = round(s["wins"] / total_awards, 4) if total_awards else None
         s["typical_value"] = round(s["total_value"] / s["valued_wins"], 2) if s["valued_wins"] else None
 
-    cpv_description = max(cpv_desc_counts, key=cpv_desc_counts.get) if cpv_desc_counts else ""
     sector = max(sector_counts, key=sector_counts.get) if sector_counts else ""
+    # Only name a specific type of work when the group really is that specific
+    # (6-8 digit CPV prefix). A 2-4 digit rollup mixes many kinds of work, so
+    # naming its single most common description would overclaim — use the
+    # broad sector for the prefix instead. Buyer-wide records get no label.
+    if cpv_prefix == ALL_CATEGORIES:
+        cpv_description = ""
+    elif len(cpv_prefix) >= 6:
+        cpv_description = max(cpv_desc_counts, key=cpv_desc_counts.get) if cpv_desc_counts else ""
+    else:
+        broad = cpv_to_sector(cpv_prefix)
+        cpv_description = "" if broad in ("Other", "Uncategorised") else broad
 
     return {
         "buyer_key": buyer_key,
         "buyer_name": buyer_name,
         "category_cpv_prefix": cpv_prefix,
-        "category_cpv_depth": len(cpv_prefix),
+        "category_cpv_depth": 0 if cpv_prefix == ALL_CATEGORIES else len(cpv_prefix),
         "category_label": cpv_description,
         "sector": sector,
         "total_awards": total_awards,
@@ -690,7 +780,9 @@ def cmd_build(args):
         log.error("No raw rows found — run `fetch` first.")
         sys.exit(1)
     rows = dedupe_rows(rows)
-    log.info("%d deduped award-supplier rows loaded", len(rows))
+    before = len(rows)
+    rows = [r for r in rows if not is_placeholder_supplier(r["supplier_name"])]
+    log.info("%d deduped award-supplier rows loaded (%d placeholder 'suppliers' dropped)", len(rows), before - len(rows))
 
     entities = load_json(ENTITIES_FILE, {}).get("suppliers", {})
     if not entities:
@@ -709,6 +801,7 @@ def cmd_build(args):
     now = datetime.now(timezone.utc).isoformat()
     records = []
     candidate_groups = 0
+    buyer_wide = 0
     for buyer_key, buyer_rows in by_buyer.items():
         groups = pick_cpv_group(buyer_rows)
         candidate_groups += len(groups)
@@ -716,8 +809,16 @@ def cmd_build(args):
             if len({(r["ocid"], r["award_id"]) for r in group_rows}) < MIN_AWARDS_FOR_CATEGORY:
                 continue  # still too thin even at the broadest rollup — not worth showing
             records.append(build_record(buyer_display[buyer_key], buyer_key, cpv_prefix, group_rows, entities, datetime.now(timezone.utc)))
+        # Buyer-wide fallback across every category — used when a tender has no
+        # CPV code, or this buyer has too little history in the tender's own
+        # category. Never a guess: it's labelled as "all their contracts".
+        if len({(r["ocid"], r["award_id"]) for r in buyer_rows}) >= MIN_AWARDS_FOR_CATEGORY:
+            records.append(build_record(buyer_display[buyer_key], buyer_key, ALL_CATEGORIES, buyer_rows, entities, datetime.now(timezone.utc)))
+            buyer_wide += 1
 
     save_json(OUTPUT_FILE, records)
+    export_slim(records)
+    log.info("%d of those are buyer-wide (all-category) records", buyer_wide)
     log.info("Build complete. %d buyer+category records (>= %d awards each) written to %s",
               len(records), MIN_AWARDS_FOR_CATEGORY, OUTPUT_FILE)
     log.info("%d buyer+category combinations seen at all; %d of them (%.0f%%) cleared the %d-award bar",
